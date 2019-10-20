@@ -29,8 +29,8 @@ public class MotorEncoderTest extends OpMode {
         motorRight    = hardwareMap.dcMotor.get("right_drive");
         motorLeft     = hardwareMap.dcMotor.get("left_drive");
 
-        motorRight.setDirection(DcMotor.Direction.REVERSE);
-        motorLeft.setDirection(DcMotor.Direction.FORWARD);
+        motorRight.setDirection(DcMotor.Direction.FORWARD);
+        motorLeft.setDirection(DcMotor.Direction.REVERSE);
 
         // Do not do RESET_ENCODERS and RUN_WITHOUT_ENCODERS
         // If you do - it will not run.
