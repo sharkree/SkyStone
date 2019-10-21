@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.Range;
 
 
 @TeleOp(name="StanleyDance", group="StanBot")
-@Disabled
+//@Disabled
 
 public class ChickenStan extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
