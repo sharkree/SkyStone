@@ -103,6 +103,9 @@ public class StanBop extends LinearOpMode {
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.1;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.15;     // Larger is more responsive, but also less stable
+    double turn = 0.0;
+    double speed = 0.0;
+    int xs =0;
 
 
     @Override
@@ -119,28 +122,33 @@ public class StanBop extends LinearOpMode {
 //        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         waitForStart();
         while (opModeIsActive()) {
-            robot.leftDrive.setPower(gamepad1.left_stick_y);
-            robot.rightDrive.setPower(gamepad1.right_stick_y);
+            turn=gamepad1.right_stick_x;
+            speed=gamepad1.left_stick_y;
+            robot.leftDrive.setPower(speed-turn);
+            robot.rightDrive.setPower(speed+turn);
+            //He is speed
             if (gamepad1.x) {
+                xs++;
+            }
+            xs=xs%2;
+            if (xs==0){
                 robot.frontGrabber.setPosition(0);
                 robot.backGrabber.setPosition(1);
-                sleep(100);
-            } else {
-                robot.frontGrabber.setPosition(1);
-                robot.backGrabber.setPosition(0);
+            } else{
+                robot.frontGrabber.setPosition(0.5);
+                robot.backGrabber.setPosition(.5);
             }
+
             if (gamepad1.dpad_up) {
                 robot.Arm.setPower(.5);
-                sleep(100);
             }
             if (gamepad1.dpad_down) {
                 robot.Arm.setPower(-.75);
-                sleep(100);
             }
             if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
-                robot.Arm.setPower(.01);
+                robot.Arm.setPower(.05);
             }
-
+            sleep (100);
         }
     }
 }
