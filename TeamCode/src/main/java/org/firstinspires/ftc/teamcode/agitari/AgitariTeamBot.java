@@ -58,7 +58,7 @@ public class AgitariTeamBot
     public DcMotor  rightDrive  = null;
     public Servo    frontGrabber = null;
     public Servo    backGrabber = null;
-
+    public DcMotor Arm = null;
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
@@ -79,7 +79,7 @@ public class AgitariTeamBot
         leftDrive  = hwMap.get(DcMotor.class, "left_drive");
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
-
+        Arm = hwMap.get(DcMotor.class, "Arm");
         // Define and Initialize Servos
         frontGrabber = hwMap.get(Servo.class, "front_grabber");
         backGrabber = hwMap.get(Servo.class, "back_grabber");
