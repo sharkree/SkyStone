@@ -83,7 +83,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
 public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
-    AgitariTeamBot robot   = new AgitariTeamBot();   // Use a Pushbot's hardware
+    AgitariTeamBot robot   = new AgitariTeamBot();   // Use Agitari's team bot
 //    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
 
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder

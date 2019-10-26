@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.agitari;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -55,6 +56,12 @@ public class AgitariTeamBot
     /* Public OpMode members. */
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
+    public Servo    frontGrabber = null;
+    public Servo    backGrabber = null;
+
+    public static final double MID_SERVO       =  0.5 ;
+    public static final double ARM_UP_POWER    =  0.45 ;
+    public static final double ARM_DOWN_POWER  = -0.45 ;
 
     /** REV expansion hub's built-in Gyro sensor. */
     public BNO055IMU imu;
@@ -73,6 +80,10 @@ public class AgitariTeamBot
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
 
+        // Define and Initialize Servos
+        frontGrabber = hwMap.get(Servo.class, "front_grabber");
+        backGrabber = hwMap.get(Servo.class, "back_grabber");
+
         // Set all motors to zero power
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -88,6 +99,9 @@ public class AgitariTeamBot
 
         imu = hwMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
+        frontGrabber.setPosition(MID_SERVO);
+        backGrabber.setPosition(MID_SERVO);
     }
  }
 
