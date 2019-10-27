@@ -47,9 +47,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  * Motor channel:  Left  drive motor:        "left_drive"
  * Motor channel:  Right drive motor:        "right_drive"
- * Motor channel:  Manipulator drive motor:  "left_arm"
- * Servo channel:  Servo to open left claw:  "left_hand"
- * Servo channel:  Servo to open right claw: "right_hand"
+ * Motor channel:  Manipulator drive motor:  "arm"
+ * Servo channel:  Servo to open lego grabber:  "left_grabber"
+ * Servo channel:  Servo to open lego grabber: "right_grabber"
+ * Servo channel:  Servo to pull foundation: "center_puller"
  */
 public class AgitariTeamBot
 {
@@ -58,8 +59,11 @@ public class AgitariTeamBot
     public DcMotor  rightDrive  = null;
     public Servo    frontGrabber = null;
     public Servo    backGrabber = null;
-    public DcMotor Arm = null;
+    public Servo    centerPuller = null;
+
     public static final double MID_SERVO       =  0.5 ;
+
+    public DcMotor arm = null;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
 
@@ -79,10 +83,6 @@ public class AgitariTeamBot
         leftDrive  = hwMap.get(DcMotor.class, "left_drive");
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        Arm = hwMap.get(DcMotor.class, "Arm");
-        // Define and Initialize Servos
-        frontGrabber = hwMap.get(Servo.class, "front_grabber");
-        backGrabber = hwMap.get(Servo.class, "back_grabber");
 
         // Set all motors to zero power
         leftDrive.setPower(0);
@@ -93,15 +93,25 @@ public class AgitariTeamBot
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        arm = hwMap.get(DcMotor.class, "arm");
+        arm.setPower(0);
+
+        // Define and initialize grabber servos
+        frontGrabber = hwMap.get(Servo.class, "front_grabber");
+        backGrabber = hwMap.get(Servo.class, "back_grabber");
+
+        frontGrabber.setPosition(MID_SERVO);
+        backGrabber.setPosition(MID_SERVO);
+
+        // Center puller
+        centerPuller = hwMap.get(Servo.class, "center_puller");
+
         // IMU gyro
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
 
         imu = hwMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-
-        frontGrabber.setPosition(MID_SERVO);
-        backGrabber.setPosition(MID_SERVO);
     }
  }
 

@@ -29,23 +29,10 @@
 
 package org.firstinspires.ftc.teamcode.stanley;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
 
 /**
@@ -140,13 +127,13 @@ public class StanBop extends LinearOpMode {
             }
 
             if (gamepad1.dpad_up) {
-                robot.Arm.setPower(.5);
+                robot.arm.setPower(.5);
             }
             if (gamepad1.dpad_down) {
-                robot.Arm.setPower(-.75);
+                robot.arm.setPower(-.75);
             }
             if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
-                robot.Arm.setPower(.05);
+                robot.arm.setPower(.05);
             }
             sleep (100);
         }
