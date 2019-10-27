@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.stanley;
 
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -106,6 +107,8 @@ public class StanBop extends LinearOpMode {
     double turn = 0.0;
     double speed = 0.0;
     int xs =0;
+    int ys = 0;
+
 
 
     @Override
@@ -119,36 +122,71 @@ public class StanBop extends LinearOpMode {
          */
 
         robot.init(hardwareMap);
+
+        int duck = hardwareMap.appContext.getResources().getIdentifier(
+                "duck", "raw", hardwareMap.appContext.getPackageName());
+        int goose   = hardwareMap.appContext.getResources().getIdentifier(
+                "fair",   "raw", hardwareMap.appContext.getPackageName());
 //        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         waitForStart();
         while (opModeIsActive()) {
             turn=gamepad1.right_stick_x;
-            speed=gamepad1.left_stick_y;
-            robot.leftDrive.setPower(speed-turn);
-            robot.rightDrive.setPower(speed+turn);
+            speed=-1*gamepad1.left_stick_y;
+            robot.leftDrive.setPower(speed*3/4+turn/2);
+            robot.rightDrive.setPower(speed*3/4-turn/2);
             //He is speed
             if (gamepad1.x) {
                 xs++;
             }
             xs=xs%2;
             if (xs==0){
-                robot.frontGrabber.setPosition(0);
-                robot.backGrabber.setPosition(1);
+                robot.frontGrabber.setPosition(1);
+                robot.backGrabber.setPosition(0);
             } else{
-                robot.frontGrabber.setPosition(0.5);
-                robot.backGrabber.setPosition(.5);
+                robot.frontGrabber.setPosition(.5);
+                robot.backGrabber.setPosition(1);
+
+            }
+            sleep (200);
+            if (gamepad1.y) {
+                ys++;
+            }
+            ys=ys%2;
+            if (ys==0){
+                robot.clutch.setPosition(1);
+
+            } else{
+                robot.clutch.setPosition(0);
+
             }
 
             if (gamepad1.dpad_up) {
-                robot.Arm.setPower(.5);
+                robot.Arm.setPower(.65);
             }
             if (gamepad1.dpad_down) {
-                robot.Arm.setPower(-.75);
+                robot.Arm.setPower(-.7);
             }
             if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
-                robot.Arm.setPower(.05);
+                robot.Arm.setPower(-.1);
             }
-            sleep (100);
+            if(gamepad1.dpad_down && gamepad1.dpad_right && gamepad1.dpad_left && gamepad1.dpad_up){
+                return;
+            }
+
+
+            // Determine if sound resources are found.
+            // Note: Preloading is NOT required, but it's a good way to verify all your sounds are available before you run.
+            if (gamepad1.b) {
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, duck);
+            }
+
+
+            if (gamepad1.a) {
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, duck);
+
+            }
+
+
         }
     }
 }
