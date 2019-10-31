@@ -29,14 +29,9 @@
 
 package org.firstinspires.ftc.teamcode.daniel;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
 
@@ -54,7 +49,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="DanielRotateServo", group="Linear Opmode")
+@TeleOp(name="DanielRotateServo", group="Linear Opmode")
 //@Disabled
 public class DanielRotateServo extends LinearOpMode {
 
@@ -70,21 +65,27 @@ public class DanielRotateServo extends LinearOpMode {
     public void runOpMode() {
         robot.init (hardwareMap);
 
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
         waitForStart();
         runtime.reset();
 
         while (opModeIsActive()) {
-
-            if (gamepad1.y) {
-                robot.backGrabber.setPosition(1);
-            } else {
-                robot.backGrabber.setPosition(0.5);
-            }
             if (gamepad1.x) {
-                robot.frontGrabber.setPosition(0.5);
+                robot.grabber.setPosition(0);
+                telemetry.addData("Button Pressed:", "Joe Momma");
+                telemetry.update();
+            } else if (gamepad1.y){
+                robot.grabber.setPosition(1);
+                telemetry.addData("Button Pressed:", "Ben Dover");
+                telemetry.update();
             } else {
-                robot.frontGrabber.setPosition(1);
+                telemetry.addData("Button Pressed:", "Why u ask because there is no button pressed");
+                telemetry.update();
+
             }
+            //sleep(1000);   // optional pause after each move(1000);
         }
     }
 }

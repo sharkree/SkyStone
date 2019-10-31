@@ -30,23 +30,10 @@
 package org.firstinspires.ftc.teamcode.stanley;
 
 import com.qualcomm.ftccommon.SoundPlayer;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
 
 /**
@@ -140,11 +127,11 @@ public class StanBop extends LinearOpMode {
             }
             xs=xs%2;
             if (xs==0){
-                robot.frontGrabber.setPosition(1);
-                robot.backGrabber.setPosition(0);
+                //robot.frontGrabber.setPosition(1);
+                robot.grabber.setPosition(0);
             } else{
-                robot.frontGrabber.setPosition(.5);
-                robot.backGrabber.setPosition(1);
+                //robot.frontGrabber.setPosition(.5);
+                robot.grabber.setPosition(1);
 
             }
             sleep (200);
