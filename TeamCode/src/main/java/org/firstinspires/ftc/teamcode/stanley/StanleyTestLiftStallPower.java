@@ -30,9 +30,8 @@
 package org.firstinspires.ftc.teamcode.stanley;
 
 import com.qualcomm.ftccommon.SoundPlayer;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
 
@@ -40,38 +39,38 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
  * The code is structured as a LinearOpMode
- *
+ * <p>
  * The code REQUIRES that you DO have encoders on the wheels,
- *   otherwise you would use: PushbotAutoDriveByTime;
- *
- *  This code ALSO requires that you have a Modern Robotics I2C gyro with the name "gyro"
- *   otherwise you would use: PushbotAutoDriveByEncoder;
- *
- *  This code requires that the drive Motors have been configured such that a positive
- *  power command moves them forward, and causes the encoders to count UP.
- *
- *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
- *
- *  In order to calibrate the Gyro correctly, the robot must remain stationary during calibration.
- *  This is performed when the INIT button is pressed on the Driver Station.
- *  This code assumes that the robot is stationary when the INIT button is pressed.
- *  If this is not the case, then the INIT should be performed again.
- *
- *  Note: in this example, all angles are referenced to the initial coordinate frame set during the
- *  the Gyro Calibration process, or whenever the program issues a resetZAxisIntegrator() call on the Gyro.
- *
- *  The angle of movement/rotation is assumed to be a standardized rotation around the robot Z axis,
- *  which means that a Positive rotation is Counter Clock Wise, looking down on the field.
- *  This is consistent with the FTC field coordinate conventions set out in the document:
- *  ftc_app\doc\tutorial\FTC_FieldCoordinateSystemDefinition.pdf
- *
+ * otherwise you would use: PushbotAutoDriveByTime;
+ * <p>
+ * This code ALSO requires that you have a Modern Robotics I2C gyro with the name "gyro"
+ * otherwise you would use: PushbotAutoDriveByEncoder;
+ * <p>
+ * This code requires that the drive Motors have been configured such that a positive
+ * power command moves them forward, and causes the encoders to count UP.
+ * <p>
+ * This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
+ * <p>
+ * In order to calibrate the Gyro correctly, the robot must remain stationary during calibration.
+ * This is performed when the INIT button is pressed on the Driver Station.
+ * This code assumes that the robot is stationary when the INIT button is pressed.
+ * If this is not the case, then the INIT should be performed again.
+ * <p>
+ * Note: in this example, all angles are referenced to the initial coordinate frame set during the
+ * the Gyro Calibration process, or whenever the program issues a resetZAxisIntegrator() call on the Gyro.
+ * <p>
+ * The angle of movement/rotation is assumed to be a standardized rotation around the robot Z axis,
+ * which means that a Positive rotation is Counter Clock Wise, looking down on the field.
+ * This is consistent with the FTC field coordinate conventions set out in the document:
+ * ftc_app\doc\tutorial\FTC_FieldCoordinateSystemDefinition.pdf
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="StanBop", group="Showcase Op Mode")
+@TeleOp(name = "StanStall", group = "Showcase Op Mode")
 //@Disabled
-public class StanBop extends LinearOpMode {
+public class StanleyTestLiftStallPower extends LinearOpMode {
 
     /* Declare OpMode members. */
     AgitariTeamBot robot = new AgitariTeamBot();   // Use Agitari's team bot
@@ -93,9 +92,9 @@ public class StanBop extends LinearOpMode {
     static final double P_DRIVE_COEFF = 0.15;     // Larger is more responsive, but also less stable
     double turn = 0.0;
     double speed = 0.0;
-    int xs =0;
+    int xs = 0;
     int ys = 0;
-
+    double Power = .5;
 
 
     @Override
@@ -103,77 +102,21 @@ public class StanBop extends LinearOpMode {
 
     public void runOpMode() {
 
-        /*
-         * Initialize the standard drive system variables.
-         * The init() method of the hardware class does most of the work here
-         */
-
         robot.init(hardwareMap);
-
-        int duck = hardwareMap.appContext.getResources().getIdentifier(
-                "duck", "raw", hardwareMap.appContext.getPackageName());
-        int goose   = hardwareMap.appContext.getResources().getIdentifier(
-                "fair",   "raw", hardwareMap.appContext.getPackageName());
-//        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         waitForStart();
+
         while (opModeIsActive()) {
-            turn=gamepad1.right_stick_x;
-            speed=-1*gamepad1.left_stick_y;
-            robot.leftDrive.setPower(speed*3/4+turn/2);
-            robot.rightDrive.setPower(speed*3/4-turn/2);
-            //He is speed
-            if (gamepad1.x) {
-                xs++;
-            }
-            xs=xs%2;
-            if (xs==0){
-                //robot.frontGrabber.setPosition(1);
-                robot.grabber.setPosition(0);
-            } else{
-                //robot.frontGrabber.setPosition(.5);
-                robot.grabber.setPosition(1);
-
-            }
-            sleep (200);
-            if (gamepad1.y) {
-                ys++;
-            }
-            ys=ys%2;
-            if (ys==0){
-                robot.clutch.setPosition(1);
-
-            } else{
-                robot.clutch.setPosition(0);
-
-            }
-
             if (gamepad1.dpad_up) {
-                robot.Arm.setPower(.65);
-            }
-            if (gamepad1.dpad_down) {
-                robot.Arm.setPower(-.7);
-            }
-            if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
-                robot.Arm.setPower(-.1);
-            }
-            if(gamepad1.dpad_down && gamepad1.dpad_right && gamepad1.dpad_left && gamepad1.dpad_up){
-                return;
-            }
-
-
-            // Determine if sound resources are found.
-            // Note: Preloading is NOT required, but it's a good way to verify all your sounds are available before you run.
-            if (gamepad1.b) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, duck);
-            }
-
-
-            if (gamepad1.a) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, duck);
+                Power += .1;
+            } else if (gamepad1.dpad_down) {
+                Power -= .1;
 
             }
-
-
+            robot.Arm.setPower(Power);
+            telemetry.addData("Power is", Power);
+            telemetry.update();
+            sleep(200);
         }
+
     }
 }
