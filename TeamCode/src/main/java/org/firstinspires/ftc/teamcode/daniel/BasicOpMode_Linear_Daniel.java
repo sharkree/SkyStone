@@ -59,6 +59,8 @@ public class BasicOpMode_Linear_Daniel extends LinearOpMode {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
 
+    DanielBot robot   = new DanielBot();   // Use Daniel's bot
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -92,7 +94,7 @@ public class BasicOpMode_Linear_Daniel extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.left_stick_x;
+            double turn  =  gamepad1.left_stick_y;
             leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
             rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
@@ -109,6 +111,8 @@ public class BasicOpMode_Linear_Daniel extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
+
+                }
+            }
         }
-    }
-}
+

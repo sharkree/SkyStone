@@ -27,10 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.agitari;
+package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -51,17 +52,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class AgitariTeamBot
+public class DanielBot
 {
     /* Public OpMode members. */
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
     public Servo    clutch = null;
     public Servo grabber = null;
-    public DcMotor Arm = null;
+    public DcMotor arm = null;
     public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double ARM_UP_POWER    =  0.75 ;
+    public static final double ARM_DOWN_POWER  = -0.75 ;
 
     /** REV expansion hub's built-in Gyro sensor. */
     public BNO055IMU imu;
@@ -79,7 +80,11 @@ public class AgitariTeamBot
         leftDrive  = hwMap.get(DcMotor.class, "left_drive");
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        Arm = hwMap.get(DcMotor.class, "arm");
+        arm = hwMap.get(DcMotor.class, "arm");
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setDirection(DcMotor.Direction.REVERSE);
+
         // Define and Initialize Servos
         grabber = hwMap.get(Servo.class, "grabber");
         clutch = hwMap.get(Servo.class, "clutch");

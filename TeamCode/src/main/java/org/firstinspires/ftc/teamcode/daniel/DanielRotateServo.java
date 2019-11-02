@@ -31,9 +31,9 @@ package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
+import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -59,7 +59,7 @@ public class DanielRotateServo extends LinearOpMode {
     //private DcMotor rightDrive = null;
     //joe momma;
 
-    AgitariTeamBot robot   = new AgitariTeamBot();   // Use Agitari's team bot
+    DanielBot robot   = new DanielBot();   // Use Daniel's bot
 
     @Override
     public void runOpMode() {
@@ -68,10 +68,24 @@ public class DanielRotateServo extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+
+
         waitForStart();
         runtime.reset();
 
         while (opModeIsActive()) {
+
+            double drive = -gamepad1.left_stick_y;
+            double turn = gamepad1.left_stick_x;
+
+            double leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+            double rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+            robot.leftDrive.setPower(leftPower);
+            robot.rightDrive.setPower(rightPower);
+
+            // Grabber
             if (gamepad1.x) {
                 robot.grabber.setPosition(0);
                 telemetry.addData("Button Pressed:", "Joe Momma");
@@ -80,11 +94,40 @@ public class DanielRotateServo extends LinearOpMode {
                 robot.grabber.setPosition(1);
                 telemetry.addData("Button Pressed:", "Ben Dover");
                 telemetry.update();
-            } else {
-                telemetry.addData("Button Pressed:", "Why u ask because there is no button pressed");
-                telemetry.update();
-
             }
+
+
+            // Arm control
+            int position = robot.arm.getCurrentPosition();
+            int quarter = 288 / 4;
+
+            double armPower = 0.0;
+            if (gamepad1.right_stick_y < 0) {
+                if (position < quarter) {
+                    armPower = 0.85;
+                } else {
+                    armPower = -0.35;
+                }
+            } else if (gamepad1.right_stick_y > 0) {
+                if (position > quarter) {
+                    armPower = -0.85;
+                } else {
+                    armPower = 0.35;
+                }
+            }
+            robot.arm.setPower(armPower);
+
+            if (gamepad1.dpad_down)
+                robot.clutch.setPosition(1);
+            else if (gamepad1.dpad_up)
+                robot.clutch.setPosition(0);
+
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Arm", "Position (%d)", robot.arm.getCurrentPosition());
+            telemetry.addData("Arm", "Power (%.2f)", armPower);
+            telemetry.addData("Gamepad", "Stick Y (%.2f)", gamepad1.right_stick_y);
+            telemetry.update();
+
             //sleep(1000);   // optional pause after each move(1000);
         }
     }
