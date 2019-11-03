@@ -97,7 +97,7 @@ public class DanielRotateServo extends LinearOpMode {
             }
 
 
-            // Arm control
+            // arm control
             int position = robot.arm.getCurrentPosition();
             int quarter = 288 / 4;
 
@@ -123,8 +123,8 @@ public class DanielRotateServo extends LinearOpMode {
                 robot.clutch.setPosition(0);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Arm", "Position (%d)", robot.arm.getCurrentPosition());
-            telemetry.addData("Arm", "Power (%.2f)", armPower);
+            telemetry.addData("arm", "Position (%d)", robot.arm.getCurrentPosition());
+            telemetry.addData("arm", "Power (%.2f)", armPower);
             telemetry.addData("Gamepad", "Stick Y (%.2f)", gamepad1.right_stick_y);
             telemetry.update();
 

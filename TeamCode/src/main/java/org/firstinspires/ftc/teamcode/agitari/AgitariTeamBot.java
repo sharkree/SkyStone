@@ -66,7 +66,7 @@ public class AgitariTeamBot
     public DcMotor rightDrive  = null;
     public Servo clutch = null;
     public Servo grabber = null;
-    public DcMotor Arm = null;
+    public DcMotor arm = null;
 
 
     /** REV expansion hub's built-in Gyro sensor. */
@@ -85,17 +85,6 @@ public class AgitariTeamBot
         leftDrive  = hwMap.get(DcMotor.class, "left_drive");
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        Arm = hwMap.get(DcMotor.class, "arm");
-
-        // Define and Initialize grabber servo.
-        grabber = hwMap.get(Servo.class, "grabber");
-        grabber.setPosition(MID_SERVO);
-
-        clutch = hwMap.get(Servo.class, "clutch");
-
-        // Set all motors to zero power
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
 
         // Reset encoder to 0
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -104,6 +93,15 @@ public class AgitariTeamBot
         // Set all motors to run using encoders.
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Arm: core hex motor
+        arm = hwMap.get(DcMotor.class, "arm");
+
+        // Define and Initialize grabber servo.
+        grabber = hwMap.get(Servo.class, "grabber");
+        grabber.setPosition(MID_SERVO);
+
+        clutch = hwMap.get(Servo.class, "clutch");
 
         // IMU gyro
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();

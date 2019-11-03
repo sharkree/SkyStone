@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode.stanley;
 
-import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -116,7 +115,7 @@ public class StanleyTestLiftStallPower extends LinearOpMode {
             } else if (gamepad1.dpad_left){
                 Power -= .025;
         }
-            robot.Arm.setPower(Power);
+            robot.arm.setPower(Power);
             telemetry.addData("Power is", Power);
             telemetry.update();
             sleep(200);
