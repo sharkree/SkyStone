@@ -123,7 +123,7 @@ public class StanleyControlled extends LinearOpMode {
             if (pos != 0) {
                 robot.Arm.setPower(pos);
             } else {
-                robot.Arm.setPower(-.75);
+                robot.Arm.setPower(.5);
             }
 
             if (gamepad1.dpad_down && gamepad1.dpad_right && gamepad1.dpad_left && gamepad1.dpad_up) {
