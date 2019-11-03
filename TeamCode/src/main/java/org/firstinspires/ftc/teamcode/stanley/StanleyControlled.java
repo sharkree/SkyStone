@@ -61,9 +61,17 @@ public class StanleyControlled extends LinearOpMode {
     static final double P_DRIVE_COEFF = 0.15;     // Larger is more responsive, but also less stable
     double turn = 0.0;
     double speed = 0.0;
-    int xs = 0;
+    int xs = -1;
     int ys = 0;
     double pos = 0;
+    double lastpos = 0;
+
+
+    public boolean check(double last) {
+        boolean x= (last==robot.Grabber.getPosition() );
+        return x;
+    }
+
 
 
     @Override
@@ -92,9 +100,12 @@ public class StanleyControlled extends LinearOpMode {
             }
             xs = xs % 2;
             if (xs == 0) {
-                robot.Grabber.setPosition(0);
-            } else {
                 robot.Grabber.setPosition(1);
+            } else if (xs== 1){
+                robot.Grabber.setPosition(0);
+            }
+            if (check(lastpos)){
+                robot.Grabber.setPosition(robot.Grabber.getPosition());
             }
             sleep(200);
             if (gamepad1.y) {
@@ -126,6 +137,7 @@ public class StanleyControlled extends LinearOpMode {
                 SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goose);
 
             }
+            lastpos=robot.Grabber.getPosition();
             //end of optional
         }
     }
