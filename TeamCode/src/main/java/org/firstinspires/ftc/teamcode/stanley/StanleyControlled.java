@@ -118,12 +118,12 @@ public class StanleyControlled extends LinearOpMode {
             } else {
                 robot.clutch.setPosition(0);
             }
-            pos = gamepad1.right_stick_y / 2;
+            pos = gamepad1.right_stick_y*3/4;
 
             if (pos != 0) {
                 robot.Arm.setPower(pos);
             } else {
-                robot.Arm.setPower(-.15);
+                robot.Arm.setPower(-.75);
             }
 
             if (gamepad1.dpad_down && gamepad1.dpad_right && gamepad1.dpad_left && gamepad1.dpad_up) {

@@ -79,9 +79,9 @@ public class AgitariTeamBot
         leftDrive  = hwMap.get(DcMotor.class, "left_drive");
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        Arm = hwMap.get(DcMotor.class, "Arm");
+        Arm = hwMap.get(DcMotor.class, "arm");
         // Define and Initialize Servos
-        Grabber = hwMap.get(Servo.class, "back_grabber");
+        Grabber = hwMap.get(Servo.class, "grabber");
         clutch = hwMap.get(Servo.class, "clutch");
 
         // Set all motors to zero power

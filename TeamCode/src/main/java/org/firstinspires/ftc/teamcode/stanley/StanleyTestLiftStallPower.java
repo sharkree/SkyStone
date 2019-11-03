@@ -111,7 +111,11 @@ public class StanleyTestLiftStallPower extends LinearOpMode {
             } else if (gamepad1.dpad_down) {
                 Power -= .1;
 
-            }
+            } else if (gamepad1.dpad_right){
+                Power += .025;
+            } else if (gamepad1.dpad_left){
+                Power -= .025;
+        }
             robot.Arm.setPower(Power);
             telemetry.addData("Power is", Power);
             telemetry.update();
