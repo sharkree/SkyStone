@@ -81,16 +81,8 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
 @Autonomous(name="Hongbing: Auto Drive By Gyro", group="Showcase Op Mode")
 //@Disabled
 public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
-
     /* Declare OpMode members. */
     AgitariTeamBot robot   = new AgitariTeamBot();   // Use Agitari's team bot
-//    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
-
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
@@ -104,33 +96,24 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
         /*
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
          */
         robot.init(hardwareMap);
-//        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
-
-        // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
-        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Send telemetry message to alert driver that we are calibrating;
         telemetry.addData(">", "Calibrating Gyro");    //
         telemetry.update();
 
-        //gyro.calibrate();
-
         // make sure the gyro is calibrated before continuing
-//        while (!isStopRequested() && gyro.isCalibrating())  {
         while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
             sleep(50);
             idle();
         }
 
         telemetry.addData(">", "Robot Ready.");    //
-        //telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
+        telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
         telemetry.update();
 
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -138,13 +121,10 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-//            telemetry.addData(">", "Robot Heading = %d", gyro.getIntegratedZValue());
             Orientation angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
             telemetry.update();
         }
-
-//        gyro.resetZAxisIntegrator();
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
@@ -176,9 +156,7 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
     *                   If a relative angle is required, add/subtract from current heading.
     */
-    public void gyroDrive ( double speed,
-                            double distance,
-                            double angle) {
+    public void gyroDrive (double speed, double distance, double angle) {
 
         int     newLeftTarget;
         int     newRightTarget;
@@ -193,7 +171,7 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            moveCounts = (int)(distance * COUNTS_PER_INCH);
+            moveCounts = (int)(distance * AgitariTeamBot.HD_HEX_COUNTS_PER_INCH);
             newLeftTarget = robot.leftDrive.getCurrentPosition() + moveCounts;
             newRightTarget = robot.rightDrive.getCurrentPosition() + moveCounts;
 
@@ -265,7 +243,7 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroTurn (  double speed, double angle) {
+    public void gyroTurn (double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
         while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
@@ -352,11 +330,9 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
      *          +ve error means the robot should turn LEFT (CCW) to reduce error.
      */
     public double getError(double targetAngle) {
-
         double robotError;
 
         // calculate error in -179 to +180 range  (
-//        robotError = targetAngle - gyro.getIntegratedZValue();
         Orientation angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         robotError = targetAngle - angles.firstAngle;
         while (robotError > 180)  robotError -= 360;
@@ -373,5 +349,4 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
     public double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1, 1);
     }
-
 }

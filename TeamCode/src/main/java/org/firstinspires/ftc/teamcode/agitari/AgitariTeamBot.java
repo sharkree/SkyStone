@@ -38,37 +38,43 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * This class defines the team Agitari's robot.
  *
- * This class can be used to define all the specific hardware for a single robot.
- * In this case that robot is a Pushbot.
- * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
- *
  * This hardware class assumes the following device names have been configured on the robot:
- * Note:  All names are lower case and some have single spaces between words.
  *
- * Motor channel:  Left  drive motor:        "left_drive"
- * Motor channel:  Right drive motor:        "right_drive"
- * Motor channel:  Manipulator drive motor:  "left_arm"
- * Servo channel:  Servo to open left claw:  "left_hand"
- * Servo channel:  Servo to open right claw: "right_hand"
+ * Note:  All names are lower case and some have single spaces between words.
  */
 public class AgitariTeamBot
 {
+    public static final double MID_SERVO = 0.5 ;
+    public static final double HD_HEX_COUNTS_PER_ROTATION = 1120; //  Rev HD Hex motor
+
+    public static final double DRIVE_GEAR_REDUCTION  = 1.0;     // This is < 1.0 if geared UP
+    public static final double WHEEL_DIAMETER_INCHES = 3.543 ;     // For figuring circumference
+    public static final double HD_HEX_COUNTS_PER_INCH =
+            (HD_HEX_COUNTS_PER_ROTATION * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
+
+    public static final double CORE_HEX_COUNTS_PER_ROTATION = 288; //  Rev Core Hex motor
+
+    public static final String VUFORIA_LICENSE_KEY = "AXIXrHj/////AAABmeEMqruXWUCBuoatjfPPvO" +
+            "Qv4U/tRYoBqMMvXyAoHLHWYYYQSPx3ZOZ7GcdOCuTHK5HYM6oJ4gX1ZTxVec9RI4xa5ZOSPgTQvSo" +
+            "Er2GJeRPohMXHEy6DRer3JDhvcPN32CzBiKJf2i60dFivASvEyU2EGRHGKq41VjsOk09o2q0Wr9ly" +
+            "oEzdhNjMgAf8OfPn8wl93IM0Bo2+hH0ZtUSmZUoyBu53qlB0wgZ+FJYHxOOXdhim0ka+qa0CkFOkn" +
+            "lN35bbLE6yNSyBOV86FaSZ0UuBNXfCX4O0IWh7qSBXcU/cQVMw3faOu8Hx3LiReY1lcQ1I4q0QP05" +
+            "IUr5l71eQEMFLO71ByBWG95IkHucF5iyrA";
+
     /* Public OpMode members. */
-    public DcMotor  leftDrive   = null;
-    public DcMotor  rightDrive  = null;
-    public Servo    clutch = null;
-    public Servo Grabber = null;
+    public DcMotor leftDrive   = null;
+    public DcMotor rightDrive  = null;
+    public Servo clutch = null;
+    public Servo grabber = null;
     public DcMotor Arm = null;
-    public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+
 
     /** REV expansion hub's built-in Gyro sensor. */
     public BNO055IMU imu;
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
-    private ElapsedTime period  = new ElapsedTime();
+    private HardwareMap hwMap =  null;
+    private ElapsedTime period = new ElapsedTime();
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
@@ -80,27 +86,32 @@ public class AgitariTeamBot
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         Arm = hwMap.get(DcMotor.class, "arm");
-        // Define and Initialize Servos
-        Grabber = hwMap.get(Servo.class, "grabber");
+
+        // Define and Initialize grabber servo.
+        grabber = hwMap.get(Servo.class, "grabber");
+        grabber.setPosition(MID_SERVO);
+
         clutch = hwMap.get(Servo.class, "clutch");
 
         // Set all motors to zero power
         leftDrive.setPower(0);
         rightDrive.setPower(0);
 
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // Reset encoder to 0
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Set all motors to run using encoders.
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // IMU gyro
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
         imu = hwMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-
-        Grabber.setPosition(MID_SERVO);
     }
  }
-
