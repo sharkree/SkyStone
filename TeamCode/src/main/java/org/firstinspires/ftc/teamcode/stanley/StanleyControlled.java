@@ -68,7 +68,7 @@ public class StanleyControlled extends LinearOpMode {
 
 
     public boolean check(double last) {
-        boolean x= (last==robot.Grabber.getPosition() );
+        boolean x= (last==robot.grabber.getPosition() );
         return x;
     }
 
@@ -100,12 +100,12 @@ public class StanleyControlled extends LinearOpMode {
             }
             xs = xs % 2;
             if (xs == 0) {
-                robot.Grabber.setPosition(1);
+                robot.grabber.setPosition(1);
             } else if (xs== 1){
-                robot.Grabber.setPosition(0);
+                robot.grabber.setPosition(0);
             }
             if (check(lastpos)){
-                robot.Grabber.setPosition(robot.Grabber.getPosition());
+                robot.grabber.setPosition(robot.grabber.getPosition());
             }
             sleep(200);
             if (gamepad1.y) {
@@ -137,7 +137,7 @@ public class StanleyControlled extends LinearOpMode {
                 SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goose);
 
             }
-            lastpos=robot.Grabber.getPosition();
+            lastpos=robot.grabber.getPosition();
             //end of optional
         }
     }
