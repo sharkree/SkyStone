@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -99,20 +101,20 @@ public class DanielRotateServo extends LinearOpMode {
 
             // arm control
             int position = robot.arm.getCurrentPosition();
-            int quarter = 288 / 4;
+            int quarter = (int) (288 * robot.armGearRatio / 4);
 
             double armPower = 0.0;
             if (gamepad1.right_stick_y < 0) {
                 if (position < quarter) {
-                    armPower = 0.85;
+                    armPower = 0.65;
                 } else {
-                    armPower = -0.35;
+                    armPower = -0.1;
                 }
             } else if (gamepad1.right_stick_y > 0) {
                 if (position > quarter) {
-                    armPower = -0.85;
+                    armPower = -0.65;
                 } else {
-                    armPower = 0.35;
+                    armPower = 0.1;
                 }
             }
             robot.arm.setPower(armPower);

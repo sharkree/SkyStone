@@ -64,6 +64,8 @@ public class DanielBot
     public static final double ARM_UP_POWER    =  0.75 ;
     public static final double ARM_DOWN_POWER  = -0.75 ;
 
+    public final double armGearRatio = 1.5;
+
     /** REV expansion hub's built-in Gyro sensor. */
     public BNO055IMU imu;
 
