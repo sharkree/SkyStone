@@ -29,11 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.daniel;
 
-import android.media.audiofx.AutomaticGainControl;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -53,9 +50,9 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="DanielRotateServo", group="Linear Opmode")
+@TeleOp(name="Daniel: Manual Drive Opmode", group="Linear Opmode")
 //@Disabled
-public class DanielRotateServo extends LinearOpMode {
+public class DanielManualOpMode extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -93,23 +90,12 @@ public class DanielRotateServo extends LinearOpMode {
             }
 
 
-            // arm control
-            int position = robot.arm.getCurrentPosition();
-            int quarter = (int) (robot.CORE_HEX_COUNTS_PER_ROTATION * robot.ARM_GEAR_RATIO / 4);
-
+            // Arm control
             double armPower = 0.0;
             if (gamepad1.right_stick_y < 0) {
-                if (position < quarter) {
-                    armPower = 0.65;
-                } else {
-                    armPower = -0.1;
-                }
-            } else if (gamepad1.right_stick_y > 0) {
-                if (position > quarter) {
-                    armPower = -0.65;
-                } else {
-                    armPower = 0.1;
-                }
+                armPower = AgitariTeamBot.ARM_UP_POWER;
+           } else if (gamepad1.right_stick_y > 0) {
+                armPower = AgitariTeamBot.ARM_DOWN_POWER;
             }
             robot.arm.setPower(armPower);
 
@@ -119,8 +105,8 @@ public class DanielRotateServo extends LinearOpMode {
                 robot.clutch.setPosition(0);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("arm", "Position (%d)", robot.arm.getCurrentPosition());
-            telemetry.addData("arm", "Power (%.2f)", armPower);
+            telemetry.addData("Arm", "Position (%d)", robot.arm.getCurrentPosition());
+            telemetry.addData("Arm", "Power (%.2f)", armPower);
             telemetry.addData("Gamepad", "Stick Y (%.2f)", gamepad1.right_stick_y);
             telemetry.update();
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
@@ -14,6 +15,7 @@ import java.util.Date;
  * Created by bk on 9/21/2015.
  */
 @Autonomous(name="Daniel: Test Motor Encode", group="Pushbot")
+@Disabled
 public class MotorEncoderTest extends OpMode {
     private String            startDate;
     private ElapsedTime runTime = new ElapsedTime();

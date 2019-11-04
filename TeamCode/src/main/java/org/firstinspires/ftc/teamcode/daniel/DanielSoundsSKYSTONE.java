@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name="Daniel SKYSTONE Sounds", group="Concept")
-//@Disabled
+@Disabled
 public class DanielSoundsSKYSTONE extends LinearOpMode {
     // List of available sound resources
     String  sounds[] =  {"ss_alarm", "ss_bb8_down", "ss_bb8_up", "ss_darth_vader", "ss_fly_by",

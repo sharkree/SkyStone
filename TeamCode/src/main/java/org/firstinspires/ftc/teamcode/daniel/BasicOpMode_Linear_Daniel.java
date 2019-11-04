@@ -36,6 +36,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -51,7 +53,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Daniel Basic: Linear OpMode", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class BasicOpMode_Linear_Daniel extends LinearOpMode {
 
     // Declare OpMode members.
@@ -59,7 +61,7 @@ public class BasicOpMode_Linear_Daniel extends LinearOpMode {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
 
-    DanielBot robot   = new DanielBot();   // Use Daniel's bot
+    AgitariTeamBot robot   = new AgitariTeamBot();   // Use Daniel's bot
 
     @Override
     public void runOpMode() {
