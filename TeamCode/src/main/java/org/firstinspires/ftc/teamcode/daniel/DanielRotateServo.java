@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.daniel;
 
+import android.media.audiofx.AutomaticGainControl;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -57,11 +59,7 @@ public class DanielRotateServo extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    //private DcMotor leftDrive = null;
-    //private DcMotor rightDrive = null;
-    //joe momma;
-
-    DanielBot robot   = new DanielBot();   // Use Daniel's bot
+    AgitariTeamBot robot   = new AgitariTeamBot();   // Use team's bot
 
     @Override
     public void runOpMode() {
@@ -69,10 +67,6 @@ public class DanielRotateServo extends LinearOpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-
 
         waitForStart();
         runtime.reset();
@@ -101,7 +95,7 @@ public class DanielRotateServo extends LinearOpMode {
 
             // arm control
             int position = robot.arm.getCurrentPosition();
-            int quarter = (int) (288 * robot.armGearRatio / 4);
+            int quarter = (int) (robot.CORE_HEX_COUNTS_PER_ROTATION * robot.ARM_GEAR_RATIO / 4);
 
             double armPower = 0.0;
             if (gamepad1.right_stick_y < 0) {
