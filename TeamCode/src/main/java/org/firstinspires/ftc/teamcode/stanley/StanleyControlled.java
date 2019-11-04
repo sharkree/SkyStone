@@ -65,6 +65,8 @@ public class StanleyControlled extends LinearOpMode {
     int ys = 0;
     double pos = 0;
     double lastpos = 0;
+    double armNut = .15;
+    double armMul = .9;
 
 
     public boolean check(double last) {
@@ -118,12 +120,12 @@ public class StanleyControlled extends LinearOpMode {
             } else {
                 robot.clutch.setPosition(0);
             }
-            pos = gamepad1.right_stick_y*3/4;
+            pos = gamepad1.right_stick_y*armMul;
 
             if (pos != 0) {
                 robot.arm.setPower(pos);
             } else {
-                robot.arm.setPower(.5);
+                robot.arm.setPower(armNut);
             }
 
             if (gamepad1.dpad_down && gamepad1.dpad_right && gamepad1.dpad_left && gamepad1.dpad_up) {

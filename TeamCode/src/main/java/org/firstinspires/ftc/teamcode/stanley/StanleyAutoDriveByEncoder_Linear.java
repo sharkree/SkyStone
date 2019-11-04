@@ -127,6 +127,15 @@ public class StanleyAutoDriveByEncoder_Linear extends LinearOpMode {
         telemetry.update();
     }
 
+    static double clip(double input, double minValue, double maxValue) {
+        if (input < minValue) {
+            input = minValue;
+        }
+        if (input > maxValue) {
+            input = maxValue;
+        }
+        return input;
+    }
     /*
      *  Method to perfmorm a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
