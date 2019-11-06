@@ -73,8 +73,8 @@ public class DanielManualOpMode extends LinearOpMode {
             double drive = -gamepad1.left_stick_y;
             double turn = gamepad1.left_stick_x;
 
-            double leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            double rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+            double leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
+            double rightPower = Range.clip(drive - turn, -1.0, 1.0) ;
             robot.leftDrive.setPower(leftPower);
             robot.rightDrive.setPower(rightPower);
 
@@ -89,13 +89,11 @@ public class DanielManualOpMode extends LinearOpMode {
                 telemetry.update();
             }
 
-
             // Arm control
             double armPower = 0.0;
-            if (gamepad1.right_stick_y < 0) {
-                armPower = AgitariTeamBot.ARM_UP_POWER;
-           } else if (gamepad1.right_stick_y > 0) {
-                armPower = AgitariTeamBot.ARM_DOWN_POWER;
+            if (gamepad1.right_stick_y != 0) {
+                armPower = AgitariTeamBot.ARM_POWER * gamepad1.right_stick_y;
+                armPower = Range.clip(armPower, -1.0, 1.0) ;
             }
             robot.arm.setPower(armPower);
 
@@ -105,7 +103,6 @@ public class DanielManualOpMode extends LinearOpMode {
                 robot.clutch.setPosition(0);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Arm", "Position (%d)", robot.arm.getCurrentPosition());
             telemetry.addData("Arm", "Power (%.2f)", armPower);
             telemetry.addData("Gamepad", "Stick Y (%.2f)", gamepad1.right_stick_y);
             telemetry.update();

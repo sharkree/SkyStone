@@ -61,9 +61,7 @@ public class AgitariTeamBot
             "lN35bbLE6yNSyBOV86FaSZ0UuBNXfCX4O0IWh7qSBXcU/cQVMw3faOu8Hx3LiReY1lcQ1I4q0QP05" +
             "IUr5l71eQEMFLO71ByBWG95IkHucF5iyrA";
 
-    public final double ARM_GEAR_RATIO = 1.5;
-    public static final double ARM_UP_POWER = 0.75 ;
-    public static final double ARM_DOWN_POWER = -0.75 ;
+    public static final double ARM_POWER = -0.75 ;
 
     /* Public OpMode members. */
     public DcMotor leftDrive   = null;

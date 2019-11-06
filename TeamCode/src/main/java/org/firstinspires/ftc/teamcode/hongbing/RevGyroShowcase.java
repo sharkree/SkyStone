@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * This op mode is an example showcasing REV expansion hub's build-in gyro sensor
  */
 @TeleOp(name="Hongbing: Gyro", group="Showcase Op Mode")
-@Disabled
+//@Disabled
 public class RevGyroShowcase extends LinearOpMode {
     private BNO055IMU imu;
 
