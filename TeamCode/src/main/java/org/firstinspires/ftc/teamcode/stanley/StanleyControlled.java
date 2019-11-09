@@ -106,9 +106,6 @@ public class StanleyControlled extends LinearOpMode {
             } else if (xs== 1){
                 robot.grabber.setPosition(0);
             }
-            if (check(lastpos)){
-                robot.grabber.setPosition(robot.grabber.getPosition());
-            }
             sleep(200);
             if (gamepad1.y) {
                 ys++;
@@ -124,7 +121,7 @@ public class StanleyControlled extends LinearOpMode {
 
             if (pos != 0) {
                 robot.arm.setPower(pos);
-            } else {
+            } else{
                 robot.arm.setPower(armNut);
             }
 
@@ -139,7 +136,6 @@ public class StanleyControlled extends LinearOpMode {
                 SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goose);
 
             }
-            lastpos=robot.grabber.getPosition();
             //end of optional
         }
     }
