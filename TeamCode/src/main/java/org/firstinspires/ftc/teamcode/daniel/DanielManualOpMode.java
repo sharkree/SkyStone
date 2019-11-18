@@ -86,12 +86,14 @@ public class DanielManualOpMode extends LinearOpMode {
             }
 
             // Arm control
-            double armPower = 0.0;
-            if (gamepad1.right_stick_y != 0) {
+            double armPower = 0;
+            if (gamepad1.right_stick_y != 0.0) {
                 armPower = AgitariTeamBot.ARM_POWER * gamepad1.right_stick_y;
                 armPower = Range.clip(armPower, -1.0, 1.0) ;
-            }
-            robot.arm.setPower(armPower);
+                robot.arm.setPower(armPower);
+                sleep(50);
+            } else if (gamepad1.a)
+                robot.arm.setPower (0);
 
             if (gamepad1.dpad_down)
                 robot.clutch.setPosition(1);
