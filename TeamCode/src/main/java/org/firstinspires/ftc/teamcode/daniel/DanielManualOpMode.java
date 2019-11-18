@@ -81,12 +81,8 @@ public class DanielManualOpMode extends LinearOpMode {
             // Grabber
             if (gamepad1.x) {
                 robot.grabber.setPosition(0);
-                telemetry.addData("Button Pressed:", "Joe Momma");
-                telemetry.update();
             } else if (gamepad1.y){
                 robot.grabber.setPosition(1);
-                telemetry.addData("Button Pressed:", "Ben Dover");
-                telemetry.update();
             }
 
             // Arm control
