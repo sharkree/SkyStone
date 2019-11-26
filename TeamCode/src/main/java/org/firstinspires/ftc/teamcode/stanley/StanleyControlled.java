@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
+import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
 
 
 @TeleOp(name = "StanControllerBop", group = "Showcase Op Mode")
@@ -42,7 +42,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
 public class StanleyControlled extends LinearOpMode {
 
     /* Declare OpMode members. */
-    AgitariTeamBot robot = new AgitariTeamBot();   // Use Agitari's team bot
+    AgitariTeamBot2 robot = new AgitariTeamBot2();   // Use Agitari's team bot
 //    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
 
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
@@ -65,8 +65,8 @@ public class StanleyControlled extends LinearOpMode {
     int ys = 0;
     double pos = 0;
     double lastpos = 0;
-    double armNut = .15;
-    double armMul = .9;
+    double armNut = -.15;
+    double armMul = .5;
 
 
     public boolean check(double last) {
@@ -93,7 +93,7 @@ public class StanleyControlled extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             turn = gamepad1.left_stick_x;
-            speed = -1 * gamepad1.left_stick_y;
+            speed = -.7 * gamepad1.left_stick_y;
             robot.leftDrive.setPower(speed * 3 / 4 + turn / 2);
             robot.rightDrive.setPower(speed * 3 / 4 - turn / 2);
             //He is speed

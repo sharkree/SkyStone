@@ -118,7 +118,12 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-            Orientation angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            telemetry.addData(">", "get angle");
+            telemetry.update();
+            Orientation angles = robot.imu.getAngularOrientation(
+                    AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            telemetry.addData(">", "ge tangle");
+            telemetry.update();
             telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
             telemetry.update();
         }
