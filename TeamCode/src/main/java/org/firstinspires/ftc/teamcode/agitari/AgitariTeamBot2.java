@@ -83,8 +83,9 @@ public class AgitariTeamBot2
         intakeLeft  = hwMap.get(DcMotor.class, "intake_left");
         intakeRight = hwMap.get(DcMotor.class, "intake_right");
 
-        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        //intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        //intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // Lifter
         linearMotion = hwMap.get(DcMotor.class, "linear_motion");
 
@@ -149,6 +150,15 @@ public class AgitariTeamBot2
     }
 
     public void startIntake() {
+        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeLeft.setPower(0.5);
+        intakeRight.setPower(0.5);
+    }
+
+    public void revIntake() {
+        intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeLeft.setPower(0.5);
         intakeRight.setPower(0.5);
     }
