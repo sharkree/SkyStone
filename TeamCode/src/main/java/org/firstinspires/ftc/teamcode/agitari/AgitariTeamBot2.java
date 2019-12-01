@@ -23,7 +23,8 @@ import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
  */
 public class AgitariTeamBot2
 {
-    public static final double MID_SERVO = 0.5 ;
+    public static final double MID_SERVO = 0.5;
+    public static final double INIT_SERVO = 1;
     public static final double HD_HEX_COUNTS_PER_ROTATION = 1120; //  Rev HD Hex motor
 
     public static final double DRIVE_GEAR_REDUCTION  = 1.0;     // This is < 1.0 if geared UP
@@ -91,10 +92,10 @@ public class AgitariTeamBot2
 
         // Define and Initialize grabber servo.
         grabber = hwMap.get(Servo.class, "grabber");
-        grabber.setPosition(MID_SERVO);
+        grabber.setPosition(INIT_SERVO);
 
         turnTable = hwMap.get(Servo.class, "turn_table");
-        turnTable.setPosition(MID_SERVO);
+        turnTable.setPosition(INIT_SERVO);
 
         clutchLeft = hwMap.get(Servo.class, "clutch_left");
         clutchRight = hwMap.get(Servo.class, "clutch_right");
@@ -113,10 +114,10 @@ public class AgitariTeamBot2
         double lx = gamepad.left_stick_x;
         double ly = gamepad.left_stick_y;
         double rx = gamepad.right_stick_x;
-        double wheelFrontRightPower = 0.5 * (lx - rx - ly);
-        double wheelBackRightPower = 0.5 * (-lx - rx - ly);
-        double wheelFrontLeftPower = 0.5 * (lx - rx + ly);
-        double wheelBackLeftPower = 0.5 * (-lx - rx + ly);
+        double wheelFrontRightPower = 0.5 * (-lx - rx - ly);
+        double wheelBackRightPower = 0.5 * (lx - rx - ly);
+        double wheelFrontLeftPower = 0.5 * (-lx - rx + ly);
+        double wheelBackLeftPower = 0.5 * (lx - rx + ly);
 
         double max = Math.max(Math.abs(wheelFrontRightPower), Math.max(Math.abs(wheelBackRightPower),
                 Math.max(Math.abs(wheelFrontLeftPower), Math.abs(wheelBackLeftPower))));
@@ -169,11 +170,11 @@ public class AgitariTeamBot2
     }
 
     public void liftUp() {
-        linearMotion.setPower(0.32);
+        linearMotion.setPower(0.6);
     }
 
     public void liftDown() {
-        linearMotion.setPower(-0.15);
+        linearMotion.setPower(-0.3);
     }
 
     public void stopLift() {
