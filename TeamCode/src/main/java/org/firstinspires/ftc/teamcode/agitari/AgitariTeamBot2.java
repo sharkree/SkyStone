@@ -2,9 +2,16 @@ package org.firstinspires.ftc.teamcode.agitari;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
 
 
 /**
@@ -36,19 +43,21 @@ public class AgitariTeamBot2
     public static final double ARM_POWER = -0.75 ;
 
     /* Public OpMode members. */
-    public DcMotor wheelFrontLeft = null;//wheels
+    public DcMotor wheelFrontLeft = null;
     public DcMotor wheelFrontRight = null;
 
     public DcMotor wheelBackLeft = null;
     public DcMotor wheelBackRight = null;
 
-    public DcMotor lifter = null;//linear slide
-    public DcMotor intakeRight = null;//intake wheels
     public DcMotor intakeLeft = null;
-    public Servo clutch = null;//front clutchers
-    public Servo grabber = null;
-    public DcMotor arm = null;
+    public DcMotor intakeRight = null;
 
+    public DcMotor linearMotion = null;
+
+    public Servo clutchLeft = null;
+    public Servo clutchRight = null;
+    public Servo grabber = null;
+    public Servo turnTable = null;
 
     /** REV expansion hub's built-in Gyro sensor. */
     public BNO055IMU imu;
@@ -57,29 +66,37 @@ public class AgitariTeamBot2
     private HardwareMap hwMap =  null;
     private ElapsedTime period = new ElapsedTime();
 
+    private double turbo;
+
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        wheelFrontLeft  = hwMap.get(DcMotor.class, "wheelFrontLeft");
-        wheelFrontRight = hwMap.get(DcMotor.class, "wheelFrontRight");
+        wheelFrontLeft  = hwMap.get(DcMotor.class, "wheel_front_left");
+        wheelFrontRight = hwMap.get(DcMotor.class, "wheel_front_right");
 
-        wheelBackLeft  = hwMap.get(DcMotor.class, "wheelBackLeft");
-        wheelBackRight = hwMap.get(DcMotor.class, "wheelBackRight");
+        wheelBackLeft  = hwMap.get(DcMotor.class, "wheel_back_left");
+        wheelBackRight = hwMap.get(DcMotor.class, "wheel_back_right");
 
+        intakeLeft  = hwMap.get(DcMotor.class, "intake_left");
+        intakeRight = hwMap.get(DcMotor.class, "intake_right");
+
+        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
         // Lifter
-        lifter = hwMap.get(DcMotor.class, "lifter");
-
-        // Arm: core hex motor
-        arm = hwMap.get(DcMotor.class, "arm");
+        linearMotion = hwMap.get(DcMotor.class, "linear_motion");
 
         // Define and Initialize grabber servo.
         grabber = hwMap.get(Servo.class, "grabber");
         grabber.setPosition(MID_SERVO);
 
-        clutch = hwMap.get(Servo.class, "clutch");
+        turnTable = hwMap.get(Servo.class, "turn_table");
+        turnTable.setPosition(MID_SERVO);
+
+        clutchLeft = hwMap.get(Servo.class, "clutch_left");
+        clutchRight = hwMap.get(Servo.class, "clutch_right");
 
         // IMU gyro
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -89,5 +106,83 @@ public class AgitariTeamBot2
 
         imu = hwMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+    }
+
+    public void setPower(Gamepad gamepad, Telemetry telemetry){
+        double y1 = gamepad.left_stick_x;
+        double x1 = gamepad.left_stick_y;
+        double x2 = gamepad.right_trigger;
+        double wheelFrontRightPower = y1 + x2 - x1;
+        double wheelBackRightPower = -y1 - x2 - x1;
+        double wheelFrontLeftPower = y1 - x2 + x1;
+        double wheelBackLeftPower = -y1 + x2 + x1;
+
+        double max = Math.max(Math.abs(wheelFrontRightPower), Math.max(Math.abs(wheelBackRightPower),
+                Math.max(Math.abs(wheelFrontLeftPower), Math.abs(wheelBackLeftPower))));
+
+        if (max > 1.0) {
+            wheelFrontRightPower /= max;
+            wheelBackRightPower /= max;
+            wheelFrontLeftPower /= max;
+            wheelBackLeftPower /= max;
+        }
+
+        wheelFrontRight.setPower(wheelFrontRightPower);
+        wheelBackRight.setPower(wheelBackRightPower);
+        wheelFrontLeft.setPower(wheelFrontLeftPower);
+        wheelBackLeft.setPower(wheelBackLeftPower);
+
+        telemetry.addData("Power wheelFrontRightPower", "Power (%.2f)", wheelFrontRightPower);
+        telemetry.addData("Power wheelFrontLeftPower", "Power (%.2f)", wheelFrontLeftPower);
+        telemetry.addData("Power wheelBackRightPower", "Power (%.2f)", wheelBackRightPower);
+        telemetry.addData("Power wheelBackLeftPower", "Power (%.2f)", wheelBackLeftPower);
+    }
+
+    public void openClutch() {
+        clutchLeft.setPosition(1);
+        clutchRight.setPosition(0);
+    }
+
+    public void closeClutch() {
+        clutchLeft.setPosition(0);
+        clutchRight.setPosition(1);
+    }
+
+    public void startIntake() {
+        intakeLeft.setPower(0.5);
+        intakeRight.setPower(0.5);
+    }
+
+    public void stopIntake() {
+        intakeLeft.setPower(0);
+        intakeRight.setPower(0);
+    }
+
+    public void liftUp() {
+        linearMotion.setPower(0.32);
+    }
+
+    public void liftDown() {
+        linearMotion.setPower(-0.15);
+    }
+
+    public void stopLift() {
+        linearMotion.setPower(0);
+    }
+
+    public void openGrabber() {
+        grabber.setPosition(1);
+    }
+
+    public void closeGrabber() {
+        grabber.setPosition(0);
+    }
+
+    public void rotateIn() {
+        turnTable.setPosition(1);
+    }
+
+    public void rotateOut() {
+        turnTable.setPosition(0);
     }
 }
