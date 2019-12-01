@@ -65,9 +65,7 @@ public class StanleyControlled extends LinearOpMode {
     int ys = 0;
     int bs = 0;
     int as = 0;
-    double armNut = -.15;
-    double armMul = .5;
-    double LinearSlidePower= 0.05;
+    double LinearSlidePower= 0.1;
     double grabberFront = 1;
     double grabberBack=0;
     double strafeMultiplier= 2/5;
@@ -109,9 +107,13 @@ public class StanleyControlled extends LinearOpMode {
 
             // start of wheel stuff
             turn = gamepad1.left_stick_x*turnMultiplier;
-            speed = -.7 * gamepad1.left_stick_y;
+            speed = 5 * gamepad1.left_stick_y;
             strafe= gamepad1.right_stick_x*strafeMultiplier;
 
+            rightFrontPower= speed+turn+strafe;
+            rightBackPower=speed+turn-strafe;
+            LeftFrontPower=speed-turn-strafe;
+            leftBackPower=speed-turn+strafe;
 
             robot.wheelBackLeft.setPower(leftBackPower);
             robot.wheelBackRight.setPower(rightBackPower);
@@ -133,10 +135,12 @@ public class StanleyControlled extends LinearOpMode {
                     ys++;
                     ys = ys % 2;
                     if (ys == 0) {
-                        robot.clutch.setPosition(1);
+                        robot.clutchRight.setPosition(1);
+                        robot.clutchLeft.setPosition(1);
 
                     } else {
-                        robot.clutch.setPosition(0);
+                        robot.clutchRight.setPosition(0);
+                        robot.clutchLeft.setPosition(0);
                     }
                 }//y is for the front servos
                 if (gamepad1.b) {
@@ -163,11 +167,11 @@ public class StanleyControlled extends LinearOpMode {
             }
 
             if(gamepad1.dpad_up){
-                robot.lifter.setPower(LinearSlidePower);
+                robot.linearMotion.setPower(LinearSlidePower);
             } else if(gamepad1.dpad_up){
-                robot.lifter.setPower(-1*LinearSlidePower);
+                robot.linearMotion.setPower(-1*LinearSlidePower);
             } else{
-                robot.lifter.setPower(0);
+                robot.linearMotion.setPower(0);
             }
 
 
