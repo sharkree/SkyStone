@@ -36,15 +36,16 @@ public class AgitariTeamBot2
     public static final double ARM_POWER = -0.75 ;
 
     /* Public OpMode members. */
-    public DcMotor wheelFrontLeft = null;
+    public DcMotor wheelFrontLeft = null;//wheels
     public DcMotor wheelFrontRight = null;
 
     public DcMotor wheelBackLeft = null;
     public DcMotor wheelBackRight = null;
 
-    public DcMotor lifter = null;
-
-    public Servo clutch = null;
+    public DcMotor lifter = null;//linear slide
+    public DcMotor intakeRight = null;//intake wheels
+    public DcMotor intakeLeft = null;
+    public Servo clutch = null;//front clutchers
     public Servo grabber = null;
     public DcMotor arm = null;
 

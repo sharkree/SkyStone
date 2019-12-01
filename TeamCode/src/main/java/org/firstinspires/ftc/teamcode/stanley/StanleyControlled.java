@@ -61,12 +61,24 @@ public class StanleyControlled extends LinearOpMode {
     static final double P_DRIVE_COEFF = 0.15;     // Larger is more responsive, but also less stable
     double turn = 0.0;
     double speed = 0.0;
-    int xs = -1;
+    int xs = 0;
     int ys = 0;
-    double pos = 0;
-    double lastpos = 0;
+    int bs = 0;
+    int as = 0;
     double armNut = -.15;
     double armMul = .5;
+    double LinearSlidePower= 0.05;
+    double grabberFront = 1;
+    double grabberBack=0;
+    double strafeMultiplier= 2/5;
+    double turnMultiplier= 1/2;
+    double strafe;
+    double rightFrontPower;
+    double rightBackPower;
+    double LeftFrontPower;
+    double leftBackPower;
+    double intakePower=0.3;
+
 
 
     public boolean check(double last) {
@@ -83,59 +95,93 @@ public class StanleyControlled extends LinearOpMode {
 
         robot.init(hardwareMap);
 
-        int duck = hardwareMap.appContext.getResources().getIdentifier(
+        /*int duck = hardwareMap.appContext.getResources().getIdentifier(
                 "duck", "raw", hardwareMap.appContext.getPackageName());
         int goose = hardwareMap.appContext.getResources().getIdentifier(
                 "goose", "raw", hardwareMap.appContext.getPackageName());
         int fair = hardwareMap.appContext.getResources().getIdentifier(
                 "fair", "raw", hardwareMap.appContext.getPackageName());
+
+         */
 //        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         waitForStart();
         while (opModeIsActive()) {
-            turn = gamepad1.left_stick_x;
+
+            // start of wheel stuff
+            turn = gamepad1.left_stick_x*turnMultiplier;
             speed = -.7 * gamepad1.left_stick_y;
-            robot.leftDrive.setPower(speed * 3 / 4 + turn / 2);
-            robot.rightDrive.setPower(speed * 3 / 4 - turn / 2);
+            strafe= gamepad1.right_stick_x*strafeMultiplier;
+
+
+            robot.wheelBackLeft.setPower(leftBackPower);
+            robot.wheelBackRight.setPower(rightBackPower);
+            robot.wheelFrontRight.setPower(rightFrontPower);
+            robot.wheelFrontLeft.setPower(leftBackPower);
             //He is speed
-            if (gamepad1.x) {
-                xs++;
-            }
-            xs = xs % 2;
-            if (xs == 0) {
-                robot.grabber.setPosition(1);
-            } else if (xs== 1){
-                robot.grabber.setPosition(0);
-            }
-            sleep(200);
-            if (gamepad1.y) {
-                ys++;
-            }
-            ys = ys % 2;
-            if (ys == 0) {
-                robot.clutch.setPosition(1);
 
-            } else {
-                robot.clutch.setPosition(0);
-            }
-            pos = gamepad1.right_stick_y*armMul;
+            if(gamepad1.x||gamepad1.y||gamepad1.b){
+                if (gamepad1.x) {
+                    xs++;
+                    xs = xs % 2;
+                    if (xs == 0) {
+                        robot.grabber.setPosition(1);
+                    } else if (xs== 1){
+                        robot.grabber.setPosition(0);
+                    }
+                }//x is for the grabber
+                if (gamepad1.y) {
+                    ys++;
+                    ys = ys % 2;
+                    if (ys == 0) {
+                        robot.clutch.setPosition(1);
 
-            if (pos != 0) {
-                robot.arm.setPower(pos);
+                    } else {
+                        robot.clutch.setPosition(0);
+                    }
+                }//y is for the front servos
+                if (gamepad1.b) {
+                    bs++;
+                    bs = bs % 2;
+                    if (bs == 0) {
+                        robot.grabber.setPosition(grabberBack);
+                    } else if (bs== 1){
+                        robot.grabber.setPosition(grabberFront);
+                    }//b is for the linear slide servo pos(back or front)
+                }
+                if (gamepad1.a) {
+                    as++;
+                    as = as % 2;
+                    if (as == 0) {
+                        robot.intakeLeft.setPower(intakePower);
+                        robot.intakeLeft.setPower(-intakePower);
+                    } else if (as== 1){
+                        robot.intakeLeft.setPower(0);
+                        robot.intakeRight.setPower(0);
+                    }//intake wheels
+                }
+                sleep(150);
+            }
+
+            if(gamepad1.dpad_up){
+                robot.lifter.setPower(LinearSlidePower);
+            } else if(gamepad1.dpad_up){
+                robot.lifter.setPower(-1*LinearSlidePower);
             } else{
-                robot.arm.setPower(armNut);
+                robot.lifter.setPower(0);
             }
 
-            if (gamepad1.dpad_down && gamepad1.dpad_right && gamepad1.dpad_left && gamepad1.dpad_up) {
-                return;
-            }
+
+
             //optional makes right and left bumper make noises
-            if (gamepad1.right_bumper) {
+            /*if (gamepad1.right_bumper) {
                 SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, duck);
             }
             if (gamepad1.left_bumper) {
                 SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goose);
 
             }
+            */
+
             //end of optional
         }
     }
