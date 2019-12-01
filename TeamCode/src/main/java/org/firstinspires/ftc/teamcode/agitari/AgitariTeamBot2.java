@@ -113,10 +113,10 @@ public class AgitariTeamBot2
         double lx = gamepad.left_stick_x;
         double ly = gamepad.left_stick_y;
         double rx = gamepad.right_stick_x;
-        double wheelFrontRightPower = lx - rx - ly;
-        double wheelBackRightPower = -lx - rx - ly;
-        double wheelFrontLeftPower = lx - rx + ly;
-        double wheelBackLeftPower = -lx - rx + ly;
+        double wheelFrontRightPower = 0.5 * (lx - rx - ly);
+        double wheelBackRightPower = 0.5 * (-lx - rx - ly);
+        double wheelFrontLeftPower = 0.5 * (lx - rx + ly);
+        double wheelBackLeftPower = 0.5 * (-lx - rx + ly);
 
         double max = Math.max(Math.abs(wheelFrontRightPower), Math.max(Math.abs(wheelBackRightPower),
                 Math.max(Math.abs(wheelFrontLeftPower), Math.abs(wheelBackLeftPower))));
