@@ -83,8 +83,9 @@ public class AgitariTeamBot2
         intakeLeft  = hwMap.get(DcMotor.class, "intake_left");
         intakeRight = hwMap.get(DcMotor.class, "intake_right");
 
-        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        //intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        //intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // Lifter
         linearMotion = hwMap.get(DcMotor.class, "linear_motion");
 
@@ -109,13 +110,13 @@ public class AgitariTeamBot2
     }
 
     public void setPower(Gamepad gamepad, Telemetry telemetry){
-        double y1 = gamepad.left_stick_x;
-        double x1 = gamepad.left_stick_y;
-        double x2 = gamepad.right_trigger;
-        double wheelFrontRightPower = y1 + x2 - x1;
-        double wheelBackRightPower = -y1 - x2 - x1;
-        double wheelFrontLeftPower = y1 - x2 + x1;
-        double wheelBackLeftPower = -y1 + x2 + x1;
+        double lx = gamepad.left_stick_x;
+        double ly = gamepad.left_stick_y;
+        double rx = gamepad.right_stick_x;
+        double wheelFrontRightPower = 0.5 * (lx - rx - ly);
+        double wheelBackRightPower = 0.5 * (-lx - rx - ly);
+        double wheelFrontLeftPower = 0.5 * (lx - rx + ly);
+        double wheelBackLeftPower = 0.5 * (-lx - rx + ly);
 
         double max = Math.max(Math.abs(wheelFrontRightPower), Math.max(Math.abs(wheelBackRightPower),
                 Math.max(Math.abs(wheelFrontLeftPower), Math.abs(wheelBackLeftPower))));
@@ -149,6 +150,15 @@ public class AgitariTeamBot2
     }
 
     public void startIntake() {
+        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeLeft.setPower(0.5);
+        intakeRight.setPower(0.5);
+    }
+
+    public void revIntake() {
+        intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeLeft.setPower(0.5);
         intakeRight.setPower(0.5);
     }
