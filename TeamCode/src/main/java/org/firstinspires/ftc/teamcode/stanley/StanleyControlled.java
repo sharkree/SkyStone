@@ -69,10 +69,10 @@ public class StanleyControlled extends LinearOpMode {
     double strafeMultiplier= 1/2;
     double turnMultiplier= 1/2;
     double strafe;
-    double rightFrontPower=.2;
-    double rightBackPower=.2;
-    double LeftFrontPower=.2;
-    double leftBackPower=.2;
+    double rightFrontPower;
+    double rightBackPower;
+    double LeftFrontPower;
+    double leftBackPower;
 
 
 
@@ -95,14 +95,27 @@ public class StanleyControlled extends LinearOpMode {
         }
         return;
     }
-
+    public void slowTableForwards(){
+        for(double i = 0; i<=1; i+=.1){
+            robot.turnTable.setPosition(i);
+            sleep(50);
+        }
+        return;
+    }
+    public void slowTableBack(){
+        for(double i = 1; i>=0; i-=.1){
+            robot.turnTable.setPosition(i);
+            sleep(50);
+        }
+        return;
+    }
     @Override
 
 
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        robot.turnTable.setPosition(0);
+        robot.turnTable.setPosition(1);
 
         /*int duck = hardwareMap.appContext.getResources().getIdentifier(
                 "duck", "raw", hardwareMap.appContext.getPackageName());
@@ -121,15 +134,15 @@ public class StanleyControlled extends LinearOpMode {
             speed = gamepad1.left_stick_y;
             strafe= gamepad1.right_stick_x*strafeMultiplier;
 
-            /*rightFrontPower= speed+turn+strafe;
-            rightBackPower=speed+turn-strafe;
-            LeftFrontPower=speed-turn-strafe;
-            leftBackPower=speed-turn+strafe;*/
+            rightFrontPower= speed+turn+strafe;
+            rightBackPower= speed+turn-strafe;
+            LeftFrontPower= -1*rightFrontPower;
+            leftBackPower= -1*rightBackPower;
 
-            rightFrontPower=capping(rightFrontPower,0,1);
-            rightBackPower=capping(rightBackPower,0,1);
-            LeftFrontPower=capping(LeftFrontPower,0,1);
-            leftBackPower=capping(leftBackPower,0,1);
+            rightFrontPower=capping(rightFrontPower,-2,2);
+            rightBackPower=capping(rightBackPower,-2,2);
+            LeftFrontPower=capping(LeftFrontPower,-2,2);
+            leftBackPower=capping(leftBackPower,-2,2);
 
             robot.wheelBackLeft.setPower(leftBackPower/2);
             robot.wheelBackRight.setPower(rightBackPower/2);
@@ -163,15 +176,11 @@ public class StanleyControlled extends LinearOpMode {
                     bs++;
                     bs = bs % 2;
                     if (bs == 0) {
-                        for(int i = 1; i>=0; i-=.05){
-                            robot.turnTable.setPosition(i);
-                            sleep(5);
-                        }
+                        slowTableBack();
                     } else if (bs== 1){
-                        for(int i = 0; i<=1; i+=.05){
-                            robot.turnTable.setPosition(i);
-                            sleep(5);
-                        }
+
+                        slowTableForwards();
+
                     }//b is for the linear slide servo pos(back or front)
                 }
                 if (gamepad1.a) {
@@ -191,14 +200,7 @@ public class StanleyControlled extends LinearOpMode {
             }
 
             //optional makes right and left bumper make noises
-            /*if (gamepad1.right_bumper) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, duck);
-            }
-            if (gamepad1.left_bumper) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goose);
-
-            }
-            */
+            /**/
 
             //end of optional
         }
