@@ -66,8 +66,8 @@ public class StanleyControlled extends LinearOpMode {
     int bs = 0;
     int as = 0;
     double LinearSlidePower= 0.5;
-    double strafeMultiplier= 1/2;
-    double turnMultiplier= 1/2;
+    double strafeMultiplier= .5;
+    double turnMultiplier= .5;
     double strafe;
     double rightFrontPower;
     double rightBackPower;
@@ -130,19 +130,29 @@ public class StanleyControlled extends LinearOpMode {
         while (opModeIsActive()) {
 
             // start of wheel stuff
-            turn = gamepad1.left_stick_x*turnMultiplier;
+            turn = gamepad1.left_stick_x *turnMultiplier;
             speed = gamepad1.left_stick_y;
             strafe= gamepad1.right_stick_x*strafeMultiplier;
 
-            rightFrontPower= speed+turn+strafe;
-            rightBackPower= speed+turn-strafe;
-            LeftFrontPower= -1*rightFrontPower;
-            leftBackPower= -1*rightBackPower;
-
-            rightFrontPower=capping(rightFrontPower,-2,2);
+            /*rightFrontPower=capping(rightFrontPower,-2,2);
             rightBackPower=capping(rightBackPower,-2,2);
             LeftFrontPower=capping(LeftFrontPower,-2,2);
             leftBackPower=capping(leftBackPower,-2,2);
+             */
+
+            rightFrontPower= (speed+turn-strafe);
+            rightBackPower= (speed+turn+strafe);
+            LeftFrontPower= -1*(speed-turn+strafe);
+            leftBackPower= -1*(speed-turn-strafe);
+
+            telemetry.addData("turn is", turn);
+            telemetry.addData("strafe is", strafe);
+            telemetry.addData("speed is", speed);
+            telemetry.addData("right front is", rightFrontPower/2);
+            telemetry.addData("right back is", rightBackPower/2);
+            telemetry.addData("left front is", LeftFrontPower/2);
+            telemetry.addData("left back is", leftBackPower/2);
+            telemetry.update();
 
             robot.wheelBackLeft.setPower(leftBackPower/2);
             robot.wheelBackRight.setPower(rightBackPower/2);
@@ -189,8 +199,11 @@ public class StanleyControlled extends LinearOpMode {
                     Intake(as==1 );
                 }
                 sleep(200);
+                //intake
             }
 
+
+            //for the linear slide
             if(gamepad1.dpad_up){
                 robot.linearMotion.setPower(LinearSlidePower);
             } else if(gamepad1.dpad_down){
