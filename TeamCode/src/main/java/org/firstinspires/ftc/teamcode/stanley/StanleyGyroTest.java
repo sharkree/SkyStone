@@ -140,7 +140,13 @@ public class StanleyGyroTest extends LinearOpMode {
         sleep(2000);
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        gyroDrive(DRIVE_SPEED, -1*(4 - 1.5) * ONE_FEET_UNIT , 0.0);
+        gyroDrive(DRIVE_SPEED, -1*(2.72) * ONE_FEET_UNIT , 0.0);
+        robot.clutchLeft.setPosition(0);
+        robot.clutchRight.setPosition(1);
+        robot.wheelFrontRight.setPower(.7);
+        robot.wheelBackLeft.setPower(.7);
+        robot.wheelBackRight.setPower(-.7);
+        robot.wheelFrontLeft.setPower(-.7);
     }
 
 

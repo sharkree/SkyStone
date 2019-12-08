@@ -152,8 +152,8 @@ public class StanleyControlled extends LinearOpMode {
 
             rightFrontPower= (speed+turn-strafe);
             rightBackPower= (speed+turn+strafe);
-            leftFrontPower= -1*(speed-turn+strafe);
-            leftBackPower= -1*(speed-turn-strafe);
+            leftFrontPower= (speed-turn+strafe);
+            leftBackPower= (speed-turn-strafe);
 
             telemetry.addData("turn is", turn);
             telemetry.addData("strafe is", strafe);
