@@ -124,7 +124,7 @@ public class StanleyControlled extends LinearOpMode {
 
 
     public void runOpMode() {
-
+        initialize();
 
 
         /*int duck = hardwareMap.appContext.getResources().getIdentifier(

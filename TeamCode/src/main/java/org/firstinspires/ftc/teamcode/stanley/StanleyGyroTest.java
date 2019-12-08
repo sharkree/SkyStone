@@ -79,7 +79,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Hongbing: Auto Drive By Gyro", group="Showcase Op Mode")
+@Autonomous(name="StanleyAutoTest", group="Showcase Op Mode")
 //@Disabled
 public class StanleyGyroTest extends LinearOpMode {
     /* Declare OpMode members. */
@@ -89,12 +89,11 @@ public class StanleyGyroTest extends LinearOpMode {
     // The can/should be tweaked to suite the specific robot drive train.
     static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
-
+    // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.15;
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
-    double buildingSiteDistance = 50;
-
+    static final double     ONE_FEET_UNIT = 4.1; // adjust this only
 
     @Override
     public void runOpMode() {
@@ -103,7 +102,9 @@ public class StanleyGyroTest extends LinearOpMode {
          * The init() method of the hardware class does most of the work here
          */
         robot.init(hardwareMap);
-
+        robot.clutchLeft.setPosition(0);
+        robot.clutchRight.setPosition(1);
+        robot.turnTable.setPosition(1);
         // Send telemetry message to alert driver that we are calibrating;
         telemetry.addData(">", "Calibrating Gyro");    //
         telemetry.update();
@@ -133,10 +134,13 @@ public class StanleyGyroTest extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
-        gyroDrive(DRIVE_SPEED, buildingSiteDistance , 0.0);
-
+        gyroDrive(DRIVE_SPEED, (4 - 1.5) * ONE_FEET_UNIT , 0.0);
+        robot.clutchLeft.setPosition(1);
+        robot.clutchRight.setPosition(0);
+        sleep(2000);
         telemetry.addData("Path", "Complete");
         telemetry.update();
+        gyroDrive(DRIVE_SPEED, -1*(4 - 1.5) * ONE_FEET_UNIT , 0.0);
     }
 
 
@@ -154,8 +158,10 @@ public class StanleyGyroTest extends LinearOpMode {
      */
     public void gyroDrive (double speed, double distance, double angle) {
 
-        int     newLeftTarget;
-        int     newRightTarget;
+        int     newLeftBackTarget;
+        int     newRightBackTarget;
+        int     newLeftFrontTarget;
+        int     newRightFrontTarget;
         int     moveCounts;
         double  max;
         double  error;
@@ -168,24 +174,34 @@ public class StanleyGyroTest extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             moveCounts = (int)(distance * AgitariTeamBot.HD_HEX_COUNTS_PER_INCH);
-            newLeftTarget = robot.leftDrive.getCurrentPosition() + moveCounts;
-            newRightTarget = robot.rightDrive.getCurrentPosition() + moveCounts;
+
+            newLeftFrontTarget = robot.wheelFrontLeft.getCurrentPosition() + moveCounts;
+            newRightFrontTarget = robot.wheelFrontRight.getCurrentPosition() + moveCounts;
+            newLeftBackTarget = robot.wheelBackLeft.getCurrentPosition() + moveCounts;
+            newRightBackTarget = robot.wheelBackRight.getCurrentPosition() + moveCounts;
 
             // Set Target and Turn On RUN_TO_POSITION
-            robot.leftDrive.setTargetPosition(newLeftTarget);
-            robot.rightDrive.setTargetPosition(newRightTarget);
+            robot.wheelFrontLeft.setTargetPosition(newLeftFrontTarget);
+            robot.wheelBackLeft.setTargetPosition(newLeftBackTarget);
+            robot.wheelFrontRight.setTargetPosition(newRightFrontTarget);
+            robot.wheelBackRight.setTargetPosition(newRightBackTarget);
 
-            robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.wheelFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.wheelBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.wheelFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.wheelBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            robot.leftDrive.setPower(speed);
-            robot.rightDrive.setPower(speed);
+            robot.wheelFrontLeft.setPower(speed);
+            robot.wheelBackLeft.setPower(speed);
+            robot.wheelFrontRight.setPower(speed);
+            robot.wheelBackRight.setPower(speed);
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+                    (robot.wheelBackRight.isBusy() && robot.wheelBackLeft.isBusy()
+                            && robot.wheelFrontLeft.isBusy() && robot.wheelFrontRight.isBusy())){
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -206,26 +222,33 @@ public class StanleyGyroTest extends LinearOpMode {
                     rightSpeed /= max;
                 }
 
-                robot.leftDrive.setPower(leftSpeed);
-                robot.rightDrive.setPower(rightSpeed);
+                robot.wheelFrontLeft.setPower(leftSpeed);
+                robot.wheelBackLeft.setPower(leftSpeed);
+                robot.wheelFrontRight.setPower(rightSpeed);
+                robot.wheelBackRight.setPower(rightSpeed);
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
-                telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
-                telemetry.addData("Actual",  "%7d:%7d",      robot.leftDrive.getCurrentPosition(),
-                        robot.rightDrive.getCurrentPosition());
+                telemetry.addData("Target",  "%7d:%7d",      newLeftBackTarget,  newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
+                telemetry.addData("Actual",  "%7d:%7d",      robot.wheelFrontLeft.getCurrentPosition(),robot.wheelFrontRight.getCurrentPosition(), robot.wheelBackRight.getCurrentPosition(),
+                        robot.wheelBackLeft.getCurrentPosition());
                 telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
                 telemetry.update();
             }
 
             // Stop all motion;
-            robot.leftDrive.setPower(0);
-            robot.rightDrive.setPower(0);
+            robot.wheelFrontLeft.setPower(0);
+            robot.wheelBackLeft.setPower(0);
+            robot.wheelFrontRight.setPower(0);
+            robot.wheelBackRight.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.wheelFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.wheelBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.wheelFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.wheelBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+        return;
     }
 
     /**
@@ -271,8 +294,10 @@ public class StanleyGyroTest extends LinearOpMode {
         }
 
         // Stop all motion;
-        robot.leftDrive.setPower(0);
-        robot.rightDrive.setPower(0);
+        robot.wheelFrontLeft.setPower(0);
+        robot.wheelBackLeft.setPower(0);
+        robot.wheelFrontRight.setPower(0);
+        robot.wheelBackRight.setPower(0);
     }
 
     /**
@@ -308,8 +333,10 @@ public class StanleyGyroTest extends LinearOpMode {
         }
 
         // Send desired speeds to motors.
-        robot.leftDrive.setPower(leftSpeed);
-        robot.rightDrive.setPower(rightSpeed);
+        robot.wheelFrontLeft.setPower(leftSpeed);
+        robot.wheelFrontRight.setPower(leftSpeed);
+        robot.wheelBackRight.setPower(rightSpeed);
+        robot.wheelFrontRight.setPower(rightSpeed);
 
         // Display it for the driver.
         telemetry.addData("Target", "%5.2f", angle);
