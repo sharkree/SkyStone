@@ -125,7 +125,6 @@ public class StanleyAutoBlue2 extends LinearOpMode {
             telemetry.update();
             telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
             telemetry.update();
-            sleep(50);
         }
 
         // Step through each leg of the path,

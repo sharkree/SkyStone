@@ -102,8 +102,8 @@ public class StanleyAutoRed extends LinearOpMode {
         robot.clutchRight.setPosition(1);
         robot.turnTable.setPosition(1);
         // Send telemetry message to alert driver that we are calibrating;
-        telemetry.addData(">", "Calibrating Gyro");    //
-        telemetry.update();
+        // telemetry.addData(">", "Calibrating Gyro");    //
+        // telemetry.update();
 
         // make sure the gyro is calibrated before continuing
         while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
@@ -117,14 +117,14 @@ public class StanleyAutoRed extends LinearOpMode {
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-            telemetry.addData(">", "get angle");
+            /* telemetry.addData(">", "get angle");
             telemetry.update();
             Orientation angles = robot.imu.getAngularOrientation(
                     AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData(">", "ge tangle");
             telemetry.update();
             telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
-            telemetry.update();
+            telemetry.update(); */
             sleep(10);
             idle();
         }
