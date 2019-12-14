@@ -125,6 +125,7 @@ public class StanleyAutoRed extends LinearOpMode {
             telemetry.update();
             telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
             telemetry.update();
+            sleep(50);
         }
 
         // Step through each leg of the path,
@@ -135,10 +136,12 @@ public class StanleyAutoRed extends LinearOpMode {
         robot.wheelBackRight.setPower(.7);
         robot.wheelFrontLeft.setPower(.7);
         sleep(625);
+
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
         robot.wheelFrontLeft.setPower(0);
+
         gyroDrive(DRIVE_SPEED, (4 - 1.7) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(1);

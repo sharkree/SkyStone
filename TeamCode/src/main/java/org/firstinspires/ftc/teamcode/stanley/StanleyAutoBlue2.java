@@ -125,6 +125,7 @@ public class StanleyAutoBlue2 extends LinearOpMode {
             telemetry.update();
             telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
             telemetry.update();
+            sleep(50);
         }
 
         // Step through each leg of the path,
@@ -144,8 +145,6 @@ public class StanleyAutoBlue2 extends LinearOpMode {
         robot.clutchLeft.setPosition(1);
         robot.clutchRight.setPosition(0);
         sleep(1500);
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
         gyroDrive(DRIVE_SPEED, -1*(3.5) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(0);
@@ -160,6 +159,9 @@ public class StanleyAutoBlue2 extends LinearOpMode {
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
         robot.wheelFrontLeft.setPower(0);
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
     }
 
 
