@@ -111,9 +111,9 @@ public class StanleyAutoRed extends LinearOpMode {
             idle();
         }
 
-        telemetry.addData(">", "Robot Ready.");    //
-        telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
-        telemetry.update();
+        // telemetry.addData(">", "Robot Ready.");    //
+        // telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
+        // telemetry.update();
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
@@ -125,7 +125,8 @@ public class StanleyAutoRed extends LinearOpMode {
             telemetry.update();
             telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
             telemetry.update();
-            sleep(50);
+            sleep(10);
+            idle();
         }
 
         // Step through each leg of the path,
