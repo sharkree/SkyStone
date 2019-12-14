@@ -119,9 +119,9 @@ public class EthanAgitariTeamBot2
     }
 
     public void setPower(Gamepad gamepad, Telemetry telemetry){
-        double lx = 1/5*gamepad.left_stick_x;
-        double ly = 75/100*gamepad.left_stick_y;
-        double rx = 1/5*gamepad.right_stick_x;
+        double lx = .125*gamepad.left_stick_x;
+        double ly = .75*gamepad.left_stick_y;
+        double rx = .125*gamepad.right_stick_x;
         double wheelFrontRightPower = -lx - rx - ly;
         double wheelBackRightPower = lx - rx - ly;
         double wheelFrontLeftPower = -lx - rx + ly;
@@ -178,11 +178,11 @@ public class EthanAgitariTeamBot2
     }
 
     public void liftUp() {
-        linearMotion.setPower(.7);
+        linearMotion.setPower(1);
     }
 
     public void liftDown() {
-        linearMotion.setPower(-0.5);
+        linearMotion.setPower(-0.7);
     }
 
     public void stopLift() {
