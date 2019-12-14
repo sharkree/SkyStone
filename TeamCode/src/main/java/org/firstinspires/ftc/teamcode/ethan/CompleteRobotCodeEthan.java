@@ -52,14 +52,14 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
 @TeleOp(name="CompleteRobotCodeEthan", group="Linear Opmode")
 //@Disabled
 public class CompleteRobotCodeEthan extends LinearOpMode {
-    public AgitariTeamBot2 bot;
+    public EthanAgitariTeamBot2 bot;
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        bot = new AgitariTeamBot2();
+        bot = new EthanAgitariTeamBot2();
         bot.init(hardwareMap);
 
         telemetry.addData("Status", "Initialized");
