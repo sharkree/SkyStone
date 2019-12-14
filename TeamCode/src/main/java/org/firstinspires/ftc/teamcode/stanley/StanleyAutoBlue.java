@@ -138,7 +138,7 @@ public class StanleyAutoBlue extends LinearOpMode {
         robot.wheelBackLeft.setPower(.7);
         robot.wheelBackRight.setPower(-.7);
         robot.wheelFrontLeft.setPower(-.7);
-        sleep(650);
+        sleep(625);
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
@@ -156,8 +156,8 @@ public class StanleyAutoBlue extends LinearOpMode {
         robot.clutchRight.setPosition(1);
         sleep(750);
         robot.wheelFrontRight.setPower(-.7);
-        robot.wheelBackLeft.setPower(-.7);
-        robot.wheelBackRight.setPower(.7);
+        robot.wheelBackLeft.setPower(-.8);
+        robot.wheelBackRight.setPower(.8);
         robot.wheelFrontLeft.setPower(.7);
         sleep(3500);
         robot.wheelFrontRight.setPower(0);
