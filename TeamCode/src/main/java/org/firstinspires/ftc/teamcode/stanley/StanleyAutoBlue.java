@@ -79,15 +79,15 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="StanleyAutoTest", group="Showcase Op Mode")
+@Autonomous(name="StanleyAutoBlue", group="Showcase Op Mode")
 //@Disabled
-public class StanleyGyroTest extends LinearOpMode {
+public class StanleyAutoBlue extends LinearOpMode {
     /* Declare OpMode members. */
     AgitariTeamBot2 robot   = new AgitariTeamBot2();   // Use Agitari's team bot
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
+    static final double     DRIVE_SPEED             = 0.8;     // Nominal speed for better accuracy.
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;
@@ -134,23 +134,24 @@ public class StanleyGyroTest extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
+
         gyroDrive(DRIVE_SPEED, (4 - 1.7) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(1);
         robot.clutchRight.setPosition(0);
-        sleep(2000);
+        sleep(1500);
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        gyroDrive(DRIVE_SPEED, -1*(2.72) * ONE_FEET_UNIT , 0.0);
+        gyroDrive(DRIVE_SPEED, -1*(2.75) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(0);
         robot.clutchRight.setPosition(1);
-        sleep(1000);
-        robot.wheelFrontRight.setPower(-.8);
+        sleep(750);
+        robot.wheelFrontRight.setPower(-.7);
         robot.wheelBackLeft.setPower(-.7);
         robot.wheelBackRight.setPower(.7);
-        robot.wheelFrontLeft.setPower(.8);
-        sleep(4500);
+        robot.wheelFrontLeft.setPower(.7);
+        sleep(3500);
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
