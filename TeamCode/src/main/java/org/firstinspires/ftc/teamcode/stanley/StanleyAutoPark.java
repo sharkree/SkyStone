@@ -136,12 +136,12 @@ public class StanleyAutoPark extends LinearOpMode {
         robot.wheelBackLeft.setPower(.7);
         robot.wheelBackRight.setPower(.7);
         robot.wheelFrontLeft.setPower(.7);
-        sleep(750);
+        sleep(1400);
         robot.wheelFrontRight.setPower(.7);
         robot.wheelBackLeft.setPower(.7);
         robot.wheelBackRight.setPower(-.7);
         robot.wheelFrontLeft.setPower(-.7);
-        sleep(750);
+        sleep(1500);
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
