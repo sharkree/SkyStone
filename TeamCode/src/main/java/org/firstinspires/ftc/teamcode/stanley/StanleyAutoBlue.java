@@ -142,7 +142,7 @@ public class StanleyAutoBlue extends LinearOpMode {
         sleep(1500);
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        gyroDrive(DRIVE_SPEED, -1*(2.75) * ONE_FEET_UNIT , 0.0);
+        gyroDrive(DRIVE_SPEED, -1*(3.5) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(0);
         robot.clutchRight.setPosition(1);
