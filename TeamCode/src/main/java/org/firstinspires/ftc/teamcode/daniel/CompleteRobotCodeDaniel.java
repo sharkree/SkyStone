@@ -78,6 +78,7 @@ public class CompleteRobotCodeDaniel extends LinearOpMode {
         while (opModeIsActive()) {
             bot.setPower(gamepad1, telemetry);
 
+            bot.turnTable.setPosition(1);
             //Open and Close Clutch to grab foundation
             if (gamepad1.right_bumper) {
                 bot.openClutch();
@@ -89,6 +90,9 @@ public class CompleteRobotCodeDaniel extends LinearOpMode {
             //Intake wheels
             if (gamepad1.x)  {
                 bot.startIntake();
+            }
+            else if (gamepad1.y)  {
+                bot.revIntake();
             }
             else {
                 bot.stopIntake();
@@ -125,6 +129,6 @@ public class CompleteRobotCodeDaniel extends LinearOpMode {
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
-       }
+        }
     }
 }
