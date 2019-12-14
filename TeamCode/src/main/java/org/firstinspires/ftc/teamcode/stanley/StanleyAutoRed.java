@@ -130,7 +130,15 @@ public class StanleyAutoRed extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
-
+        robot.wheelFrontRight.setPower(-.7);
+        robot.wheelBackLeft.setPower(-.7);
+        robot.wheelBackRight.setPower(.7);
+        robot.wheelFrontLeft.setPower(.7);
+        sleep(625);
+        robot.wheelFrontRight.setPower(0);
+        robot.wheelBackLeft.setPower(0);
+        robot.wheelBackRight.setPower(0);
+        robot.wheelFrontLeft.setPower(0);
         gyroDrive(DRIVE_SPEED, (4 - 1.7) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(1);
