@@ -178,11 +178,11 @@ public class EthanAgitariTeamBot2
     }
 
     public void liftUp() {
-        linearMotion.setPower(1);
+        linearMotion.setPower(.7);
     }
 
     public void liftDown() {
-        linearMotion.setPower(-0.6);
+        linearMotion.setPower(-0.5);
     }
 
     public void stopLift() {

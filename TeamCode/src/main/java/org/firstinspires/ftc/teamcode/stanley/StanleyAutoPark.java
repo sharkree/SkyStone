@@ -75,9 +75,9 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="StanleyAutoBlue2", group="Showcase Op Mode")
+@Autonomous(name="StanleyAutoPark", group="Showcase Op Mode")
 //@Disabled
-public class StanleyAutoBlue2 extends LinearOpMode {
+public class StanleyAutoPark extends LinearOpMode {
     /* Declare OpMode members. */
     AgitariTeamBot2 robot   = new AgitariTeamBot2();   // Use Agitari's team bot
 
@@ -134,32 +134,19 @@ public class StanleyAutoBlue2 extends LinearOpMode {
         // Put a hold after each turn
         robot.wheelFrontRight.setPower(.7);
         robot.wheelBackLeft.setPower(.7);
+        robot.wheelBackRight.setPower(.7);
+        robot.wheelFrontLeft.setPower(.7);
+        sleep(750);
+        robot.wheelFrontRight.setPower(.7);
+        robot.wheelBackLeft.setPower(.7);
         robot.wheelBackRight.setPower(-.7);
         robot.wheelFrontLeft.setPower(-.7);
-        sleep(625);
-        robot.wheelFrontRight.setPower(0);
-        robot.wheelBackLeft.setPower(0);
-        robot.wheelBackRight.setPower(0);
-        robot.wheelFrontLeft.setPower(0);
-        gyroDrive(DRIVE_SPEED, (4 - 1.7) * ONE_FEET_UNIT , 0.0);
-        sleep(100);
-        robot.clutchLeft.setPosition(1);
-        robot.clutchRight.setPosition(0);
-        sleep(1500);
-        gyroDrive(DRIVE_SPEED, -1*(3.5) * ONE_FEET_UNIT , 0.0);
-        sleep(100);
-        robot.clutchLeft.setPosition(0);
-        robot.clutchRight.setPosition(1);
         sleep(750);
-        robot.wheelFrontRight.setPower(-.8);
-        robot.wheelBackLeft.setPower(-.7);
-        robot.wheelBackRight.setPower(.7);
-        robot.wheelFrontLeft.setPower(.8);
-        sleep(3350);
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
         robot.wheelFrontLeft.setPower(0);
+
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
