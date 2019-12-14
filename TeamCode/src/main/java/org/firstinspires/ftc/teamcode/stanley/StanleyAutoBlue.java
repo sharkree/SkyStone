@@ -127,9 +127,9 @@ public class StanleyAutoBlue extends LinearOpMode {
                     AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData(">", "ge tangle");
             telemetry.update();
-            telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
+            telemetry.addData(">", "Robot Heading = %f", angles.firstAngle);
             telemetry.update();
-            sleep(50);
+            sleep(10);
         }
 
         // Step through each leg of the path,
