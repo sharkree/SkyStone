@@ -138,7 +138,7 @@ public class StanleyAutoBlue extends LinearOpMode {
         robot.wheelBackLeft.setPower(.7);
         robot.wheelBackRight.setPower(-.7);
         robot.wheelFrontLeft.setPower(-.7);
-        sleep(500);
+        sleep(650);
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
