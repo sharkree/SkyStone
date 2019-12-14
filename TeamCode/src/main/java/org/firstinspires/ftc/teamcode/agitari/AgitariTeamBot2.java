@@ -81,6 +81,9 @@ public class AgitariTeamBot2
         wheelBackLeft  = hwMap.get(DcMotor.class, "wheel_back_left");
         wheelBackRight = hwMap.get(DcMotor.class, "wheel_back_right");
 
+        wheelBackLeft.setDirection(DcMotor.Direction.REVERSE);
+        wheelFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+
         intakeLeft  = hwMap.get(DcMotor.class, "intake_left");
         intakeRight = hwMap.get(DcMotor.class, "intake_right");
 

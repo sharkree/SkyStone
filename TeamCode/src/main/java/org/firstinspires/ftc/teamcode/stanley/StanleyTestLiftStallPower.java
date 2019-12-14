@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
+import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
@@ -72,7 +73,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
 public class StanleyTestLiftStallPower extends LinearOpMode {
 
     /* Declare OpMode members. */
-    AgitariTeamBot robot = new AgitariTeamBot();   // Use Agitari's team bot
+    AgitariTeamBot2 robot = new AgitariTeamBot2();   // Use Agitari's team bot
 //    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
 
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
@@ -105,20 +106,18 @@ public class StanleyTestLiftStallPower extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            if (gamepad1.dpad_up) {
-                Power += .1;
-            } else if (gamepad1.dpad_down) {
-                Power -= .1;
-
-            } else if (gamepad1.dpad_right){
-                Power += .025;
-            } else if (gamepad1.dpad_left){
-                Power -= .025;
-        }
-            robot.arm.setPower(Power);
-            telemetry.addData("Power is", Power);
-            telemetry.update();
-            sleep(200);
+            robot.wheelFrontLeft.setPower(1);
+            sleep(5000);
+            robot.wheelFrontLeft.setPower(0);
+            robot.wheelFrontRight.setPower(1);
+            sleep(5000);
+            robot.wheelFrontRight.setPower(0);
+            robot.wheelBackRight.setPower(1);
+            sleep(5000);
+            robot.wheelBackRight.setPower(0);
+            robot.wheelBackLeft.setPower(1);
+            sleep(5000);
+            robot.wheelBackLeft.setPower(0);
         }
 
     }

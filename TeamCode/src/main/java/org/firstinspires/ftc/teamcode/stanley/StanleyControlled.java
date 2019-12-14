@@ -28,10 +28,10 @@
  */
 
 package org.firstinspires.ftc.teamcode.stanley;
-
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.Range;
 
 
 import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
@@ -65,18 +65,16 @@ public class StanleyControlled extends LinearOpMode {
     int ys = 0;
     int bs = 0;
     int as = 0;
-    double LinearSlidePower= 0.1;
-    double grabberFront = 1;
-    double grabberBack=0;
-    double strafeMultiplier= 2/5;
-    double turnMultiplier= 1/2;
+    int left=0;
+    int right=0;
+    double LinearSlidePower= 0.5;
+    double strafeMultiplier= .5;
+    double turnMultiplier= .5;
     double strafe;
     double rightFrontPower;
     double rightBackPower;
-    double LeftFrontPower;
+    double leftFrontPower;
     double leftBackPower;
-    double intakePower=0.3;
-
 
 
     public boolean check(double last) {
@@ -84,14 +82,50 @@ public class StanleyControlled extends LinearOpMode {
         return x;
     }
 
+    public double capping(double x, double low, double up) {
+        x = x < low ? low : x;
+        x = x > up ? up: x;
+        return x;
+    }
 
+    public void initialize(){
 
+        robot.init(hardwareMap);
+        robot.turnTable.setPosition(1);
+        robot.clutchLeft.setPosition(0);
+        robot.clutchRight.setPosition(0);
+
+    }
+
+    public void Intake(boolean a){
+        if (a){
+            robot.startIntake();
+        } else {
+            robot.stopIntake();
+        }
+        return;
+    }
+
+    public void slowTableForwards(){
+        for(double i = 0; i<=1; i+=.1){
+            robot.turnTable.setPosition(i);
+            sleep(50);
+        }
+        return;
+    }
+    public void slowTableBack(){
+        for(double i = 1; i>=0; i-=.1){
+            robot.turnTable.setPosition(i);
+            sleep(50);
+        }
+        return;
+    }
     @Override
 
 
     public void runOpMode() {
+        initialize();
 
-        robot.init(hardwareMap);
 
         /*int duck = hardwareMap.appContext.getResources().getIdentifier(
                 "duck", "raw", hardwareMap.appContext.getPackageName());
@@ -106,69 +140,97 @@ public class StanleyControlled extends LinearOpMode {
         while (opModeIsActive()) {
 
             // start of wheel stuff
-            turn = gamepad1.left_stick_x*turnMultiplier;
-            speed = 5 * gamepad1.left_stick_y;
+            turn = gamepad1.left_stick_x *turnMultiplier;
+            speed = gamepad1.left_stick_y;
             strafe= gamepad1.right_stick_x*strafeMultiplier;
 
-            rightFrontPower= speed+turn+strafe;
-            rightBackPower=speed+turn-strafe;
-            LeftFrontPower=speed-turn-strafe;
-            leftBackPower=speed-turn+strafe;
+            rightFrontPower= Range.clip(rightFrontPower, -2,2);
+            rightBackPower=capping(rightBackPower,-2,2);
+            leftFrontPower=capping(leftFrontPower,-2,2);
+            leftBackPower=capping(leftBackPower,-2,2);
 
-            robot.wheelBackLeft.setPower(leftBackPower);
-            robot.wheelBackRight.setPower(rightBackPower);
-            robot.wheelFrontRight.setPower(rightFrontPower);
-            robot.wheelFrontLeft.setPower(leftBackPower);
+
+            rightFrontPower= (speed+turn-strafe);
+            rightBackPower= (speed+turn+strafe);
+            leftFrontPower= (speed-turn+strafe);
+            leftBackPower= (speed-turn-strafe);
+
+            telemetry.addData("turn is", turn);
+            telemetry.addData("strafe is", strafe);
+            telemetry.addData("speed is", speed);
+            telemetry.addData("right front is", rightFrontPower/2);
+            telemetry.addData("right back is", rightBackPower/2);
+            telemetry.addData("left front is", leftFrontPower/2);
+            telemetry.addData("left back is", leftBackPower/2);
+            telemetry.update();
+
+            robot.wheelBackLeft.setPower(leftBackPower/2);
+            robot.wheelBackRight.setPower(rightBackPower/2);
+            robot.wheelFrontRight.setPower(rightFrontPower/2);
+            robot.wheelFrontLeft.setPower(leftBackPower/2);
             //He is speed
+            robot.wheelBackLeft.getCurrentPosition();
 
-            if(gamepad1.x||gamepad1.y||gamepad1.b){
-                if (gamepad1.x) {
+
+
+            if(gamepad2.x||gamepad2.y||gamepad2.b||gamepad2.left_trigger==1||gamepad2.right_trigger==1){
+                if (gamepad2.x) {
                     xs++;
                     xs = xs % 2;
                     if (xs == 0) {
                         robot.grabber.setPosition(1);
-                    } else if (xs== 1){
+                        } else if (xs== 1){
                         robot.grabber.setPosition(0);
                     }
                 }//x is for the grabber
-                if (gamepad1.y) {
+                if (gamepad2.y) {
                     ys++;
                     ys = ys % 2;
                     if (ys == 0) {
                         robot.clutchRight.setPosition(1);
-                        robot.clutchLeft.setPosition(1);
+                        robot.clutchLeft.setPosition(0);
 
                     } else {
                         robot.clutchRight.setPosition(0);
-                        robot.clutchLeft.setPosition(0);
+                        robot.clutchLeft.setPosition(1);
                     }
                 }//y is for the front servos
-                if (gamepad1.b) {
+                if (gamepad2.b) {
                     bs++;
                     bs = bs % 2;
                     if (bs == 0) {
-                        robot.grabber.setPosition(grabberBack);
+                        slowTableBack();
                     } else if (bs== 1){
-                        robot.grabber.setPosition(grabberFront);
+
+                        slowTableForwards();
+
                     }//b is for the linear slide servo pos(back or front)
                 }
-                if (gamepad1.a) {
-                    as++;
-                    as = as % 2;
-                    if (as == 0) {
-                        robot.intakeLeft.setPower(intakePower);
-                        robot.intakeLeft.setPower(-intakePower);
-                    } else if (as== 1){
-                        robot.intakeLeft.setPower(0);
-                        robot.intakeRight.setPower(0);
-                    }//intake wheels
+                if (gamepad2.left_trigger==1) {
+                    robot.intakeRight.setPower(.3);
+                    robot.intakeLeft.setPower(.3);
+                }else if (gamepad2.right_trigger==1) {
+                    robot.startIntake();
+                } else{
+                    robot.stopIntake();
                 }
-                sleep(150);
+
+
+
+
+                sleep(200);
+
+                //intake
             }
 
+
+
+
+
+            //for the linear slide
             if(gamepad1.dpad_up){
                 robot.linearMotion.setPower(LinearSlidePower);
-            } else if(gamepad1.dpad_up){
+            } else if(gamepad1.dpad_down){
                 robot.linearMotion.setPower(-1*LinearSlidePower);
             } else{
                 robot.linearMotion.setPower(0);
@@ -177,14 +239,7 @@ public class StanleyControlled extends LinearOpMode {
 
 
             //optional makes right and left bumper make noises
-            /*if (gamepad1.right_bumper) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, duck);
-            }
-            if (gamepad1.left_bumper) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goose);
-
-            }
-            */
+            /**/
 
             //end of optional
         }
