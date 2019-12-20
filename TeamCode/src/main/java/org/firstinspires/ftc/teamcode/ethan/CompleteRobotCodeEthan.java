@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.ethan;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -50,7 +51,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
  */
 
 @TeleOp(name="CompleteRobotCodeEthan", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class CompleteRobotCodeEthan extends LinearOpMode {
     public EthanAgitariTeamBot2 bot;
 

@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name="Ethan SKYSTONE Sounds", group="Concept")
-//@Disabled
+@Disabled
 public class EthanSoundsSKYSTONE extends LinearOpMode {
 
     // List of available sound resources

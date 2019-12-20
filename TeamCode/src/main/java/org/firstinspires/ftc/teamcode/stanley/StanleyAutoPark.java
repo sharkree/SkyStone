@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.stanley;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -76,7 +77,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
  */
 
 @Autonomous(name="StanleyAutoPark", group="Showcase Op Mode")
-//@Disabled
+@Disabled
 public class StanleyAutoPark extends LinearOpMode {
     /* Declare OpMode members. */
     AgitariTeamBot2 robot   = new AgitariTeamBot2();   // Use Agitari's team bot

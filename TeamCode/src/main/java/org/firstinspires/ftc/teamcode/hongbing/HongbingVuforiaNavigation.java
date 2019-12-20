@@ -82,7 +82,7 @@ import java.util.List;
  */
 
 @TeleOp(name="Hongbing: Vuforia Navigation", group ="Showcase Op Mode")
-//@Disabled
+@Disabled
 public class HongbingVuforiaNavigation extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";

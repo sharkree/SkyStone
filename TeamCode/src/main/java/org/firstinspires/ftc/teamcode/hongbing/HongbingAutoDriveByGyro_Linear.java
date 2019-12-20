@@ -79,7 +79,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
  */
 
 @Autonomous(name="Hongbing: Auto Drive By Gyro", group="Showcase Op Mode")
-//@Disabled
+@Disabled
 public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
     /* Declare OpMode members. */
     AgitariTeamBot robot   = new AgitariTeamBot();   // Use Agitari's team bot

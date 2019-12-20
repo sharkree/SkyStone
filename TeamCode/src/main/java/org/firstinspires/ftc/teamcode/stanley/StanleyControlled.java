@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.stanley;
 import com.qualcomm.ftccommon.SoundPlayer;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.Range;
@@ -38,7 +39,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
 
 
 @TeleOp(name = "StanControllerBop", group = "Showcase Op Mode")
-//@Disabled
+@Disabled
 public class StanleyControlled extends LinearOpMode {
 
     /* Declare OpMode members. */

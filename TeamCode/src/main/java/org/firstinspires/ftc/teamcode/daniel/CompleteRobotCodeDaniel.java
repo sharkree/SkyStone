@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.daniel;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -57,7 +58,7 @@ import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
  */
 
 @TeleOp(name="CompleteRobotCodeDaniel", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class CompleteRobotCodeDaniel extends LinearOpMode {
     public AgitariTeamBot2 bot;
 
