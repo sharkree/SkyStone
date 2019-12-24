@@ -27,10 +27,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hongbing;
+package org.firstinspires.ftc.teamcode.stanley;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -38,12 +36,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
+import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
@@ -78,21 +76,21 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Hongbing: Auto Drive By Gyro", group="Showcase Op Mode")
+@Autonomous(name="StanleyAutoPark", group="Showcase Op Mode")
 @Disabled
-public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
+public class StanleyAutoPark extends LinearOpMode {
     /* Declare OpMode members. */
-    AgitariTeamBot robot   = new AgitariTeamBot();   // Use Agitari's team bot
+    AgitariTeamBot2 robot   = new AgitariTeamBot2();   // Use Agitari's team bot
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
     static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
-
+    // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.15;
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
-
+    static final double     ONE_FEET_UNIT = 4.1; // adjust this only
 
     @Override
     public void runOpMode() {
@@ -101,7 +99,9 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
          * The init() method of the hardware class does most of the work here
          */
         robot.init(hardwareMap);
-
+        robot.clutchLeft.setPosition(0);
+        robot.clutchRight.setPosition(1);
+        robot.turnTable.setPosition(1);
         // Send telemetry message to alert driver that we are calibrating;
         telemetry.addData(">", "Calibrating Gyro");    //
         telemetry.update();
@@ -112,56 +112,66 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
             idle();
         }
 
-        telemetry.addData(">", "Robot Ready.");    //
-        telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
-        telemetry.update();
+        // telemetry.addData(">", "Robot Ready.");    //
+        // telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
+        // telemetry.update();
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-            telemetry.addData(">", "get angle");
+            /* telemetry.addData(">", "get angle");
             telemetry.update();
             Orientation angles = robot.imu.getAngularOrientation(
                     AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData(">", "ge tangle");
             telemetry.update();
             telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
-            telemetry.update();
+            telemetry.update(); */
+            sleep(10);
+            idle();
         }
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
-        gyroDrive(DRIVE_SPEED, 48.0, 0.0);    // Drive FWD 48 inches
-        gyroTurn( TURN_SPEED, -45.0);         // Turn  CCW to -45 Degrees
-        gyroHold( TURN_SPEED, -45.0, 0.5);    // Hold -45 Deg heading for a 1/2 second
-        gyroDrive(DRIVE_SPEED, 12.0, -45.0);  // Drive FWD 12 inches at 45 degrees
-        gyroTurn( TURN_SPEED,  45.0);         // Turn  CW  to  45 Degrees
-        gyroHold( TURN_SPEED,  45.0, 0.5);    // Hold  45 Deg heading for a 1/2 second
-        gyroTurn( TURN_SPEED,   0.0);         // Turn  CW  to   0 Degrees
-        gyroHold( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for a 1 second
-        gyroDrive(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
+        robot.wheelFrontRight.setPower(.7);
+        robot.wheelBackLeft.setPower(.7);
+        robot.wheelBackRight.setPower(.7);
+        robot.wheelFrontLeft.setPower(.7);
+        sleep(1400);
+        robot.wheelFrontRight.setPower(.7);
+        robot.wheelBackLeft.setPower(.7);
+        robot.wheelBackRight.setPower(-.7);
+        robot.wheelFrontLeft.setPower(-.7);
+        sleep(1500);
+        robot.wheelFrontRight.setPower(0);
+        robot.wheelBackLeft.setPower(0);
+        robot.wheelBackRight.setPower(0);
+        robot.wheelFrontLeft.setPower(0);
+
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
 
-   /**
-    *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
-    *  Move will stop if either of these conditions occur:
-    *  1) Move gets to the desired position
-    *  2) Driver stops the opmode running.
-    *
-    * @param speed      Target speed for forward motion.  Should allow for _/- variance for adjusting heading
-    * @param distance   Distance (in inches) to move from current position.  Negative distance means move backwards.
-    * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
-    *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-    *                   If a relative angle is required, add/subtract from current heading.
-    */
+    /**
+     *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
+     *  Move will stop if either of these conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Driver stops the opmode running.
+     *
+     * @param speed      Target speed for forward motion.  Should allow for _/- variance for adjusting heading
+     * @param distance   Distance (in inches) to move from current position.  Negative distance means move backwards.
+     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
+     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                   If a relative angle is required, add/subtract from current heading.
+     */
     public void gyroDrive (double speed, double distance, double angle) {
 
-        int     newLeftTarget;
-        int     newRightTarget;
+        int     newLeftBackTarget;
+        int     newRightBackTarget;
+        int     newLeftFrontTarget;
+        int     newRightFrontTarget;
         int     moveCounts;
         double  max;
         double  error;
@@ -174,24 +184,34 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             moveCounts = (int)(distance * AgitariTeamBot.HD_HEX_COUNTS_PER_INCH);
-            newLeftTarget = robot.leftDrive.getCurrentPosition() + moveCounts;
-            newRightTarget = robot.rightDrive.getCurrentPosition() + moveCounts;
+
+            newLeftFrontTarget = robot.wheelFrontLeft.getCurrentPosition() + moveCounts;
+            newRightFrontTarget = robot.wheelFrontRight.getCurrentPosition() + moveCounts;
+            newLeftBackTarget = robot.wheelBackLeft.getCurrentPosition() + moveCounts;
+            newRightBackTarget = robot.wheelBackRight.getCurrentPosition() + moveCounts;
 
             // Set Target and Turn On RUN_TO_POSITION
-            robot.leftDrive.setTargetPosition(newLeftTarget);
-            robot.rightDrive.setTargetPosition(newRightTarget);
+            robot.wheelFrontLeft.setTargetPosition(newLeftFrontTarget);
+            robot.wheelBackLeft.setTargetPosition(newLeftBackTarget);
+            robot.wheelFrontRight.setTargetPosition(newRightFrontTarget);
+            robot.wheelBackRight.setTargetPosition(newRightBackTarget);
 
-            robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.wheelFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.wheelBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.wheelFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.wheelBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            robot.leftDrive.setPower(speed);
-            robot.rightDrive.setPower(speed);
+            robot.wheelFrontLeft.setPower(speed);
+            robot.wheelBackLeft.setPower(speed);
+            robot.wheelFrontRight.setPower(speed);
+            robot.wheelBackRight.setPower(speed);
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                   (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+                    (robot.wheelBackRight.isBusy() && robot.wheelBackLeft.isBusy()
+                            && robot.wheelFrontLeft.isBusy() && robot.wheelFrontRight.isBusy())){
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -212,26 +232,33 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
                     rightSpeed /= max;
                 }
 
-                robot.leftDrive.setPower(leftSpeed);
-                robot.rightDrive.setPower(rightSpeed);
+                robot.wheelFrontLeft.setPower(leftSpeed);
+                robot.wheelBackLeft.setPower(leftSpeed);
+                robot.wheelFrontRight.setPower(rightSpeed);
+                robot.wheelBackRight.setPower(rightSpeed);
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
-                telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
-                telemetry.addData("Actual",  "%7d:%7d",      robot.leftDrive.getCurrentPosition(),
-                                                             robot.rightDrive.getCurrentPosition());
+                telemetry.addData("Target",  "%7d:%7d",      newLeftBackTarget,  newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
+                telemetry.addData("Actual",  "%7d:%7d",      robot.wheelFrontLeft.getCurrentPosition(),robot.wheelFrontRight.getCurrentPosition(), robot.wheelBackRight.getCurrentPosition(),
+                        robot.wheelBackLeft.getCurrentPosition());
                 telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
                 telemetry.update();
             }
 
             // Stop all motion;
-            robot.leftDrive.setPower(0);
-            robot.rightDrive.setPower(0);
+            robot.wheelFrontLeft.setPower(0);
+            robot.wheelBackLeft.setPower(0);
+            robot.wheelFrontRight.setPower(0);
+            robot.wheelBackRight.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.wheelFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.wheelBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.wheelFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.wheelBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+        return;
     }
 
     /**
@@ -277,8 +304,10 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
         }
 
         // Stop all motion;
-        robot.leftDrive.setPower(0);
-        robot.rightDrive.setPower(0);
+        robot.wheelFrontLeft.setPower(0);
+        robot.wheelBackLeft.setPower(0);
+        robot.wheelFrontRight.setPower(0);
+        robot.wheelBackRight.setPower(0);
     }
 
     /**
@@ -314,8 +343,10 @@ public class HongbingAutoDriveByGyro_Linear extends LinearOpMode {
         }
 
         // Send desired speeds to motors.
-        robot.leftDrive.setPower(leftSpeed);
-        robot.rightDrive.setPower(rightSpeed);
+        robot.wheelFrontLeft.setPower(leftSpeed);
+        robot.wheelFrontRight.setPower(leftSpeed);
+        robot.wheelBackRight.setPower(rightSpeed);
+        robot.wheelFrontRight.setPower(rightSpeed);
 
         // Display it for the driver.
         telemetry.addData("Target", "%5.2f", angle);

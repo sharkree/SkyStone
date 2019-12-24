@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.stanley;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -76,7 +77,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
  */
 
 @Autonomous(name="StanleyAutoRed", group="Showcase Op Mode")
-//@Disabled
+@Disabled
 public class StanleyAutoRed extends LinearOpMode {
     /* Declare OpMode members. */
     AgitariTeamBot2 robot   = new AgitariTeamBot2();   // Use Agitari's team bot
@@ -102,8 +103,8 @@ public class StanleyAutoRed extends LinearOpMode {
         robot.clutchRight.setPosition(1);
         robot.turnTable.setPosition(1);
         // Send telemetry message to alert driver that we are calibrating;
-        telemetry.addData(">", "Calibrating Gyro");    //
-        telemetry.update();
+        // telemetry.addData(">", "Calibrating Gyro");    //
+        // telemetry.update();
 
         // make sure the gyro is calibrated before continuing
         while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
@@ -111,20 +112,22 @@ public class StanleyAutoRed extends LinearOpMode {
             idle();
         }
 
-        telemetry.addData(">", "Robot Ready.");    //
-        telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
-        telemetry.update();
+        // telemetry.addData(">", "Robot Ready.");    //
+        // telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
+        // telemetry.update();
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-            telemetry.addData(">", "get angle");
+            /* telemetry.addData(">", "get angle");
             telemetry.update();
             Orientation angles = robot.imu.getAngularOrientation(
                     AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData(">", "ge tangle");
             telemetry.update();
             telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
-            telemetry.update();
+            telemetry.update(); */
+            sleep(10);
+            idle();
         }
 
         // Step through each leg of the path,
@@ -135,10 +138,12 @@ public class StanleyAutoRed extends LinearOpMode {
         robot.wheelBackRight.setPower(.7);
         robot.wheelFrontLeft.setPower(.7);
         sleep(625);
+
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
         robot.wheelFrontLeft.setPower(0);
+
         gyroDrive(DRIVE_SPEED, (4 - 1.7) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(1);

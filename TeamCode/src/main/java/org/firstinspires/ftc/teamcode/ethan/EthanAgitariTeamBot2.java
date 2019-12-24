@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.agitari;
+package org.firstinspires.ftc.teamcode.ethan;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,11 +7,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
 
 
 /**
@@ -21,9 +18,10 @@ import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
  *
  * Note:  All names are lower case and some have single spaces between words.
  */
-public class AgitariTeamBot2
+public class EthanAgitariTeamBot2
 {
-    public static final double MID_SERVO = 0.5 ;
+    public static final double MID_SERVO = 0.5;
+    public static final double INIT_SERVO = 1;
     public static final double HD_HEX_COUNTS_PER_ROTATION = 1120; //  Rev HD Hex motor
 
     public static final double DRIVE_GEAR_REDUCTION  = 1.0;     // This is < 1.0 if geared UP
@@ -40,7 +38,7 @@ public class AgitariTeamBot2
             "lN35bbLE6yNSyBOV86FaSZ0UuBNXfCX4O0IWh7qSBXcU/cQVMw3faOu8Hx3LiReY1lcQ1I4q0QP05" +
             "IUr5l71eQEMFLO71ByBWG95IkHucF5iyrA";
 
-    public static final double ARM_POWER = -0.75 ;
+    public static final double ARM_POWER = -1.0 ;
 
     /* Public OpMode members. */
     public DcMotor wheelFrontLeft = null;
@@ -68,6 +66,17 @@ public class AgitariTeamBot2
 
     private double turbo;
 
+    public boolean compare(double x, double y){
+        if(x>y){
+            return true;
+        }
+        return false;
+    }
+    public int Big(double w, double x, double y, double z){
+
+        return 0;
+    }
+
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
@@ -80,9 +89,6 @@ public class AgitariTeamBot2
         wheelBackLeft  = hwMap.get(DcMotor.class, "wheel_back_left");
         wheelBackRight = hwMap.get(DcMotor.class, "wheel_back_right");
 
-        wheelBackLeft.setDirection(DcMotor.Direction.REVERSE);
-        wheelFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-
         intakeLeft  = hwMap.get(DcMotor.class, "intake_left");
         intakeRight = hwMap.get(DcMotor.class, "intake_right");
 
@@ -94,10 +100,10 @@ public class AgitariTeamBot2
 
         // Define and Initialize grabber servo.
         grabber = hwMap.get(Servo.class, "grabber");
-        grabber.setPosition(MID_SERVO);
+        grabber.setPosition(INIT_SERVO);
 
         turnTable = hwMap.get(Servo.class, "turn_table");
-        turnTable.setPosition(MID_SERVO);
+        turnTable.setPosition(INIT_SERVO);
 
         clutchLeft = hwMap.get(Servo.class, "clutch_left");
         clutchRight = hwMap.get(Servo.class, "clutch_right");
@@ -113,13 +119,13 @@ public class AgitariTeamBot2
     }
 
     public void setPower(Gamepad gamepad, Telemetry telemetry){
-        double lx = gamepad.left_stick_x;
-        double ly = gamepad.left_stick_y;
-        double rx = gamepad.right_stick_x;
-        double wheelFrontRightPower = 0.5 * (lx - rx - ly);
-        double wheelBackRightPower = 0.5 * (-lx - rx - ly);
-        double wheelFrontLeftPower = 0.5 * (lx - rx + ly);
-        double wheelBackLeftPower = 0.5 * (-lx - rx + ly);
+        double lx = 1/5*gamepad.left_stick_x;
+        double ly = 75/100*gamepad.left_stick_y;
+        double rx = 1/5*gamepad.right_stick_x;
+        double wheelFrontRightPower = -lx - rx - ly;
+        double wheelBackRightPower = lx - rx - ly;
+        double wheelFrontLeftPower = -lx - rx + ly;
+        double wheelBackLeftPower = lx - rx + ly;
 
         double max = Math.max(Math.abs(wheelFrontRightPower), Math.max(Math.abs(wheelBackRightPower),
                 Math.max(Math.abs(wheelFrontLeftPower), Math.abs(wheelBackLeftPower))));
@@ -172,11 +178,11 @@ public class AgitariTeamBot2
     }
 
     public void liftUp() {
-        linearMotion.setPower(0.32);
+        linearMotion.setPower(.7);
     }
 
     public void liftDown() {
-        linearMotion.setPower(-0.15);
+        linearMotion.setPower(-0.5);
     }
 
     public void stopLift() {

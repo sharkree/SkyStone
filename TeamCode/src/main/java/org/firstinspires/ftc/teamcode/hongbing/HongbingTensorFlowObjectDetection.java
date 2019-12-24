@@ -53,7 +53,7 @@ import java.util.List;
  * is explained below.
  */
 @TeleOp(name = "Hongbing: TensorFlow Object Detection", group = "Showcase Op Mode")
-//@Disabled
+@Disabled
 public class HongbingTensorFlowObjectDetection extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";

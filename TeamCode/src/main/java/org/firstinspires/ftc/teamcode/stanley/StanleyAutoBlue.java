@@ -80,7 +80,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
  */
 
 @Autonomous(name="StanleyAutoBlue", group="Showcase Op Mode")
-//@Disabled
+@Disabled
 public class StanleyAutoBlue extends LinearOpMode {
     /* Declare OpMode members. */
     AgitariTeamBot2 robot   = new AgitariTeamBot2();   // Use Agitari's team bot
@@ -127,8 +127,9 @@ public class StanleyAutoBlue extends LinearOpMode {
                     AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData(">", "ge tangle");
             telemetry.update();
-            telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
+            telemetry.addData(">", "Robot Heading = %f", angles.firstAngle);
             telemetry.update();
+            sleep(10);
         }
 
         // Step through each leg of the path,
@@ -138,7 +139,8 @@ public class StanleyAutoBlue extends LinearOpMode {
         robot.wheelBackLeft.setPower(.7);
         robot.wheelBackRight.setPower(-.7);
         robot.wheelFrontLeft.setPower(-.7);
-        sleep(500);
+        sleep(625);
+
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
@@ -156,8 +158,8 @@ public class StanleyAutoBlue extends LinearOpMode {
         robot.clutchRight.setPosition(1);
         sleep(750);
         robot.wheelFrontRight.setPower(-.7);
-        robot.wheelBackLeft.setPower(-.7);
-        robot.wheelBackRight.setPower(.7);
+        robot.wheelBackLeft.setPower(-.8);
+        robot.wheelBackRight.setPower(.8);
         robot.wheelFrontLeft.setPower(.7);
         sleep(3500);
         robot.wheelFrontRight.setPower(0);
