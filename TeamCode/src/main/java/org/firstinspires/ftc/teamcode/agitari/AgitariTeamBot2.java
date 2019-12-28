@@ -25,13 +25,12 @@ public class AgitariTeamBot2
 {
     public static final double MID_SERVO = 0.5 ;
     public static final double HD_HEX_COUNTS_PER_ROTATION = 1120; //  Rev HD Hex motor
+    public static final double CORE_HEX_COUNTS_PER_ROTATION = 288; //  Rev Core Hex motor
 
     public static final double DRIVE_GEAR_REDUCTION  = 1.0;     // This is < 1.0 if geared UP
-    public static final double WHEEL_DIAMETER_INCHES = 3.543 ;     // For figuring circumference
-    public static final double HD_HEX_COUNTS_PER_INCH =
-            (HD_HEX_COUNTS_PER_ROTATION * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-
-    public static final double CORE_HEX_COUNTS_PER_ROTATION = 288; //  Rev Core Hex motor
+    public static final double WHEEL_DIAMETER_INCHES = 2.953 ;     // 75mm Rev Mecanum Wheels
+    public static final double CORE_HEX_COUNTS_PER_INCH =
+            (CORE_HEX_COUNTS_PER_ROTATION * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
     public static final String VUFORIA_LICENSE_KEY = "AXIXrHj/////AAABmeEMqruXWUCBuoatjfPPvO" +
             "Qv4U/tRYoBqMMvXyAoHLHWYYYQSPx3ZOZ7GcdOCuTHK5HYM6oJ4gX1ZTxVec9RI4xa5ZOSPgTQvSo" +
@@ -103,7 +102,7 @@ public class AgitariTeamBot2
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
-        imu = hwMap.get(BNO055IMU.class, "imu");
+        imu = hwMap.get(BNO055IMU.class, "imu2");
         imu.initialize(parameters);
     }
 
