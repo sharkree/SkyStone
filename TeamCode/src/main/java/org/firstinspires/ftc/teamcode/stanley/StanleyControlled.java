@@ -91,7 +91,7 @@ public class StanleyControlled extends LinearOpMode {
 
     public void initialize(){
 
-        robot.init(hardwareMap);
+        robot.init(this,hardwareMap);
         robot.turnTable.setPosition(1);
         robot.clutchLeft.setPosition(0);
         robot.clutchRight.setPosition(0);

@@ -101,7 +101,7 @@ public class StanleyTestLiftStallPower extends LinearOpMode {
 
     public void runOpMode() {
 
-        robot.init(hardwareMap);
+        robot.init(this,hardwareMap);
         waitForStart();
 
         while (opModeIsActive()) {

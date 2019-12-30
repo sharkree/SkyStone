@@ -60,7 +60,7 @@ public class TeamManualOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
         bot = new AgitariTeamBot2();
-        bot.init(hardwareMap);
+        bot.init(this, hardwareMap);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -69,7 +69,7 @@ public class TeamManualOpMode extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            bot.setPower(gamepad1, telemetry);
+            bot.setPower(gamepad1);
 
             //Open and Close Clutch to grab foundation
             if (gamepad1.right_bumper) {

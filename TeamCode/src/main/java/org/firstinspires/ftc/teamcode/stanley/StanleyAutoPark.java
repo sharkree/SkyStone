@@ -98,7 +98,7 @@ public class StanleyAutoPark extends LinearOpMode {
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
          */
-        robot.init(hardwareMap);
+        robot.init(this,hardwareMap);
         robot.clutchLeft.setPosition(0);
         robot.clutchRight.setPosition(1);
         robot.turnTable.setPosition(1);

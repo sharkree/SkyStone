@@ -68,7 +68,7 @@ public class CompleteRobotCodeDaniel extends LinearOpMode {
     @Override
     public void runOpMode() {
         bot = new AgitariTeamBot2();
-        bot.init(hardwareMap);
+        bot.init(this,hardwareMap);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -77,7 +77,7 @@ public class CompleteRobotCodeDaniel extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            bot.setPower(gamepad1, telemetry);
+            bot.setPower(gamepad1);
 
             bot.turnTable.setPosition(1);
             //Open and Close Clutch to grab foundation
