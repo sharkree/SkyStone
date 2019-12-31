@@ -29,12 +29,9 @@
 
 package org.firstinspires.ftc.teamcode.agitari;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.ethan.EthanAgitariTeamBot2;
 
 
 /**
@@ -52,14 +49,14 @@ import org.firstinspires.ftc.teamcode.ethan.EthanAgitariTeamBot2;
 
 @TeleOp(name="NaH Robotics Manual OpMode", group="Linear Opmode")
 public class TeamManualOpMode extends LinearOpMode {
-    public AgitariTeamBot2 bot;
+    public NaHRoboticsTeamBot bot;
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        bot = new AgitariTeamBot2();
+        bot = new NaHRoboticsTeamBot();
         bot.init(this, hardwareMap);
 
         telemetry.addData("Status", "Initialized");

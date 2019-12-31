@@ -27,7 +27,7 @@ import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
  *
  * Note:  All names are lower case and some have single spaces between words.
  */
-public class AgitariTeamBot2
+public class NaHRoboticsTeamBot
 {
     public static final double MID_SERVO = 0.5 ;
     public static final double HD_HEX_COUNTS_PER_ROTATION = 1120; //  Rev HD Hex motor
@@ -92,9 +92,13 @@ public class AgitariTeamBot2
         // Define and Initialize Motors
         wheelFrontLeft  = hwMap.get(DcMotor.class, "wheel_front_left");
         wheelFrontRight = hwMap.get(DcMotor.class, "wheel_front_right");
-
         wheelBackLeft  = hwMap.get(DcMotor.class, "wheel_back_left");
         wheelBackRight = hwMap.get(DcMotor.class, "wheel_back_right");
+
+        wheelFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        wheelBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        wheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        wheelBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         intakeLeft  = hwMap.get(DcMotor.class, "intake_left");
         intakeRight = hwMap.get(DcMotor.class, "intake_right");
@@ -129,8 +133,8 @@ public class AgitariTeamBot2
         double rx = gamepad.right_stick_x;
         double wheelFrontRightPower = -lx - rx - ly;
         double wheelBackRightPower = lx - rx - ly;
-        double wheelFrontLeftPower = -lx - rx + ly;
-        double wheelBackLeftPower = lx - rx + ly;
+        double wheelFrontLeftPower = lx + rx - ly;
+        double wheelBackLeftPower = -lx + rx - ly;
 
         double max = Math.max(Math.abs(wheelFrontRightPower), Math.max(Math.abs(wheelBackRightPower),
                 Math.max(Math.abs(wheelFrontLeftPower), Math.abs(wheelBackLeftPower))));
@@ -142,15 +146,7 @@ public class AgitariTeamBot2
             wheelBackLeftPower /= max;
         }
 
-        wheelFrontRight.setPower(wheelFrontRightPower);
-        wheelBackRight.setPower(wheelBackRightPower);
-        wheelFrontLeft.setPower(wheelFrontLeftPower);
-        wheelBackLeft.setPower(wheelBackLeftPower);
-
-        telemetry.addData("Power wheelFrontRightPower", "Power (%.2f)", wheelFrontRightPower);
-        telemetry.addData("Power wheelFrontLeftPower", "Power (%.2f)", wheelFrontLeftPower);
-        telemetry.addData("Power wheelBackRightPower", "Power (%.2f)", wheelBackRightPower);
-        telemetry.addData("Power wheelBackLeftPower", "Power (%.2f)", wheelBackLeftPower);
+        setPower(wheelFrontLeftPower, wheelFrontRightPower, wheelBackLeftPower, wheelBackRightPower);
     }
 
     public void openClutch() {
@@ -279,9 +275,9 @@ public class AgitariTeamBot2
         }
 
         // Send desired speeds to motors.
-        wheelFrontLeft.setPower(-leftSpeed);
+        wheelFrontLeft.setPower(leftSpeed);
         wheelFrontRight.setPower(rightSpeed);
-        wheelBackLeft.setPower(-leftSpeed);
+        wheelBackLeft.setPower(leftSpeed);
         wheelBackRight.setPower(rightSpeed);
 
         // Display it for the driver.
@@ -390,9 +386,9 @@ public class AgitariTeamBot2
                     rightSpeed /= max;
                 }
 
-                wheelFrontLeft.setPower(-leftSpeed);
+                wheelFrontLeft.setPower(leftSpeed);
                 wheelFrontRight.setPower(rightSpeed);
-                wheelBackLeft.setPower(-leftSpeed);
+                wheelBackLeft.setPower(leftSpeed);
                 wheelBackRight.setPower(rightSpeed);
 
                 // Display drive status for the driver.
@@ -407,7 +403,7 @@ public class AgitariTeamBot2
                         wheelFrontRight.getCurrentPosition(),
                         wheelBackLeft.getCurrentPosition(),
                         wheelBackRight.getCurrentPosition());
-                telemetry.addData("Speed",   "%5.2f:%5.2f",  -leftSpeed, rightSpeed);
+                telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
                 telemetry.update();
             }
 
@@ -423,16 +419,23 @@ public class AgitariTeamBot2
     }
 
     private void forward(double speed) {
-        wheelFrontLeft.setPower(-speed);
-        wheelFrontRight.setPower(speed);
-        wheelBackLeft.setPower(-speed);
-        wheelBackRight.setPower(speed);
+        setPower(speed, speed, speed, speed);
     }
+
+    private void setPower(double frontLeftSpeed, double frontRightSpeed, double backLeftSpeed, double backRightSpeed) {
+        wheelFrontLeft.setPower(frontLeftSpeed);
+        wheelFrontRight.setPower(frontRightSpeed);
+        wheelBackLeft.setPower(backLeftSpeed);
+        wheelBackRight.setPower(backRightSpeed);
+
+        telemetry.addData("Power wheelFrontRightPower", "Power (%.2f)", frontRightSpeed);
+        telemetry.addData("Power wheelFrontLeftPower", "Power (%.2f)", frontLeftSpeed);
+        telemetry.addData("Power wheelBackRightPower", "Power (%.2f)", backRightSpeed);
+        telemetry.addData("Power wheelBackLeftPower", "Power (%.2f)", backLeftSpeed);
+    }
+
     private void stop() {
-        wheelBackLeft.setPower(0);
-        wheelBackLeft.setPower(0);
-        wheelFrontRight.setPower(0);
-        wheelFrontLeft.setPower(0);
+        setPower(0,0,0,0);
     }
 
     public void autoIntake() {

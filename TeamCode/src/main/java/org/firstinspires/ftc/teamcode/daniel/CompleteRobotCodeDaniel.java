@@ -32,16 +32,9 @@ package org.firstinspires.ftc.teamcode.daniel;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
-
-import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
+import org.firstinspires.ftc.teamcode.agitari.NaHRoboticsTeamBot;
 
 
 /**
@@ -60,14 +53,14 @@ import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
 @TeleOp(name="CompleteRobotCodeDaniel", group="Linear Opmode")
 @Disabled
 public class CompleteRobotCodeDaniel extends LinearOpMode {
-    public AgitariTeamBot2 bot;
+    public NaHRoboticsTeamBot bot;
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        bot = new AgitariTeamBot2();
+        bot = new NaHRoboticsTeamBot();
         bot.init(this,hardwareMap);
 
         telemetry.addData("Status", "Initialized");

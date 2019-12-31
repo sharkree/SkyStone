@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode.daniel;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -38,7 +37,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
+import org.firstinspires.ftc.teamcode.agitari.NaHRoboticsTeamBot;
 
 import java.util.List;
 
@@ -53,7 +52,6 @@ import java.util.List;
  * is explained below.
  */
 @TeleOp(name = "Concept:TensorFlowObjectDetectionDaniel", group = "Concept")
-//@Disabled
 public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -71,7 +69,7 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY = AgitariTeamBot2.VUFORIA_LICENSE_KEY;
+    private static final String VUFORIA_KEY = NaHRoboticsTeamBot.VUFORIA_LICENSE_KEY;
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -150,6 +148,7 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = CameraDirection.BACK;
+        parameters.camera
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);

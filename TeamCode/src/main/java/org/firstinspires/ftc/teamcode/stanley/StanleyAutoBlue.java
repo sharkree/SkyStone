@@ -29,8 +29,6 @@
 
 package org.firstinspires.ftc.teamcode.stanley;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -38,13 +36,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
+import org.firstinspires.ftc.teamcode.agitari.NaHRoboticsTeamBot;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
@@ -83,7 +80,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
 @Disabled
 public class StanleyAutoBlue extends LinearOpMode {
     /* Declare OpMode members. */
-    AgitariTeamBot2 robot   = new AgitariTeamBot2();   // Use Agitari's team bot
+    NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use Agitari's team bot
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.

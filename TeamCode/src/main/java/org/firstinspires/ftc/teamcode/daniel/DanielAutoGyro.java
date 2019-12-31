@@ -30,17 +30,13 @@
 package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
+import org.firstinspires.ftc.teamcode.agitari.NaHRoboticsTeamBot;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
@@ -79,7 +75,7 @@ import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
 //@Disabled
 public class DanielAutoGyro extends LinearOpMode {
     /* Declare OpMode members. */
-    AgitariTeamBot2 robot   = new AgitariTeamBot2();   // Use Agitari's team bot
+    NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use Agitari's team bot
 
     static final double     DRIVE_SPEED             = 1.0;     // Nominal speed for better accuracy.
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
