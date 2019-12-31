@@ -362,10 +362,7 @@ public class AgitariTeamBot2
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            wheelFrontLeft.setPower(-speed);
-            wheelFrontRight.setPower(speed);
-            wheelBackLeft.setPower(-speed);
-            wheelBackRight.setPower(speed);
+            forward(speed);
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opMode.opModeIsActive() &&
@@ -415,10 +412,7 @@ public class AgitariTeamBot2
             }
 
             // Stop all motion;
-            wheelBackLeft.setPower(0);
-            wheelBackLeft.setPower(0);
-            wheelFrontRight.setPower(0);
-            wheelFrontLeft.setPower(0);
+            stop();
 
             // Turn off RUN_TO_POSITION
             wheelFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -428,4 +422,48 @@ public class AgitariTeamBot2
         }
     }
 
+    private void forward(double speed) {
+        wheelFrontLeft.setPower(-speed);
+        wheelFrontRight.setPower(speed);
+        wheelBackLeft.setPower(-speed);
+        wheelBackRight.setPower(speed);
+    }
+    private void stop() {
+        wheelBackLeft.setPower(0);
+        wheelBackLeft.setPower(0);
+        wheelFrontRight.setPower(0);
+        wheelFrontLeft.setPower(0);
+    }
+
+    public void autoIntake() {
+        ElapsedTime holdTimer = new ElapsedTime();
+        startIntake();
+        // Move forward a little bit
+        forward(0.75);
+        holdTimer.reset();
+        while (opMode.opModeIsActive() && holdTimer.time() < 1) {
+            // Update telemetry & Allow time for other processes to run.
+            telemetry.update();
+        }
+        stop();
+        stopIntake();
+
+        // keep looping while we have time remaining.
+        holdTimer.reset();
+        while (opMode.opModeIsActive() && holdTimer.time() < 0.50) {
+            // Update telemetry & Allow time for other processes to run.
+            telemetry.update();
+        }
+        // Stop all intake;
+
+        startIntake();
+
+        holdTimer.reset();
+        while (opMode.opModeIsActive() && holdTimer.time() < 0.50) {
+            // Update telemetry & Allow time for other processes to run.
+            telemetry.update();
+        }
+        // Stop all intake;
+        stopIntake();
+    }
 }
