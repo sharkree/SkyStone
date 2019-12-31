@@ -57,6 +57,9 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
+    /* Declare OpMode members. */
+    NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use Agitari's team bot
+
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -85,6 +88,8 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        robot.init(this, hardwareMap);
+
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -108,26 +113,26 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
+        Recognition targetStone = null;
+        boolean isTargetAtCenter = false;
         if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
+            while(true) {
+                targetStone = findTarget();
+                if (targetStone == null) {
+                    telemetry.addData(">", "Can't find a stone targe");
+                    break;
+                }
 
-                      // step through the list of recognitions and display boundary info.
-                      int i = 0;
-                      for (Recognition recognition : updatedRecognitions) {
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                          recognition.getLeft(), recognition.getTop());
-                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                recognition.getRight(), recognition.getBottom());
-                      }
-                      telemetry.update();
-                    }
+                double targetCenter = (targetStone.getTop() + targetStone.getBottom());
+                if (targetCenter < 500) {
+                    // Strafe right
+                    robot.strafeRight();
+                } else if (targetCenter > 700) {
+                    // Strafe left
+                    robot.strafeLeft();
+                } else {
+                    isTargetAtCenter = true;
+                    break;
                 }
             }
         }
@@ -135,6 +140,42 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
         if (tfod != null) {
             tfod.shutdown();
         }
+
+        // Drive forward and intake
+        if (isTargetAtCenter) {
+            robot.autoIntake();
+        }
+    }
+
+    private Recognition findTarget() {
+        while (opModeIsActive()) {
+            if (tfod != null) {
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                  telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+                  // step through the list of recognitions and display boundary info.
+                  int i = 0;
+                  for (Recognition recognition : updatedRecognitions) {
+                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                            recognition.getLeft(), recognition.getTop());
+                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                            recognition.getRight(), recognition.getBottom());
+
+                    if ("Stone".equals(recognition.getLabel()) ||
+                            "Skystone".equals(recognition.getLabel())) {
+                        return  recognition;
+                    }
+                  }
+                  telemetry.update();
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -148,7 +189,6 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = CameraDirection.BACK;
-        parameters.camera
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);

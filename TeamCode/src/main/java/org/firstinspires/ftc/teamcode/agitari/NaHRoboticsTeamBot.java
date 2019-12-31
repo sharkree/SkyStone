@@ -27,20 +27,19 @@ import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
  *
  * Note:  All names are lower case and some have single spaces between words.
  */
-public class NaHRoboticsTeamBot
-{
-    public static final double MID_SERVO = 0.5 ;
+public class NaHRoboticsTeamBot {
+    public static final double MID_SERVO = 0.5;
     public static final double HD_HEX_COUNTS_PER_ROTATION = 1120; //  Rev HD Hex motor
     public static final double CORE_HEX_COUNTS_PER_ROTATION = 288; //  Rev Core Hex motor
 
-    public static final double DRIVE_GEAR_REDUCTION  = 1.0;     // This is < 1.0 if geared UP
-    public static final double WHEEL_DIAMETER_INCHES = 2.953 ;     // 75mm Rev Mecanum Wheels
+    public static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+    public static final double WHEEL_DIAMETER_INCHES = 2.953;     // 75mm Rev Mecanum Wheels
     public static final double CORE_HEX_COUNTS_PER_INCH =
             (CORE_HEX_COUNTS_PER_ROTATION * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
-    private static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    private static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    private static final double     P_DRIVE_COEFF           = 0.075;     // Larger is more responsive, but also less stable
+    private static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
+    private static final double P_TURN_COEFF = 0.1;     // Larger is more responsive, but also less stable
+    private static final double P_DRIVE_COEFF = 0.075;     // Larger is more responsive, but also less stable
 
     public static final String VUFORIA_LICENSE_KEY = "AXIXrHj/////AAABmeEMqruXWUCBuoatjfPPvO" +
             "Qv4U/tRYoBqMMvXyAoHLHWYYYQSPx3ZOZ7GcdOCuTHK5HYM6oJ4gX1ZTxVec9RI4xa5ZOSPgTQvSo" +
@@ -49,7 +48,7 @@ public class NaHRoboticsTeamBot
             "lN35bbLE6yNSyBOV86FaSZ0UuBNXfCX4O0IWh7qSBXcU/cQVMw3faOu8Hx3LiReY1lcQ1I4q0QP05" +
             "IUr5l71eQEMFLO71ByBWG95IkHucF5iyrA";
 
-    public static final double ARM_POWER = -0.75 ;
+    public static final double ARM_POWER = -0.75;
 
     /* Public OpMode members. */
     public DcMotor wheelFrontLeft = null;
@@ -68,11 +67,13 @@ public class NaHRoboticsTeamBot
     public Servo grabber = null;
     public Servo turnTable = null;
 
-    /** REV expansion hub's built-in Gyro sensor. */
+    /**
+     * REV expansion hub's built-in Gyro sensor.
+     */
     public BNO055IMU imu;
 
     /* local OpMode members. */
-    private HardwareMap hwMap =  null;
+    private HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
     private double turbo;
@@ -90,9 +91,9 @@ public class NaHRoboticsTeamBot
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        wheelFrontLeft  = hwMap.get(DcMotor.class, "wheel_front_left");
+        wheelFrontLeft = hwMap.get(DcMotor.class, "wheel_front_left");
         wheelFrontRight = hwMap.get(DcMotor.class, "wheel_front_right");
-        wheelBackLeft  = hwMap.get(DcMotor.class, "wheel_back_left");
+        wheelBackLeft = hwMap.get(DcMotor.class, "wheel_back_left");
         wheelBackRight = hwMap.get(DcMotor.class, "wheel_back_right");
 
         wheelFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -100,7 +101,7 @@ public class NaHRoboticsTeamBot
         wheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         wheelBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        intakeLeft  = hwMap.get(DcMotor.class, "intake_left");
+        intakeLeft = hwMap.get(DcMotor.class, "intake_left");
         intakeRight = hwMap.get(DcMotor.class, "intake_right");
 
         intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -127,7 +128,7 @@ public class NaHRoboticsTeamBot
         imu.initialize(parameters);
     }
 
-    public void setPower(Gamepad gamepad){
+    public void setPower(Gamepad gamepad) {
         double lx = gamepad.left_stick_x;
         double ly = gamepad.left_stick_y;
         double rx = gamepad.right_stick_x;
@@ -204,7 +205,7 @@ public class NaHRoboticsTeamBot
 
 
     //Gyro Stuff for shortening everyone's autonomous
-    public void gyroTurn (double speed, double angle) {
+    public void gyroTurn(double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
         while (opMode.opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
@@ -214,14 +215,14 @@ public class NaHRoboticsTeamBot
     }
 
     /**
-     *  Method to obtain & hold a heading for a finite amount of time
-     *  Move will stop once the requested time has elapsed
+     * Method to obtain & hold a heading for a finite amount of time
+     * Move will stop once the requested time has elapsed
      *
-     * @param speed      Desired speed of turn.
-     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
-     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-     *                   If a relative angle is required, add/subtract from current heading.
-     * @param holdTime   Length of time (in seconds) to hold the specified heading.
+     * @param speed    Desired speed of turn.
+     * @param angle    Absolute Angle (in Degrees) relative to last gyro reset.
+     *                 0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                 If a relative angle is required, add/subtract from current heading.
+     * @param holdTime Length of time (in seconds) to hold the specified heading.
      */
     public void gyroHold(double speed, double angle, double holdTime) {
 
@@ -245,17 +246,17 @@ public class NaHRoboticsTeamBot
     /**
      * Perform one cycle of closed loop heading control.
      *
-     * @param speed     Desired speed of turn.
-     * @param angle     Absolute Angle (in Degrees) relative to last gyro reset.
-     *                  0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-     *                  If a relative angle is required, add/subtract from current heading.
-     * @param PCoeff    Proportional Gain coefficient
+     * @param speed  Desired speed of turn.
+     * @param angle  Absolute Angle (in Degrees) relative to last gyro reset.
+     *               0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *               If a relative angle is required, add/subtract from current heading.
+     * @param PCoeff Proportional Gain coefficient
      * @return
      */
     boolean onHeading(double speed, double angle, double PCoeff) {
-        double   error ;
-        double   steer ;
-        boolean  onTarget = false ;
+        double error;
+        double steer;
+        boolean onTarget = false;
         double leftSpeed;
         double rightSpeed;
 
@@ -264,14 +265,13 @@ public class NaHRoboticsTeamBot
 
         if (Math.abs(error) <= HEADING_THRESHOLD) {
             steer = 0.0;
-            leftSpeed  = 0.0;
+            leftSpeed = 0.0;
             rightSpeed = 0.0;
             onTarget = true;
-        }
-        else {
+        } else {
             steer = getSteer(error, PCoeff);
-            rightSpeed  = speed * steer;
-            leftSpeed   = -rightSpeed;
+            rightSpeed = speed * steer;
+            leftSpeed = -rightSpeed;
         }
 
         // Send desired speeds to motors.
@@ -290,9 +290,10 @@ public class NaHRoboticsTeamBot
 
     /**
      * getError determines the error between the target angle and the robot's current heading
-     * @param   targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
-     * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
-     *          +ve error means the robot should turn LEFT (CCW) to reduce error.
+     *
+     * @param targetAngle Desired angle (relative to global reference established at last Gyro Reset).
+     * @return error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
+     * +ve error means the robot should turn LEFT (CCW) to reduce error.
      */
     public double getError(double targetAngle) {
         double robotError;
@@ -300,45 +301,47 @@ public class NaHRoboticsTeamBot
         // calculate error in -179 to +180 range  (
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         robotError = targetAngle - angles.firstAngle;
-        while (robotError > 180)  robotError -= 360;
+        while (robotError > 180) robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
 
     /**
      * returns desired steering force.  +/- 1 range.  +ve = steer left
-     * @param error   Error angle in robot relative degrees
-     * @param PCoeff  Proportional Gain Coefficient
+     *
+     * @param error  Error angle in robot relative degrees
+     * @param PCoeff Proportional Gain Coefficient
      * @return
      */
     public double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1, 1);
     }
+
     /**
-     *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
-     *  Move will stop if either of these conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Driver stops the opmode running.
+     * Method to drive on a fixed compass bearing (angle), based on encoder counts.
+     * Move will stop if either of these conditions occur:
+     * 1) Move gets to the desired position
+     * 2) Driver stops the opmode running.
      *
-     * @param speed      Target speed for forward motion.  Should allow for _/- variance for adjusting heading
-     * @param distance   Distance (in inches) to move from current position.  Negative distance means move backwards.
-     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
-     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-     *                   If a relative angle is required, add/subtract from current heading.
+     * @param speed    Target speed for forward motion.  Should allow for _/- variance for adjusting heading
+     * @param distance Distance (in inches) to move from current position.  Negative distance means move backwards.
+     * @param angle    Absolute Angle (in Degrees) relative to last gyro reset.
+     *                 0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                 If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroDrive (double speed, double distance, double angle) {
-        int     moveCounts;
-        double  max;
-        double  error;
-        double  steer;
-        double  leftSpeed;
-        double  rightSpeed;
+    public void gyroDrive(double speed, double distance, double angle) {
+        int moveCounts;
+        double max;
+        double error;
+        double steer;
+        double leftSpeed;
+        double rightSpeed;
 
         // Ensure that the opmode is still active
         if (opMode.opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            moveCounts = (int)(distance * CORE_HEX_COUNTS_PER_INCH);
+            moveCounts = (int) (distance * CORE_HEX_COUNTS_PER_INCH);
 
             // Set Target and Turn On RUN_TO_POSITION
             int newFrontLeftTarget = wheelFrontLeft.getCurrentPosition() - moveCounts;
@@ -380,8 +383,7 @@ public class NaHRoboticsTeamBot
 
                 // Normalize speeds if either one exceeds +/- 1.0;
                 max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-                if (max > 1.0)
-                {
+                if (max > 1.0) {
                     leftSpeed /= max;
                     rightSpeed /= max;
                 }
@@ -392,18 +394,18 @@ public class NaHRoboticsTeamBot
                 wheelBackRight.setPower(rightSpeed);
 
                 // Display drive status for the driver.
-                telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
-                telemetry.addData("Target",  "%7d:%7d:%7d:%7d",
+                telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
+                telemetry.addData("Target", "%7d:%7d:%7d:%7d",
                         newFrontLeftTarget,
                         newFrontRightTarget,
                         newBackLeftTarget,
                         newBackRightTarget);
-                telemetry.addData("Actual",  "%7d:%7d:%7d:%7d",
+                telemetry.addData("Actual", "%7d:%7d:%7d:%7d",
                         wheelFrontLeft.getCurrentPosition(),
                         wheelFrontRight.getCurrentPosition(),
                         wheelBackLeft.getCurrentPosition(),
                         wheelBackRight.getCurrentPosition());
-                telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
+                telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
                 telemetry.update();
             }
 
@@ -435,7 +437,7 @@ public class NaHRoboticsTeamBot
     }
 
     private void stop() {
-        setPower(0,0,0,0);
+        setPower(0, 0, 0, 0);
     }
 
     public void autoIntake() {
@@ -468,5 +470,37 @@ public class NaHRoboticsTeamBot
         }
         // Stop all intake;
         stopIntake();
+    }
+
+    public void strafeRight() {
+        ElapsedTime holdTimer = new ElapsedTime();
+
+        wheelBackRight.setPower(0.25);
+        wheelBackLeft.setPower(-0.25);
+        wheelFrontLeft.setPower(0.25);
+        wheelFrontRight.setPower(-0.25);
+
+        holdTimer.reset();
+        while (opMode.opModeIsActive() && holdTimer.time() < 0.25) {
+            // Update telemetry & Allow time for other processes to run.
+            telemetry.update();
+        }
+        setPower(0, 0, 0, 0);
+    }
+
+    public void strafeLeft() {
+        ElapsedTime holdTimer = new ElapsedTime();
+
+        wheelBackRight.setPower(-0.25);
+        wheelBackLeft.setPower(0.25);
+        wheelFrontLeft.setPower(-0.25);
+        wheelFrontRight.setPower(0.25);
+
+        holdTimer.reset();
+        while (opMode.opModeIsActive() && holdTimer.time() < 0.25) {
+            // Update telemetry & Allow time for other processes to run.
+            telemetry.update();
+        }
+        setPower(0, 0, 0, 0);
     }
 }
