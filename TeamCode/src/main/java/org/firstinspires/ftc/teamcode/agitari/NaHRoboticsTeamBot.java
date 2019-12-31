@@ -430,10 +430,10 @@ public class NaHRoboticsTeamBot {
         wheelBackLeft.setPower(backLeftSpeed);
         wheelBackRight.setPower(backRightSpeed);
 
-        telemetry.addData("Power wheelFrontRightPower", "Power (%.2f)", frontRightSpeed);
-        telemetry.addData("Power wheelFrontLeftPower", "Power (%.2f)", frontLeftSpeed);
-        telemetry.addData("Power wheelBackRightPower", "Power (%.2f)", backRightSpeed);
-        telemetry.addData("Power wheelBackLeftPower", "Power (%.2f)", backLeftSpeed);
+        telemetry.addData("wheelFrontRightPower", "Power (%.2f)", frontRightSpeed);
+        telemetry.addData("wheelFrontLeftPower", "Power (%.2f)", frontLeftSpeed);
+        telemetry.addData("wheelBackRightPower", "Power (%.2f)", backRightSpeed);
+        telemetry.addData("wheelBackLeftPower", "Power (%.2f)", backLeftSpeed);
     }
 
     private void stop() {
@@ -441,66 +441,41 @@ public class NaHRoboticsTeamBot {
     }
 
     public void autoIntake() {
-        ElapsedTime holdTimer = new ElapsedTime();
+        // Start intake and move forward a little bit
         startIntake();
-        // Move forward a little bit
         forward(0.75);
-        holdTimer.reset();
-        while (opMode.opModeIsActive() && holdTimer.time() < 1.5) {
-            // Update telemetry & Allow time for other processes to run.
-            telemetry.update();
-        }
+        holdTime(1.5);
+
+        // Pause intake for 0.5 seconds to prevent stone from wobbling
         stop();
         stopIntake();
+        holdTime(0.5);
 
-        // keep looping while we have time remaining.
-        holdTimer.reset();
-        while (opMode.opModeIsActive() && holdTimer.time() < 0.50) {
-            // Update telemetry & Allow time for other processes to run.
-            telemetry.update();
-        }
-        // Stop all intake;
-
+        // Start intake again to get stone into the place
         startIntake();
+        holdTime(0.5);
 
-        holdTimer.reset();
-        while (opMode.opModeIsActive() && holdTimer.time() < 0.50) {
-            // Update telemetry & Allow time for other processes to run.
-            telemetry.update();
-        }
-        // Stop all intake;
         stopIntake();
     }
 
-    public void strafeRight() {
+    private void holdTime(double seconds) {
         ElapsedTime holdTimer = new ElapsedTime();
-
-        wheelBackRight.setPower(0.25);
-        wheelBackLeft.setPower(-0.20);
-        wheelFrontLeft.setPower(0.20);
-        wheelFrontRight.setPower(-0.25);
-
         holdTimer.reset();
-        while (opMode.opModeIsActive() && holdTimer.time() < 0.25) {
+        while (opMode.opModeIsActive() && holdTimer.time() < seconds) {
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
-        setPower(0, 0, 0, 0);
     }
 
     public void strafeLeft() {
-        ElapsedTime holdTimer = new ElapsedTime();
+        setPower(-0.25, 0.2, 0.25, -0.2);
+        holdTime(0.25);
+        stop();
+    }
 
-        wheelBackRight.setPower(-0.20);
-        wheelBackLeft.setPower(0.25);
-        wheelFrontLeft.setPower(-0.25);
-        wheelFrontRight.setPower(0.20);
-
-        holdTimer.reset();
-        while (opMode.opModeIsActive() && holdTimer.time() < 0.25) {
-            // Update telemetry & Allow time for other processes to run.
-            telemetry.update();
-        }
-        setPower(0, 0, 0, 0);
+    public void strafeRight() {
+        setPower(0.2, -0.25, -0.2, 0.25);
+        holdTime(0.25);
+        stop();
     }
 }
