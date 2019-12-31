@@ -446,7 +446,7 @@ public class NaHRoboticsTeamBot {
         // Move forward a little bit
         forward(0.75);
         holdTimer.reset();
-        while (opMode.opModeIsActive() && holdTimer.time() < 1) {
+        while (opMode.opModeIsActive() && holdTimer.time() < 1.5) {
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
@@ -476,8 +476,8 @@ public class NaHRoboticsTeamBot {
         ElapsedTime holdTimer = new ElapsedTime();
 
         wheelBackRight.setPower(0.25);
-        wheelBackLeft.setPower(-0.25);
-        wheelFrontLeft.setPower(0.25);
+        wheelBackLeft.setPower(-0.20);
+        wheelFrontLeft.setPower(0.20);
         wheelFrontRight.setPower(-0.25);
 
         holdTimer.reset();
@@ -491,10 +491,10 @@ public class NaHRoboticsTeamBot {
     public void strafeLeft() {
         ElapsedTime holdTimer = new ElapsedTime();
 
-        wheelBackRight.setPower(-0.25);
+        wheelBackRight.setPower(-0.20);
         wheelBackLeft.setPower(0.25);
         wheelFrontLeft.setPower(-0.25);
-        wheelFrontRight.setPower(0.25);
+        wheelFrontRight.setPower(0.20);
 
         holdTimer.reset();
         while (opMode.opModeIsActive() && holdTimer.time() < 0.25) {
