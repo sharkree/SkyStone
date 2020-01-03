@@ -90,6 +90,8 @@ public class NaHRoboticsTeamBot {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
+
+
         // Define and Initialize Motors
         wheelFrontLeft = hwMap.get(DcMotor.class, "wheel_front_left");
         wheelFrontRight = hwMap.get(DcMotor.class, "wheel_front_right");
@@ -100,6 +102,8 @@ public class NaHRoboticsTeamBot {
         wheelBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         wheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         wheelBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        resetMotors();
 
         intakeLeft = hwMap.get(DcMotor.class, "intake_left");
         intakeRight = hwMap.get(DcMotor.class, "intake_right");
@@ -339,36 +343,29 @@ public class NaHRoboticsTeamBot {
 
         // Ensure that the opmode is still active
         if (opMode.opModeIsActive()) {
+            resetMotors();
 
             // Determine new target position, and pass to motor controller
             moveCounts = (int) (distance * CORE_HEX_COUNTS_PER_INCH);
 
             // Set Target and Turn On RUN_TO_POSITION
-            int newFrontLeftTarget = wheelFrontLeft.getCurrentPosition() - moveCounts;
-            int newFrontRightTarget = wheelFrontRight.getCurrentPosition() + moveCounts;
-            wheelFrontLeft.setTargetPosition(newFrontLeftTarget);
-            wheelFrontRight.setTargetPosition(newFrontRightTarget);
+            int frontLeftTarget = wheelFrontLeft.getCurrentPosition()+ moveCounts;
+            int frontRightTarget = wheelFrontRight.getCurrentPosition() + moveCounts;
+            int backLeftTarget = wheelBackLeft.getCurrentPosition() + moveCounts;
+            int backRightTarget = wheelBackRight.getCurrentPosition() + moveCounts;
 
-            int newBackLeftTarget = wheelBackLeft.getCurrentPosition() - moveCounts;
-            int newBackRightTarget = wheelBackRight.getCurrentPosition() + moveCounts;
-            wheelBackLeft.setTargetPosition(newBackLeftTarget);
-            wheelBackRight.setTargetPosition(newBackRightTarget);
-
-            wheelBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            wheelBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            wheelFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            wheelFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            runToTarget(frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
             forward(speed);
-
+            
             // keep looping while we are still active, and BOTH motors are running.
             while (opMode.opModeIsActive() &&
-                    (wheelFrontLeft.isBusy() ||
-                            wheelFrontRight.isBusy() ||
-                            wheelBackLeft.isBusy() ||
-                            wheelBackRight.isBusy())) {
+                    (isOffTarget(wheelFrontLeft, frontLeftTarget, 10)
+                            && isOffTarget(wheelFrontRight, frontRightTarget, 10)
+                            && isOffTarget(wheelBackLeft, backLeftTarget, 10)
+                            && isOffTarget(wheelBackRight, backRightTarget, 10))) {
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -388,18 +385,15 @@ public class NaHRoboticsTeamBot {
                     rightSpeed /= max;
                 }
 
-                wheelFrontLeft.setPower(leftSpeed);
-                wheelFrontRight.setPower(rightSpeed);
-                wheelBackLeft.setPower(leftSpeed);
-                wheelBackRight.setPower(rightSpeed);
+                setPower(leftSpeed, rightSpeed, leftSpeed, rightSpeed);
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
                 telemetry.addData("Target", "%7d:%7d:%7d:%7d",
-                        newFrontLeftTarget,
-                        newFrontRightTarget,
-                        newBackLeftTarget,
-                        newBackRightTarget);
+                        frontLeftTarget,
+                        frontRightTarget,
+                        backLeftTarget,
+                        backRightTarget);
                 telemetry.addData("Actual", "%7d:%7d:%7d:%7d",
                         wheelFrontLeft.getCurrentPosition(),
                         wheelFrontRight.getCurrentPosition(),
@@ -409,15 +403,127 @@ public class NaHRoboticsTeamBot {
                 telemetry.update();
             }
 
-            // Stop all motion;
-            stop();
+            // Turn off RUN_TO_POSITION
+            resetMotors();
+        }
+    }
+
+    /**
+     * Method to drive sideways on a fixed compass bearing (angle), based on encoder counts.
+     * Move will stop if either of these conditions occur:
+     * 1) Move gets to the desired position
+     * 2) Driver stops the opmode running.
+     *
+     * @param speed    Target speed for forward motion.  Should allow for _/- variance for adjusting heading
+     * @param distance Distance (in inches) to move from current position.  Negative distance means move left.
+     * @param angle    Absolute Angle (in Degrees) relative to last gyro reset.
+     *                 0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                 If a relative angle is required, add/subtract from current heading.
+     */
+    public void gyroStrafeSideway(double speed, double distance, double angle) {
+        int moveCounts;
+        double max;
+        double error;
+        double steer;
+        double frontSpeed;
+        double backSpeed;
+
+        // Ensure that the opmode is still active
+        if (opMode.opModeIsActive()) {
+            resetMotors();
+
+            // Determine new target position, and pass to motor controller
+            moveCounts = (int) Math.abs(distance * CORE_HEX_COUNTS_PER_INCH);
+
+            // Set Target and Turn On RUN_TO_POSITION
+            int sign = distance > 0 ? 1 : -1;
+            int frontLeftTarget = wheelFrontLeft.getCurrentPosition() + sign * moveCounts;
+            int frontRightTarget = wheelFrontRight.getCurrentPosition() - sign * moveCounts;
+            int backLeftTarget = wheelBackLeft.getCurrentPosition() - sign * moveCounts;
+            int backRightTarget = wheelBackRight.getCurrentPosition() + sign * moveCounts;
+
+            runToTarget(frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
+
+            // start motion.
+            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            setPower(sign * speed, -sign * speed, -sign * speed,
+                    sign * speed);
+
+            // keep looping while we are still active, and BOTH motors are running.
+            while (opMode.opModeIsActive() &&
+                    (isOffTarget(wheelFrontLeft, frontLeftTarget, 10)
+                            && isOffTarget(wheelFrontRight, frontRightTarget, 10)
+                            && isOffTarget(wheelBackLeft, backLeftTarget, 10)
+                            && isOffTarget(wheelBackRight, backRightTarget, 10))) {
+
+                // adjust relative speed based on heading error.
+                error = getError(angle);
+                steer = getSteer(error, P_DRIVE_COEFF);
+
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (distance < 0)
+                    steer *= -1.0;
+
+                frontSpeed = speed - steer;
+                backSpeed = speed + steer;
+
+                // Normalize speeds if either one exceeds +/- 1.0;
+                max = Math.max(Math.abs(frontSpeed), Math.abs(backSpeed));
+                if (max > 1.0) {
+                    frontSpeed /= max;
+                    backSpeed /= max;
+                }
+
+                setPower(sign * frontSpeed, -sign * frontSpeed, -sign * backSpeed, sign * backSpeed);
+
+                // Display drive status for the driver.
+                telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
+                telemetry.addData("Target", "%7d:%7d:%7d:%7d",
+                        frontLeftTarget,
+                        frontRightTarget,
+                        backLeftTarget,
+                        backRightTarget);
+                telemetry.addData("Actual", "%7d:%7d:%7d:%7d",
+                        wheelFrontLeft.getCurrentPosition(),
+                        wheelFrontRight.getCurrentPosition(),
+                        wheelBackLeft.getCurrentPosition(),
+                        wheelBackRight.getCurrentPosition());
+                telemetry.addData("Sign", "%d", sign);
+                telemetry.addData("Speed", "%5.2f:%5.2f", frontSpeed, backSpeed);
+                telemetry.update();
+            }
 
             // Turn off RUN_TO_POSITION
-            wheelFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            wheelFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            wheelBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            wheelBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            resetMotors();
         }
+    }
+
+    private void runToTarget(int frontLeftTarget, int frontRightTarget, int backLeftTarget, int backRightTarget) {
+        wheelFrontLeft.setTargetPosition(frontLeftTarget);
+        wheelFrontRight.setTargetPosition(frontRightTarget);
+        wheelBackLeft.setTargetPosition(backLeftTarget);
+        wheelBackRight.setTargetPosition(backRightTarget);
+
+        wheelFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wheelFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wheelBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wheelBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    private void resetMotors() {
+        wheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wheelBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wheelBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        wheelFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wheelFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wheelBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wheelBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private boolean isOffTarget(DcMotor motor, int target, int tolerance) {
+        return Math.abs(motor.getCurrentPosition() - target) >= tolerance;
     }
 
     private void forward(double speed) {
@@ -430,10 +536,10 @@ public class NaHRoboticsTeamBot {
         wheelBackLeft.setPower(backLeftSpeed);
         wheelBackRight.setPower(backRightSpeed);
 
-        telemetry.addData("wheelFrontRightPower", "Power (%.2f)", frontRightSpeed);
-        telemetry.addData("wheelFrontLeftPower", "Power (%.2f)", frontLeftSpeed);
-        telemetry.addData("wheelBackRightPower", "Power (%.2f)", backRightSpeed);
-        telemetry.addData("wheelBackLeftPower", "Power (%.2f)", backLeftSpeed);
+        telemetry.addData("Front Left Power", "%.2f", frontLeftSpeed);
+        telemetry.addData("Front Right Power", "%.2f", frontRightSpeed);
+        telemetry.addData("Back Left Power", "%.2f", backLeftSpeed);
+        telemetry.addData("Back Right Power", "%.2f", backRightSpeed);
     }
 
     private void stop() {
@@ -443,8 +549,8 @@ public class NaHRoboticsTeamBot {
     public void autoIntake() {
         // Start intake and move forward a little bit
         startIntake();
-        forward(0.75);
-        holdTime(1.5);
+        forward(0.80);
+        holdTime(2.00);
 
         // Pause intake for 0.5 seconds to prevent stone from wobbling
         stop();
@@ -453,7 +559,7 @@ public class NaHRoboticsTeamBot {
 
         // Start intake again to get stone into the place
         startIntake();
-        holdTime(0.5);
+        holdTime(0.75);
 
         stopIntake();
     }
@@ -462,19 +568,18 @@ public class NaHRoboticsTeamBot {
         ElapsedTime holdTimer = new ElapsedTime();
         holdTimer.reset();
         while (opMode.opModeIsActive() && holdTimer.time() < seconds) {
-            // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
     }
 
     public void strafeLeft() {
-        setPower(-0.25, 0.2, 0.25, -0.2);
+        setPower(-0.25, 0.25, 0.25, -0.25);
         holdTime(0.25);
         stop();
     }
 
     public void strafeRight() {
-        setPower(0.2, -0.25, -0.2, 0.25);
+        setPower(0.25, -0.25, -0.25, 0.25);
         holdTime(0.25);
         stop();
     }
