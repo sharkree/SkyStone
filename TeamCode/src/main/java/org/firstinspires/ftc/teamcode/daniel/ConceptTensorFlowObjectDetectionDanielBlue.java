@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -56,8 +55,8 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Concept:TensorFlowObjectDetectionDaniel", group = "Concept")
-public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
+@Autonomous(name = "Concept:TensorFlowObjectDetectionDanielBlue", group = "Concept")
+public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -99,7 +98,7 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
         telemetry.update();
 
         // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
+        while (!isStopRequested() && !robot.imu.isGyroCalibrated()) {
             sleep(50);
             idle();
         }
@@ -141,37 +140,16 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
+        robot.gyroDrive(1.0, 14, 0);
+
         Recognition targetStone = null;
-        boolean isTargetAtHorizontalCenter = false;
-        boolean isTargetCloseEnough = false;
         if (opModeIsActive()) {
             while(true) {
                 targetStone = findTarget();
-                if (targetStone == null) {
-                    telemetry.addData(">", "Can't find a stone target");
-                    break;
-                }
-
-                if (!isTargetAtHorizontalCenter) {
-                    double targetCenter = (targetStone.getTop() + targetStone.getBottom()) / 2;
-                    if (targetCenter < 590) {
-                        // Strafe right
-                        robot.gyroStrafeSideway(0.7, 5, 0);
-                        continue;
-                    } else if (targetCenter > 690) {
-                        // Strafe left
-                        robot.gyroStrafeSideway(0.7, -5, 0);
-                        continue;
-                    } else {
-                        isTargetAtHorizontalCenter = true;
-                    }
-                }
-
-                double targetVerticalCenter = (targetStone.getLeft() + targetStone.getRight()) / 2;
-                if (targetVerticalCenter < 450) {
-                    robot.gyroDrive(0.7, 5, 0);
-                } else {
-                    isTargetCloseEnough = true;
+                if (targetStone != null) {
+                    telemetry.addData(">", "Stone is Avalible");
+                    robot.gyroTurn(0.25, 45);
+                    robot.intake();
                     break;
                 }
             }
@@ -179,17 +157,6 @@ public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
 
         if (tfod != null) {
             tfod.shutdown();
-        }
-
-        // Drive forward and intake
-        if (isTargetAtHorizontalCenter && isTargetCloseEnough) {
-            telemetry.addData("label", targetStone.getLabel());
-            telemetry.addData("  left,top", "%.03f , %.03f",
-                    targetStone.getLeft(), targetStone.getTop());
-            telemetry.addData("  right,bottom", "%.03f , %.03f",
-                    targetStone.getRight(), targetStone.getBottom());
-
-            robot.autoIntake();
         }
     }
 

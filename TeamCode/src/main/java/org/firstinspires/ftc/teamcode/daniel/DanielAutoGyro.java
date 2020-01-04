@@ -116,9 +116,9 @@ public class DanielAutoGyro extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
-//        robot.gyroDrive(DRIVE_SPEED, 50.0, 0.0);    // Drive FWD 48 inches
-        robot.gyroStrafeSideway(0.7, 50, 0);
-        robot.gyroStrafeSideway(0.7, -50, 0);
+        robot.gyroDrive(DRIVE_SPEED, 18.0, 0.0);    // Drive FWD 48 inches
+//        robot.gyroStrafeSideway(0.7, 50, 0);
+//        robot.gyroStrafeSideway(0.7, -50, 0);
 //        robot.gyroTurn(TURN_SPEED, -90.0);         // Turn  CCW to -45 Degrees
 //        robot.gyroHold(TURN_SPEED, -45.0, 0.5);    // Hold -45 Deg heading for a 1/2 second
 //        robot.gyroDrive(DRIVE_SPEED, 12.0, -45.0);  // Drive FWD 12 inches at 45 degrees

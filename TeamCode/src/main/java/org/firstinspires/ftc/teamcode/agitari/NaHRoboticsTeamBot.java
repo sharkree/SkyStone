@@ -511,6 +511,7 @@ public class NaHRoboticsTeamBot {
     }
 
     private void resetMotors() {
+        setPower(0, 0, 0, 0);
         wheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wheelBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -530,7 +531,7 @@ public class NaHRoboticsTeamBot {
         setPower(speed, speed, speed, speed);
     }
 
-    private void setPower(double frontLeftSpeed, double frontRightSpeed, double backLeftSpeed, double backRightSpeed) {
+    public void setPower(double frontLeftSpeed, double frontRightSpeed, double backLeftSpeed, double backRightSpeed) {
         wheelFrontLeft.setPower(frontLeftSpeed);
         wheelFrontRight.setPower(frontRightSpeed);
         wheelBackLeft.setPower(backLeftSpeed);
@@ -551,6 +552,23 @@ public class NaHRoboticsTeamBot {
         startIntake();
         forward(0.80);
         holdTime(2.00);
+
+        // Pause intake for 0.5 seconds to prevent stone from wobbling
+        stop();
+        stopIntake();
+        holdTime(0.5);
+
+        // Start intake again to get stone into the place
+        startIntake();
+        holdTime(0.75);
+
+        stopIntake();
+    }
+    public void intake() {
+        //start intake
+        startIntake();
+        forward(0.25);
+        holdTime(0.10);
 
         // Pause intake for 0.5 seconds to prevent stone from wobbling
         stop();
