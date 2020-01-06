@@ -196,9 +196,7 @@ public class NaHRoboticsTeamBot {
         grabber.setPosition(0);
     }
 
-    public void rotateIn() {
-        turnTable.setPosition(1);
-    }
+    public void rotateIn() { turnTable.setPosition(1); }
 
     public void rotateOut() {
         turnTable.setPosition(0);
@@ -579,7 +577,7 @@ public class NaHRoboticsTeamBot {
         stopIntake();
     }
 
-    private void holdTime(double seconds) {
+    public void holdTime(double seconds) {
         ElapsedTime holdTimer = new ElapsedTime();
         holdTimer.reset();
         while (opMode.opModeIsActive() && holdTimer.time() < seconds) {
