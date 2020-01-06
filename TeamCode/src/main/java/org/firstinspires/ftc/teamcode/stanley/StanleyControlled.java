@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.Range;
 
 
-import org.firstinspires.ftc.teamcode.agitari.NaHRoboticsTeamBot;
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 
 @TeleOp(name = "StanControllerBop", group = "Showcase Op Mode")

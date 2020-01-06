@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.daniel;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -41,7 +41,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 import java.util.List;
 
@@ -55,14 +54,16 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Concept:TensorFlowObjectDetectionDaniel", group = "Concept")
-public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
+
+//Courtesy of Daniel
+@Autonomous(name = "NaHRoboticsAutonomous", group = "Tournament")
+public class NaHRoboticsAutonomous extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
     /* Declare OpMode members. */
-    NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use Agitari's team bot
+    NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use NaH Robotic's team bot
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which

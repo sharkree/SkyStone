@@ -40,8 +40,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
-import org.firstinspires.ftc.teamcode.agitari.NaHRoboticsTeamBot;
+import org.firstinspires.ftc.teamcode.AgitariTeamBot;
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.

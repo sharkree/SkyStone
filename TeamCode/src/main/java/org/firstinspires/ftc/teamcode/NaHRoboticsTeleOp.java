@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.agitari;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -47,8 +47,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="NaH Robotics Manual OpMode", group="Linear Opmode")
-public class TeamManualOpMode extends LinearOpMode {
+@TeleOp(name="NaHRoboticsTeleOp", group="Tournament")
+public class NaHRoboticsTeleOp extends LinearOpMode {
     public NaHRoboticsTeamBot bot;
 
     // Declare OpMode members.

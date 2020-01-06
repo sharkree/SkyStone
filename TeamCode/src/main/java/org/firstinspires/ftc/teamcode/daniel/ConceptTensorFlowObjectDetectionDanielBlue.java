@@ -41,7 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.agitari.NaHRoboticsTeamBot;
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 import java.util.List;
 
@@ -146,11 +146,14 @@ public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
         if (opModeIsActive()) {
             while(true) {
                 targetStone = findTarget();
-                if (targetStone != null) {
-                    telemetry.addData(">", "Stone is Avalible");
-                    robot.gyroTurn(0.25, 45);
-                    robot.intake();
-                    break;
+                if (targetStone == null) {
+                    robot.gyroStrafeSideway(0.25, 1, 0);
+                    if (targetStone != null) {
+                        telemetry.addData(">", "Stone is Avalible");
+                        robot.gyroTurn(0.25, 45);
+                        robot.intake();
+                        break;
+                    }
                 }
             }
         }

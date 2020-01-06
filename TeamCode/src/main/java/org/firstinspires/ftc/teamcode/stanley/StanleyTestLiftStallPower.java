@@ -32,7 +32,7 @@ package org.firstinspires.ftc.teamcode.stanley;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.agitari.NaHRoboticsTeamBot;
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
