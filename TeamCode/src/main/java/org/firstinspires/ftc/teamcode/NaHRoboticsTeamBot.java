@@ -177,11 +177,11 @@ public class NaHRoboticsTeamBot {
     }
 
     public void liftUp() {
-        linearMotion.setPower(0.85);
+        linearMotion.setPower(1.00);
     }
 
     public void liftDown() {
-        linearMotion.setPower(-0.425);
+        linearMotion.setPower(-0.5);
     }
 
     public void stopLift() {
@@ -559,22 +559,15 @@ public class NaHRoboticsTeamBot {
 
         stopIntake();
     }
+    public void outtake() {
+        gyroDrive(1, 24, 0);
+        intakeLeft.setPower(-0.5);
+        intakeRight.setPower(-0.5);
+    }
     public void intake() {
-        //start intake
-        startIntake();
-        forward(0.25);
-        holdTime(0.10);
-
-        // Pause intake for 0.5 seconds to prevent stone from wobbling
-        stop();
-        stopIntake();
-        holdTime(0.5);
-
-        // Start intake again to get stone into the place
-        startIntake();
-        holdTime(0.75);
-
-        stopIntake();
+        gyroDrive(1, 6, 0);
+        intakeLeft.setPower(0.5);
+        intakeRight.setPower(0.5);
     }
 
     public void holdTime(double seconds) {
@@ -583,17 +576,5 @@ public class NaHRoboticsTeamBot {
         while (opMode.opModeIsActive() && holdTimer.time() < seconds) {
             telemetry.update();
         }
-    }
-
-    public void strafeLeft() {
-        setPower(-0.25, 0.25, 0.25, -0.25);
-        holdTime(0.25);
-        stop();
-    }
-
-    public void strafeRight() {
-        setPower(0.25, -0.25, -0.25, 0.25);
-        holdTime(0.25);
-        stop();
     }
 }

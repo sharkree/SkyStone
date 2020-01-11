@@ -162,24 +162,16 @@ public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
             tfod.shutdown();
         }
 
+        robot.gyroDrive(0.5, -6, 0);
         robot.gyroStrafeSideway(1, -108, 0);
         robot.gyroDrive(0.5, 4, 0);
         robot.closeClutch();
         robot.gyroTurn(0.75, 90);
         robot.gyroDrive(0.50, 6, 0);
         robot.openClutch();
-        robot.grabber.setPosition(0);
-        if (robot.grabber.getPosition() == 1) {
-            robot.linearMotion.setPower(0.50);
-            robot.holdTime(1.25);
-            return;
-        }
-        robot.turnTable.setPosition(0);
-        robot.grabber.setPosition(0);
-        robot.turnTable.setPosition(1);
-        robot.linearMotion.setPower(-0.25);
-        robot.gyroStrafeSideway(0.25, 5, 0);
-        robot.gyroDrive(1, -52, 0);
+        robot.gyroStrafeSideway(1, 24, 0);
+        robot.outtake();
+        robot.gyroStrafeSideway(0.25, -50, 0);
     }
 
     private Recognition findTarget() {
