@@ -45,7 +45,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
+import org.firstinspires.ftc.teamcode.AgitariTeamBot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ import java.util.List;
  */
 
 @TeleOp(name="Hongbing: Vuforia Navigation", group ="Showcase Op Mode")
-//@Disabled
+@Disabled
 public class HongbingVuforiaNavigation extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";

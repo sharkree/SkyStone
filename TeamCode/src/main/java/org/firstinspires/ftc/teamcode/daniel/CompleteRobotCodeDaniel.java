@@ -29,18 +29,12 @@
 
 package org.firstinspires.ftc.teamcode.daniel;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot;
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
-
-import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 
 /**
@@ -57,17 +51,17 @@ import static org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot.ARM_POWER;
  */
 
 @TeleOp(name="CompleteRobotCodeDaniel", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class CompleteRobotCodeDaniel extends LinearOpMode {
-    public AgitariTeamBot2 bot;
+    public NaHRoboticsTeamBot bot;
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        bot = new AgitariTeamBot2();
-        bot.init(hardwareMap);
+        bot = new NaHRoboticsTeamBot();
+        bot.init(this,hardwareMap);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -76,8 +70,9 @@ public class CompleteRobotCodeDaniel extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            bot.setPower(gamepad1, telemetry);
+            bot.setPower(gamepad1);
 
+            bot.turnTable.setPosition(1);
             //Open and Close Clutch to grab foundation
             if (gamepad1.right_bumper) {
                 bot.openClutch();
@@ -89,6 +84,9 @@ public class CompleteRobotCodeDaniel extends LinearOpMode {
             //Intake wheels
             if (gamepad1.x)  {
                 bot.startIntake();
+            }
+            else if (gamepad1.y)  {
+                bot.revIntake();
             }
             else {
                 bot.stopIntake();
@@ -125,6 +123,6 @@ public class CompleteRobotCodeDaniel extends LinearOpMode {
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
-       }
+        }
     }
 }

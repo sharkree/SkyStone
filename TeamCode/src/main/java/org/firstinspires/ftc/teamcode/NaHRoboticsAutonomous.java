@@ -27,18 +27,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hongbing;
+package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.AgitariTeamBot;
 
 import java.util.List;
 
@@ -52,12 +54,16 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Hongbing: TensorFlow Object Detection", group = "Showcase Op Mode")
-@Disabled
-public class HongbingTensorFlowObjectDetection extends LinearOpMode {
+
+//Courtesy of Daniel
+@Autonomous(name = "NaHRoboticsAutonomous", group = "Tournament")
+public class NaHRoboticsAutonomous extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
+
+    /* Declare OpMode members. */
+    NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use NaH Robotic's team bot
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -71,7 +77,7 @@ public class HongbingTensorFlowObjectDetection extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY = AgitariTeamBot.VUFORIA_LICENSE_KEY;
+    private static final String VUFORIA_KEY = NaHRoboticsTeamBot.VUFORIA_LICENSE_KEY;
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -87,6 +93,31 @@ public class HongbingTensorFlowObjectDetection extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        robot.init(this, hardwareMap);
+
+        telemetry.addData(">", "Calibrating Gyro");    //
+        telemetry.update();
+
+        // make sure the gyro is calibrated before continuing
+        while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
+            sleep(50);
+            idle();
+        }
+
+        telemetry.addData(">", "Robot Ready.");    //
+        telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
+        telemetry.update();
+
+        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
+        while (!isStarted()) {
+            Orientation angles = robot.imu.getAngularOrientation(
+                    AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            telemetry.addData(">", "get angle");
+            telemetry.update();
+            telemetry.addData(">", "Robot Heading = %f", angles.firstAngle);
+            telemetry.update();
+        }
+
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -110,10 +141,63 @@ public class HongbingTensorFlowObjectDetection extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
+        Recognition targetStone = null;
+        boolean isTargetAtHorizontalCenter = false;
+        boolean isTargetCloseEnough = false;
+        if (opModeIsActive()) {
+            while(true) {
+                targetStone = findTarget();
+                if (targetStone == null) {
+                    telemetry.addData(">", "Can't find a stone target");
+                    break;
+                }
+
+                if (!isTargetAtHorizontalCenter) {
+                    double targetCenter = (targetStone.getTop() + targetStone.getBottom()) / 2;
+                    if (targetCenter < 590) {
+                        // Strafe right
+                        robot.gyroStrafeSideway(0.7, 5, 0);
+                        continue;
+                    } else if (targetCenter > 690) {
+                        // Strafe left
+                        robot.gyroStrafeSideway(0.7, -5, 0);
+                        continue;
+                    } else {
+                        isTargetAtHorizontalCenter = true;
+                    }
+                }
+
+                double targetVerticalCenter = (targetStone.getLeft() + targetStone.getRight()) / 2;
+                if (targetVerticalCenter < 450) {
+                    robot.gyroDrive(0.7, 5, 0);
+                } else {
+                    isTargetCloseEnough = true;
+                    break;
+                }
+            }
+        }
+
+        if (tfod != null) {
+            tfod.shutdown();
+        }
+
+        // Drive forward and intake
+        if (isTargetAtHorizontalCenter && isTargetCloseEnough) {
+            telemetry.addData("label", targetStone.getLabel());
+            telemetry.addData("  left,top", "%.03f , %.03f",
+                    targetStone.getLeft(), targetStone.getTop());
+            telemetry.addData("  right,bottom", "%.03f , %.03f",
+                    targetStone.getRight(), targetStone.getBottom());
+
+            robot.autoIntake();
+        }
+    }
+
+    private Recognition findTarget() {
         while (opModeIsActive()) {
             if (tfod != null) {
-                // getUpdatedRecognitions() will return null if no new information is available
-                // since the last time that call was made.
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
                   telemetry.addData("# Object Detected", updatedRecognitions.size());
@@ -123,18 +207,21 @@ public class HongbingTensorFlowObjectDetection extends LinearOpMode {
                   for (Recognition recognition : updatedRecognitions) {
                     telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                     telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                      recognition.getLeft(), recognition.getTop());
+                            recognition.getLeft(), recognition.getTop());
                     telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                             recognition.getRight(), recognition.getBottom());
+
+                    if (//"Stone".equals(recognition.getLabel()) ||
+                            "Skystone".equals(recognition.getLabel())) {
+                        return  recognition;
+                    }
                   }
                   telemetry.update();
                 }
             }
         }
 
-        if (tfod != null) {
-            tfod.shutdown();
-        }
+        return null;
     }
 
     /**
@@ -162,7 +249,7 @@ public class HongbingTensorFlowObjectDetection extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.8;
+        tfodParameters.minimumConfidence = 0.65;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }

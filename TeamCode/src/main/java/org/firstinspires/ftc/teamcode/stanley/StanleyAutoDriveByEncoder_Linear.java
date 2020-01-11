@@ -63,7 +63,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="StanleyDrive", group="Pushbot")
-//@Disabled
+@Disabled
 public class StanleyAutoDriveByEncoder_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */

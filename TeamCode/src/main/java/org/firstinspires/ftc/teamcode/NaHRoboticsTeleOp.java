@@ -27,15 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.daniel;
+package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.teamcode.AgitariTeamBot;
 
 
 /**
@@ -51,17 +47,17 @@ import org.firstinspires.ftc.teamcode.AgitariTeamBot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Daniel: Manual Drive Opmode", group="Linear Opmode")
-@Disabled
-public class DanielManualOpMode extends LinearOpMode {
+@TeleOp(name="NaHRoboticsTeleOp", group="Tournament")
+public class NaHRoboticsTeleOp extends LinearOpMode {
+    public NaHRoboticsTeamBot bot;
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    AgitariTeamBot robot   = new AgitariTeamBot();   // Use team's bot
 
     @Override
     public void runOpMode() {
-        robot.init (hardwareMap);
+        bot = new NaHRoboticsTeamBot();
+        bot.init(this, hardwareMap);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -70,43 +66,58 @@ public class DanielManualOpMode extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
+            bot.setPower(gamepad1);
 
-            double drive = -gamepad1.left_stick_y;
-            double turn = gamepad1.left_stick_x;
-
-            double leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
-            double rightPower = Range.clip(drive - turn, -1.0, 1.0) ;
-            robot.leftDrive.setPower(leftPower);
-            robot.rightDrive.setPower(rightPower);
-
-            // Grabber
-            if (gamepad1.x) {
-                robot.grabber.setPosition(0);
-            } else if (gamepad1.y){
-                robot.grabber.setPosition(1);
+            //Open and Close Clutch to grab foundation
+            if (gamepad1.right_bumper) {
+                bot.openClutch();
+            }
+            else if (gamepad1.left_bumper)   {
+                bot.closeClutch();
             }
 
-            // Arm control
-            double armPower = 0;
-            if (gamepad1.right_stick_y != 0.0) {
-                armPower = AgitariTeamBot.ARM_POWER * gamepad1.right_stick_y;
-                armPower = Range.clip(armPower, -1.0, 1.0) ;
-                robot.arm.setPower(armPower);
-                sleep(50);
-            } else if (gamepad1.a)
-                robot.arm.setPower (0);
+            //Intake wheels
+            if (gamepad1.x)  {
+                bot.startIntake();
+            }
+            else if (gamepad1.y)  {
+               bot.revIntake();
+            }
+            else {
+                bot.stopIntake();
+            }
 
-            if (gamepad1.dpad_down)
-                robot.clutch.setPosition(1);
-            else if (gamepad1.dpad_up)
-                robot.clutch.setPosition(0);
+            //lifter
+            if (gamepad2.dpad_up)  {
+                bot.liftUp();
+            }
+            else if (gamepad2.dpad_down)  {
+                bot.liftDown();
+            }
+            else  {
+                bot.stopLift();
+            }
+
+            //grabber
+            if (gamepad2.x)  {
+                bot.openGrabber();
+            }
+            else if (gamepad2.y)  {
+                bot.closeGrabber();
+            }
+
+            //The Almighty Turn Table
+            if (gamepad2.right_bumper)     {
+                bot.rotateIn();
+            }
+            else if (gamepad2.left_bumper)     {
+                bot.rotateOut();
+            }
+            //telemetry.addData("Which Bumper", "RightBumper " + gamepad1.right_bumper);
+            //telemetry.addData("Which Bumper", "LeftBumper " + gamepad1.left_bumper);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Arm", "Power (%.2f)", armPower);
-            telemetry.addData("Gamepad", "Stick Y (%.2f)", gamepad1.right_stick_y);
             telemetry.update();
-
-            //sleep(1000);   // optional pause after each move(1000);
-        }
+       }
     }
 }

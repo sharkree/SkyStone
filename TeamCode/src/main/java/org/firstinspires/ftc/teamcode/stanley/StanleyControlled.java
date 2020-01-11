@@ -28,21 +28,21 @@
  */
 
 package org.firstinspires.ftc.teamcode.stanley;
-import com.qualcomm.ftccommon.SoundPlayer;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.Range;
 
 
-import org.firstinspires.ftc.teamcode.agitari.AgitariTeamBot2;
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 
 @TeleOp(name = "StanControllerBop", group = "Showcase Op Mode")
-//@Disabled
+@Disabled
 public class StanleyControlled extends LinearOpMode {
 
     /* Declare OpMode members. */
-    AgitariTeamBot2 robot = new AgitariTeamBot2();   // Use Agitari's team bot
+    NaHRoboticsTeamBot robot = new NaHRoboticsTeamBot();   // Use Agitari's team bot
 //    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
 
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
@@ -90,7 +90,7 @@ public class StanleyControlled extends LinearOpMode {
 
     public void initialize(){
 
-        robot.init(hardwareMap);
+        robot.init(this,hardwareMap);
         robot.turnTable.setPosition(1);
         robot.clutchLeft.setPosition(0);
         robot.clutchRight.setPosition(0);
