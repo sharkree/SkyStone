@@ -196,7 +196,9 @@ public class NaHRoboticsTeamBot {
         grabber.setPosition(0);
     }
 
-    public void rotateIn() { turnTable.setPosition(1); }
+    public void rotateIn() {
+        turnTable.setPosition(1);
+    }
 
     public void rotateOut() {
         turnTable.setPosition(0);
@@ -563,6 +565,14 @@ public class NaHRoboticsTeamBot {
     public void autoOuttake() {
         gyroDrive(1, -12, 0);
         revIntake();
+    }
+    public void autoLiftUp() {
+        liftUp();
+        gyroHold(1, 0, 1);
+    }
+    public void autoLiftDown() {
+        liftDown();
+        gyroHold(1, 0, 1);
     }
 
     public void holdTime(double seconds) {

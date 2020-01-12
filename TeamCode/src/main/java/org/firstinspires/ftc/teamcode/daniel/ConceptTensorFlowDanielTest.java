@@ -53,7 +53,7 @@ import java.util.List;
  * is explained below.
  */
 @Autonomous(name = "Concept:TensorFlowDanielTest", group = "Concept")
-@Disabled
+//@Disabled
 public class ConceptTensorFlowDanielTest extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -127,6 +127,12 @@ public class ConceptTensorFlowDanielTest extends LinearOpMode {
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
+
+        robot.gyroStrafeSideway(1, 24, 0);
+        robot.gyroStrafeSideway(1, -24, 0);
+        robot.gyroDrive(1, 24, 0);
+        robot.gyroDrive(1, -24, 0);
+        robot.gyroTurn( 1, 360);
 
         Recognition targetStone = null;
         boolean isTargetAtCenter = false;
