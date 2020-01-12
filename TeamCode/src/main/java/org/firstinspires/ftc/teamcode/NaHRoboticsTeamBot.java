@@ -548,8 +548,6 @@ public class NaHRoboticsTeamBot {
         // Start intake and move forward a little bit
         startIntake();
         gyroDrive(1, 24, 0);
-//        forward(0.80);
-//        holdTime(2.00);
 
         // Pause intake for 0.5 seconds to prevent stone from wobbling
         stop();
@@ -562,14 +560,18 @@ public class NaHRoboticsTeamBot {
 
         stopIntake();
     }
+
     public void autoOuttake() {
         gyroDrive(1, -12, 0);
         revIntake();
+        holdTime(0.5);
     }
+
     public void autoLiftUp() {
         liftUp();
         gyroHold(1, 0, 1);
     }
+
     public void autoLiftDown() {
         liftDown();
         gyroHold(1, 0, 1);
