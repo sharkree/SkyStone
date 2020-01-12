@@ -56,15 +56,17 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Concept:TensorFlowObjectDetectionDanielBlue", group = "Concept")
+
+//Courtesy of Daniel
+@Autonomous(name = "NaHRoboticsAutonomous", group = "Tournament")
 @Disabled
-public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
+public class NaHRoboticsAutonomousExpirement extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
     /* Declare OpMode members. */
-    NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use Agitari's team bot
+    NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use NaH Robotic's team bot
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -100,7 +102,7 @@ public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
         telemetry.update();
 
         // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && !robot.imu.isGyroCalibrated()) {
+        while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
             sleep(50);
             idle();
         }
@@ -142,20 +144,38 @@ public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-        robot.gyroDrive(1.0, 14, 0);
-        robot.gyroStrafeSideway(1.0, 20, 0);
-
         Recognition targetStone = null;
+        boolean isTargetAtHorizontalCenter = false;
+        boolean isTargetCloseEnough = false;
         if (opModeIsActive()) {
             while(true) {
                 targetStone = findTarget();
                 if (targetStone == null) {
-                    robot.gyroStrafeSideway(0.25, 1, 0);
-                    if (targetStone != null) {
-                        telemetry.addData(">", "Stone is Avalible");
-                        robot.autoIntake();
-                        break;
+                    telemetry.addData(">", "Can't find a stone target");
+                    break;
+                }
+
+                if (!isTargetAtHorizontalCenter) {
+                    double targetCenter = (targetStone.getTop() + targetStone.getBottom()) / 2;
+                    if (targetCenter < 590) {
+                        // Strafe right
+                        robot.gyroStrafeSideway(0.7, 5, 0);
+                        continue;
+                    } else if (targetCenter > 690) {
+                        // Strafe left
+                        robot.gyroStrafeSideway(0.7, -5, 0);
+                        continue;
+                    } else {
+                        isTargetAtHorizontalCenter = true;
                     }
+                }
+
+                double targetVerticalCenter = (targetStone.getLeft() + targetStone.getRight()) / 2;
+                if (targetVerticalCenter < 450) {
+                    robot.gyroDrive(0.7, 5, 0);
+                } else {
+                    isTargetCloseEnough = true;
+                    break;
                 }
             }
         }
@@ -174,6 +194,17 @@ public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
         robot.gyroStrafeSideway(1, 24, 0);
         robot.autoOuttake();
         robot.gyroStrafeSideway(0.25, -50, 0);
+
+        // Drive forward and intake
+        if (isTargetAtHorizontalCenter && isTargetCloseEnough) {
+            telemetry.addData("label", targetStone.getLabel());
+            telemetry.addData("  left,top", "%.03f , %.03f",
+                    targetStone.getLeft(), targetStone.getTop());
+            telemetry.addData("  right,bottom", "%.03f , %.03f",
+                    targetStone.getRight(), targetStone.getBottom());
+
+            robot.autoIntake();
+        }
     }
 
     private Recognition findTarget() {
