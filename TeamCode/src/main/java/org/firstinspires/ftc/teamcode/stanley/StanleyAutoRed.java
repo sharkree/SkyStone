@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -99,6 +100,10 @@ public class StanleyAutoRed extends LinearOpMode {
          * The init() method of the hardware class does most of the work here
          */
         robot.init(this,hardwareMap);
+        robot.wheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.wheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.wheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.wheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
         robot.clutchLeft.setPosition(0);
         robot.clutchRight.setPosition(1);
         robot.turnTable.setPosition(1);
@@ -133,6 +138,7 @@ public class StanleyAutoRed extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
+
         robot.wheelFrontRight.setPower(-.7);
         robot.wheelBackLeft.setPower(-.7);
         robot.wheelBackRight.setPower(.7);

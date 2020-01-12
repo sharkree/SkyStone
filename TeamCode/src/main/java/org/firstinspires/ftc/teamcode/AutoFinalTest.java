@@ -163,21 +163,22 @@ public class AutoFinalTest extends LinearOpMode {
         robot.wheelBackLeft.setPower(-.7);
         robot.wheelBackRight.setPower(.7);
         robot.wheelFrontLeft.setPower(.7);
-        sleep(625);
+        sleep(750);
 
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
         robot.wheelFrontLeft.setPower(0);
 
-        gyroDrive(DRIVE_SPEED, (4 - 1.7) * ONE_FEET_UNIT , 0.0);
+        gyroDrive(DRIVE_SPEED, (3.3) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(1);
         robot.clutchRight.setPosition(0);
+        gyroTurn(.7,90);
         sleep(1500);
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        gyroDrive(DRIVE_SPEED, -1*(3.5) * ONE_FEET_UNIT , 0.0);
+        robot.gyroStrafeSideway(DRIVE_SPEED, 3.5 * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(0);
         robot.clutchRight.setPosition(1);
