@@ -33,6 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -53,9 +55,12 @@ public class NaHRoboticsTeleOp extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
+    private int nextOpenGrabber = 0;
+    private int nextTurnTable = 0;
+
 
     @Override
-    public void runOpMode() {
+    public void runOpMode()throws InterruptedException  {
         bot = new NaHRoboticsTeamBot();
         bot.init(this, hardwareMap);
 
@@ -99,19 +104,26 @@ public class NaHRoboticsTeleOp extends LinearOpMode {
             }
 
             //grabber
-            if (gamepad2.x)  {
-                bot.openGrabber();
-            }
-            else if (gamepad2.y)  {
-                bot.closeGrabber();
+
+            if (gamepad2.x) {
+                nextOpenGrabber++;
+                if(nextOpenGrabber % 2 == 0){
+                    bot.openGrabber();
+                }else {
+                   bot.closeGrabber();
+                }
+                TimeUnit.MILLISECONDS.sleep(500);
             }
 
             //The Almighty Turn Table
-            if (gamepad2.right_bumper)     {
-                bot.rotateIn();
-            }
-            else if (gamepad2.left_bumper)     {
-                bot.rotateOut();
+            if (gamepad2.left_bumper) {
+                nextTurnTable++;
+                if(nextTurnTable % 2 == 0){
+                    bot.rotateIn();
+                }else {
+                    bot.rotateOut();
+                }
+                TimeUnit.MILLISECONDS.sleep(500);
             }
             //telemetry.addData("Which Bumper", "RightBumper " + gamepad1.right_bumper);
             //telemetry.addData("Which Bumper", "LeftBumper " + gamepad1.left_bumper);
