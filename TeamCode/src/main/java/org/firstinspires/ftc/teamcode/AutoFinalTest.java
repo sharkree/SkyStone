@@ -125,8 +125,8 @@ public class AutoFinalTest extends LinearOpMode {
         robot.wheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         robot.wheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         robot.wheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        robot.clutchLeft.setPosition(0);
-        robot.clutchRight.setPosition(1);
+        robot.clutchLeft.setPosition(1);
+        robot.clutchRight.setPosition(0);
         robot.turnTable.setPosition(1);
         // Send telemetry message to alert driver that we are calibrating;
         // telemetry.addData(">", "Calibrating Gyro");    //
@@ -159,34 +159,42 @@ public class AutoFinalTest extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
-        robot.wheelFrontRight.setPower(-.7);
-        robot.wheelBackLeft.setPower(-.7);
-        robot.wheelBackRight.setPower(.7);
-        robot.wheelFrontLeft.setPower(.7);
-        sleep(1000);
 
+        robot.wheelFrontRight.setPower(.7);
+        robot.wheelBackLeft.setPower(.7);
+        robot.wheelBackRight.setPower(-.7);
+        robot.wheelFrontLeft.setPower(-.7);
+        sleep(500);
+
+        robot.wheelFrontRight.setPower(.7);
+        robot.wheelBackLeft.setPower(.82);
+        robot.wheelBackRight.setPower(.7);
+        robot.wheelFrontLeft.setPower(.82);
+        sleep(2000);
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
         robot.wheelFrontLeft.setPower(0);
-
-        robot.gyroDrive(DRIVE_SPEED, (3.3) * ONE_FEET_UNIT , 0.0);
         sleep(100);
-        robot.clutchLeft.setPosition(1);
-        robot.clutchRight.setPosition(0);
-        gyroTurn(.7,90);
-        sleep(1500);
+        robot.clutchLeft.setPosition(0);
+        robot.clutchRight.setPosition(1);
+        sleep(500);
+        robot.wheelFrontRight.setPower(-.7);
+        robot.wheelBackLeft.setPower(.7);
+        robot.wheelBackRight.setPower(-.7);
+        robot.wheelFrontLeft.setPower(.7);
+        sleep(1000);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         robot.gyroStrafeSideway(DRIVE_SPEED, 3.5 * ONE_FEET_UNIT , 0.0);
         sleep(100);
-        robot.clutchLeft.setPosition(0);
-        robot.clutchRight.setPosition(1);
-        sleep(750);
-        robot.wheelFrontRight.setPower(.8);
-        robot.wheelBackLeft.setPower(.7);
+        robot.clutchLeft.setPosition(1);
+        robot.clutchRight.setPosition(0);
+        sleep(100);
+        robot.wheelFrontRight.setPower(-.7);
+        robot.wheelBackLeft.setPower(-.82);
         robot.wheelBackRight.setPower(-.7);
-        robot.wheelFrontLeft.setPower(-.8);
+        robot.wheelFrontLeft.setPower(-.82);
         sleep(3350);
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
