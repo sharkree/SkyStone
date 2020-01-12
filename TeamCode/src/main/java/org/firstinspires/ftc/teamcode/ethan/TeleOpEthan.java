@@ -27,13 +27,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.ethan;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import java.util.concurrent.TimeUnit;
+
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
+
+
 
 
 /**
@@ -49,8 +52,8 @@ import java.util.concurrent.TimeUnit;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="NaHRoboticsTeleOp", group="Tournament")
-public class NaHRoboticsTeleOp extends LinearOpMode {
+@TeleOp(name="NaHRoboticsTeleOpEthan", group="Showcase")
+public class TeleOpEthan extends LinearOpMode {
     public NaHRoboticsTeamBot bot;
 
     // Declare OpMode members.
