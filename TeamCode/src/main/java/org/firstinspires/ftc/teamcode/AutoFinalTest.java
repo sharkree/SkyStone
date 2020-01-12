@@ -97,7 +97,7 @@ public class AutoFinalTest extends LinearOpMode {
     static final double     P_DRIVE_COEFF           = 0.15;
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    static final double     ONE_FEET_UNIT = 4.1; // adjust this only
+    static final double     ONE_FEET_UNIT = 12; // adjust this only
     private static final String VUFORIA_KEY = NaHRoboticsTeamBot.VUFORIA_LICENSE_KEY;
 
     /**
@@ -163,14 +163,14 @@ public class AutoFinalTest extends LinearOpMode {
         robot.wheelBackLeft.setPower(-.7);
         robot.wheelBackRight.setPower(.7);
         robot.wheelFrontLeft.setPower(.7);
-        sleep(750);
+        sleep(1000);
 
         robot.wheelFrontRight.setPower(0);
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
         robot.wheelFrontLeft.setPower(0);
 
-        gyroDrive(DRIVE_SPEED, (3.3) * ONE_FEET_UNIT , 0.0);
+        robot.gyroDrive(DRIVE_SPEED, (3.3) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(1);
         robot.clutchRight.setPosition(0);
@@ -221,100 +221,7 @@ public class AutoFinalTest extends LinearOpMode {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroDrive (double speed, double distance, double angle) {
 
-        int     newLeftBackTarget;
-        int     newRightBackTarget;
-        int     newLeftFrontTarget;
-        int     newRightFrontTarget;
-        int     moveCounts;
-        double  max;
-        double  error;
-        double  steer;
-        double  leftSpeed;
-        double  rightSpeed;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            moveCounts = (int)(distance * AgitariTeamBot.HD_HEX_COUNTS_PER_INCH);
-
-            newLeftFrontTarget = robot.wheelFrontLeft.getCurrentPosition() + moveCounts;
-            newRightFrontTarget = robot.wheelFrontRight.getCurrentPosition() + moveCounts;
-            newLeftBackTarget = robot.wheelBackLeft.getCurrentPosition() + moveCounts;
-            newRightBackTarget = robot.wheelBackRight.getCurrentPosition() + moveCounts;
-
-            // Set Target and Turn On RUN_TO_POSITION
-            robot.wheelFrontLeft.setTargetPosition(newLeftFrontTarget);
-            robot.wheelBackLeft.setTargetPosition(newLeftBackTarget);
-            robot.wheelFrontRight.setTargetPosition(newRightFrontTarget);
-            robot.wheelBackRight.setTargetPosition(newRightBackTarget);
-
-            robot.wheelFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.wheelBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.wheelFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.wheelBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // start motion.
-            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            robot.wheelFrontLeft.setPower(speed);
-            robot.wheelBackLeft.setPower(speed);
-            robot.wheelFrontRight.setPower(speed);
-            robot.wheelBackRight.setPower(speed);
-
-            // keep looping while we are still active, and BOTH motors are running.
-            while (opModeIsActive() &&
-                    (robot.wheelBackRight.isBusy() && robot.wheelBackLeft.isBusy()
-                            && robot.wheelFrontLeft.isBusy() && robot.wheelFrontRight.isBusy())){
-
-                // adjust relative speed based on heading error.
-                error = getError(angle);
-                steer = getSteer(error, P_DRIVE_COEFF);
-
-                // if driving in reverse, the motor correction also needs to be reversed
-                if (distance < 0)
-                    steer *= -1.0;
-
-                leftSpeed = speed - steer;
-                rightSpeed = speed + steer;
-
-                // Normalize speeds if either one exceeds +/- 1.0;
-                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-                if (max > 1.0)
-                {
-                    leftSpeed /= max;
-                    rightSpeed /= max;
-                }
-
-                robot.wheelFrontLeft.setPower(leftSpeed);
-                robot.wheelBackLeft.setPower(leftSpeed);
-                robot.wheelFrontRight.setPower(rightSpeed);
-                robot.wheelBackRight.setPower(rightSpeed);
-
-                // Display drive status for the driver.
-                telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
-                telemetry.addData("Target",  "%7d:%7d",      newLeftBackTarget,  newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
-                telemetry.addData("Actual",  "%7d:%7d",      robot.wheelFrontLeft.getCurrentPosition(),robot.wheelFrontRight.getCurrentPosition(), robot.wheelBackRight.getCurrentPosition(),
-                        robot.wheelBackLeft.getCurrentPosition());
-                telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            robot.wheelFrontLeft.setPower(0);
-            robot.wheelBackLeft.setPower(0);
-            robot.wheelFrontRight.setPower(0);
-            robot.wheelBackRight.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            robot.wheelFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.wheelBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.wheelFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.wheelBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-        return;
-    }
 
     /**
      *  Method to spin on central axis to point in a new direction.
