@@ -121,10 +121,10 @@ public class AutoFinalTest extends LinearOpMode {
          * The init() method of the hardware class does most of the work here
          */
         robot.init(this,hardwareMap);
-        robot.wheelFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        robot.wheelBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        robot.wheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        robot.wheelBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.wheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.wheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.wheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.wheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
         robot.clutchLeft.setPosition(0);
         robot.clutchRight.setPosition(1);
         robot.turnTable.setPosition(1);
@@ -159,8 +159,6 @@ public class AutoFinalTest extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
-        robot.clutchLeft.setPosition(0);
-        robot.clutchRight.setPosition(1);
         robot.wheelFrontRight.setPower(-.7);
         robot.wheelBackLeft.setPower(-.7);
         robot.wheelBackRight.setPower(.7);
@@ -171,35 +169,15 @@ public class AutoFinalTest extends LinearOpMode {
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
         robot.wheelFrontLeft.setPower(0);
+
+        gyroDrive(DRIVE_SPEED, (4 - 1.7) * ONE_FEET_UNIT , 0.0);
         sleep(100);
-        robot.wheelFrontRight.setPower(.7);
-        robot.wheelBackLeft.setPower(.7);
-        robot.wheelBackRight.setPower(.7);
-        robot.wheelFrontLeft.setPower(.7);
-        sleep(5000);
-        robot.wheelFrontRight.setPower(0);
-        robot.wheelBackLeft.setPower(0);
-        robot.wheelBackRight.setPower(0);
-        robot.wheelFrontLeft.setPower(0);
         robot.clutchLeft.setPosition(1);
         robot.clutchRight.setPosition(0);
-        sleep(100);
+        sleep(1500);
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        robot.wheelFrontRight.setPower(-.7);
-        robot.wheelBackLeft.setPower(-.7);
-        robot.wheelBackRight.setPower(-.7);
-        robot.wheelFrontLeft.setPower(-.7);
-        sleep (4000);
-        robot.wheelFrontRight.setPower(.7);
-        robot.wheelBackLeft.setPower(-.7);
-        robot.wheelBackRight.setPower(.7);
-        robot.wheelFrontLeft.setPower(-.7);
-        sleep (500);
-        robot.wheelFrontRight.setPower(0);
-        robot.wheelBackLeft.setPower(0);
-        robot.wheelBackRight.setPower(0);
-        robot.wheelFrontLeft.setPower(0);
+        gyroDrive(DRIVE_SPEED, -1*(3.5) * ONE_FEET_UNIT , 0.0);
         sleep(100);
         robot.clutchLeft.setPosition(0);
         robot.clutchRight.setPosition(1);
@@ -208,7 +186,11 @@ public class AutoFinalTest extends LinearOpMode {
         robot.wheelBackLeft.setPower(.7);
         robot.wheelBackRight.setPower(-.7);
         robot.wheelFrontLeft.setPower(-.8);
-        sleep(3250);
+        sleep(3350);
+        robot.wheelFrontRight.setPower(0);
+        robot.wheelBackLeft.setPower(0);
+        robot.wheelBackRight.setPower(0);
+        robot.wheelFrontLeft.setPower(0);
         /*
         robot.wheelFrontRight.setPower(.1);
         robot.wheelBackLeft.setPower(.1);

@@ -77,7 +77,7 @@ import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
  */
 
 @Autonomous(name="StanleyAutoRed", group="Showcase Op Mode")
-@Disabled
+//@Disabled
 public class StanleyAutoRed extends LinearOpMode {
     /* Declare OpMode members. */
     NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use Agitari's team bot
