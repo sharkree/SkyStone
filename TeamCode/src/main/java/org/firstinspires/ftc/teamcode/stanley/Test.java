@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.stanley;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -79,9 +79,9 @@ import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AutoFinalTest", group="Showcase Op Mode")
+@Autonomous(name="Test", group="Showcase Op Mode")
 //@Disabled
-public class AutoFinalTest extends LinearOpMode {
+public class Test extends LinearOpMode {
     /* Declare OpMode members. */
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -156,7 +156,7 @@ public class AutoFinalTest extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
 
-        robot.wheelFrontRight.setPower(.7);
+        /*robot.wheelFrontRight.setPower(.7);
         robot.wheelBackLeft.setPower(.7);
         robot.wheelBackRight.setPower(-.7);
         robot.wheelFrontLeft.setPower(-.7);
@@ -196,7 +196,7 @@ public class AutoFinalTest extends LinearOpMode {
         robot.wheelBackLeft.setPower(0);
         robot.wheelBackRight.setPower(0);
         robot.wheelFrontLeft.setPower(0);
-        /*
+
         robot.wheelFrontRight.setPower(.1);
         robot.wheelBackLeft.setPower(.1);
         robot.wheelBackRight.setPower(.1);
@@ -208,7 +208,16 @@ public class AutoFinalTest extends LinearOpMode {
         robot.wheelFrontLeft.setPower(-.5);
         sleep(1500);
         */
-
+        robot.gyroStrafeSideway(.7,9,0);
+        robot.gyroDrive(-.7,32,0);
+        robot.clutchLeft.setPosition(1);
+        robot.clutchRight.setPosition(0);
+        sleep(500);
+        robot.gyroTurn(-.7,90);
+        robot.gyroStrafeSideway(.7,32,0);
+        robot.clutchLeft.setPosition(0);
+        robot.clutchRight.setPosition(1);
+        robot.gyroDrive(.7,32,0);
 
     }
 
