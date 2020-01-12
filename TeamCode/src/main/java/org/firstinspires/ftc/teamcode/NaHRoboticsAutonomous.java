@@ -55,6 +55,7 @@ import java.util.List;
  * is explained below.
  */
 
+//This is based of of troll robot positioning
 //Courtesy of Daniel
 @Autonomous(name = "NaHRoboticsAutonomous", group = "Tournament")
 public class NaHRoboticsAutonomous extends LinearOpMode {
@@ -90,6 +91,13 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
      * Detection engine.
      */
     private TFObjectDetector tfod;
+
+    /**
+     * keep track of how far we strafe
+     * positive = right
+     * negative = left
+     */
+    private int sidewaysStrafeInches = 0;
 
     @Override
     public void runOpMode() {
@@ -157,10 +165,12 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                     if (targetCenter < 590) {
                         // Strafe right
                         robot.gyroStrafeSideway(0.7, 5, 0);
+                        sidewaysStrafeInches += 5;
                         continue;
                     } else if (targetCenter > 690) {
                         // Strafe left
                         robot.gyroStrafeSideway(0.7, -5, 0);
+                        sidewaysStrafeInches -= 5;
                         continue;
                     } else {
                         isTargetAtHorizontalCenter = true;
@@ -190,6 +200,11 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                     targetStone.getRight(), targetStone.getBottom());
 
             robot.autoIntake();
+            robot.gyroDrive(1, -24, 0);
+            robot.gyroStrafeSideway(1, -36 - sidewaysStrafeInches, 0);
+            robot.autoOuttake();
+            robot.gyroDrive(1, 12, 0);
+            robot.gyroStrafeSideway(1, 14 + sidewaysStrafeInches, 0);
         }
     }
 

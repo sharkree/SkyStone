@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -72,7 +73,7 @@ import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
  */
 
 @Autonomous(name="DanielAutoGyro", group="Showcase Op Mode")
-//@Disabled
+@Disabled
 public class DanielAutoGyro extends LinearOpMode {
     /* Declare OpMode members. */
     NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use Agitari's team bot
