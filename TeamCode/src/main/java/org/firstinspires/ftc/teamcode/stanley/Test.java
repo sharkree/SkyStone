@@ -36,16 +36,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.AgitariTeamBot;
-import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
-
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -149,14 +147,14 @@ public class Test extends LinearOpMode {
         // Put a hold after each turn
 
 
-        robot.gyroStrafeSideway(.7,-9,0);
-        robot.gyroDrive(1,-32,0);
+        robot.gyroStrafeSideway(.7,12,0);
+        robot.gyroDrive(1,-33,0);
         robot.closeClutch();
-        sleep(500);
-        robot.gyroDrive(1,-32,0);
+        sleep(1000);
+        robot.gyroDrive(1,36,0);
         sleep(500);
         robot.openClutch();
-        robot.gyroStrafeSideway(-.7,32,0);
+        robot.gyroStrafeSideway(.7,-43,0);
 
     }
 
