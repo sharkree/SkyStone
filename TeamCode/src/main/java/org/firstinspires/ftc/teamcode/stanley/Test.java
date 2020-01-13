@@ -121,8 +121,7 @@ public class Test extends LinearOpMode {
          * The init() method of the hardware class does most of the work here
          */
         robot.init(this,hardwareMap);
-        robot.clutchLeft.setPosition(1);
-        robot.clutchRight.setPosition(0);
+        robot.openClutch();
         robot.turnTable.setPosition(1);
         // Send telemetry message to alert driver that we are calibrating;
         // telemetry.addData(">", "Calibrating Gyro");    //
@@ -140,14 +139,7 @@ public class Test extends LinearOpMode {
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-            /* telemetry.addData(">", "get angle");
-            telemetry.update();
-            Orientation angles = robot.imu.getAngularOrientation(
-                    AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            telemetry.addData(">", "ge tangle");
-            telemetry.update();
-            telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
-            telemetry.update(); */
+
             sleep(10);
             idle();
         }
@@ -156,68 +148,15 @@ public class Test extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
 
-        /*robot.wheelFrontRight.setPower(.7);
-        robot.wheelBackLeft.setPower(.7);
-        robot.wheelBackRight.setPower(-.7);
-        robot.wheelFrontLeft.setPower(-.7);
-        sleep(500);
 
-        robot.wheelFrontRight.setPower(.7);
-        robot.wheelBackLeft.setPower(.82);
-        robot.wheelBackRight.setPower(.7);
-        robot.wheelFrontLeft.setPower(.82);
-        sleep(2000);
-        robot.wheelFrontRight.setPower(0);
-        robot.wheelBackLeft.setPower(0);
-        robot.wheelBackRight.setPower(0);
-        robot.wheelFrontLeft.setPower(0);
-        sleep(100);
-        robot.clutchLeft.setPosition(0);
-        robot.clutchRight.setPosition(1);
+        robot.gyroStrafeSideway(.7,-9,0);
+        robot.gyroDrive(1,-32,0);
+        robot.closeClutch();
         sleep(500);
-        robot.wheelFrontRight.setPower(-.7);
-        robot.wheelBackLeft.setPower(.7);
-        robot.wheelBackRight.setPower(-.7);
-        robot.wheelFrontLeft.setPower(.7);
-        sleep(1000);
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        robot.gyroStrafeSideway(DRIVE_SPEED, 3.5 * ONE_FEET_UNIT , 0.0);
-        sleep(100);
-        robot.clutchLeft.setPosition(1);
-        robot.clutchRight.setPosition(0);
-        sleep(100);
-        robot.wheelFrontRight.setPower(-.7);
-        robot.wheelBackLeft.setPower(-.82);
-        robot.wheelBackRight.setPower(-.7);
-        robot.wheelFrontLeft.setPower(-.82);
-        sleep(3350);
-        robot.wheelFrontRight.setPower(0);
-        robot.wheelBackLeft.setPower(0);
-        robot.wheelBackRight.setPower(0);
-        robot.wheelFrontLeft.setPower(0);
-
-        robot.wheelFrontRight.setPower(.1);
-        robot.wheelBackLeft.setPower(.1);
-        robot.wheelBackRight.setPower(.1);
-        robot.wheelFrontLeft.setPower(.1);
-        sleep(1000);
-        robot.wheelFrontRight.setPower(.5);
-        robot.wheelBackLeft.setPower(-.5);
-        robot.wheelBackRight.setPower(.5);
-        robot.wheelFrontLeft.setPower(-.5);
-        sleep(1500);
-        */
-        robot.gyroStrafeSideway(.7,9,0);
-        robot.gyroDrive(-.7,32,0);
-        robot.clutchLeft.setPosition(1);
-        robot.clutchRight.setPosition(0);
+        robot.gyroDrive(1,-32,0);
         sleep(500);
-        robot.gyroTurn(-.7,90);
-        robot.gyroStrafeSideway(.7,32,0);
-        robot.clutchLeft.setPosition(0);
-        robot.clutchRight.setPosition(1);
-        robot.gyroDrive(.7,32,0);
+        robot.openClutch();
+        robot.gyroStrafeSideway(-.7,32,0);
 
     }
 
