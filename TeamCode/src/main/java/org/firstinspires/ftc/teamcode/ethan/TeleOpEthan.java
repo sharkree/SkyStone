@@ -80,17 +80,17 @@ public class TeleOpEthan extends LinearOpMode {
             bot.setPower(gamepad1);
 
             //Open and Close Clutch to grab foundation
-            if (gamepad1.right_bumper) {
+            if (gamepad1.right_trigger>=0.5) {
                 bot.openClutch();
             }
-            else if (gamepad1.left_bumper)   {
+            else if (gamepad1.left_trigger>=0.5)   {
                 bot.closeClutch();
             }
 
             //Changing Speed
-            if(gamepad2.b||gamepad1.b){
+            if(gamepad1.left_bumper||gamepad2.left_bumper){
                 bot.changeTurbo();
-                TimeUnit.MILLISECONDS.sleep(500);
+                TimeUnit.MILLISECONDS.sleep(200);
             }
 
             //Intake wheels
