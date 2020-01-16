@@ -190,7 +190,7 @@ public class BotCodeEthan {
     }
 
     public void liftDown() {
-        linearMotion.setPower(-0.7);
+        linearMotion.setPower(-1);
     }
 
     public void stopLift() {
