@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -56,6 +57,7 @@ import java.util.List;
  * is explained below.
  */
 @Autonomous(name = "Concept:TensorFlowObjectDetectionDanielBlue", group = "Concept")
+@Disabled
 public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -141,6 +143,7 @@ public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
         waitForStart();
 
         robot.gyroDrive(1.0, 14, 0);
+        robot.gyroStrafeSideway(1.0, 20, 0);
 
         Recognition targetStone = null;
         if (opModeIsActive()) {
@@ -150,8 +153,7 @@ public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
                     robot.gyroStrafeSideway(0.25, 1, 0);
                     if (targetStone != null) {
                         telemetry.addData(">", "Stone is Avalible");
-                        robot.gyroTurn(0.25, 45);
-                        robot.intake();
+                        robot.autoIntake();
                         break;
                     }
                 }
@@ -162,7 +164,7 @@ public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
             tfod.shutdown();
         }
 
-        robot.gyroDrive(0.5, -6, 0);
+        robot.gyroDrive(0.5, -70, 0);
         robot.gyroStrafeSideway(1, -108, 0);
         robot.gyroDrive(0.5, 4, 0);
         robot.closeClutch();
@@ -170,7 +172,7 @@ public class ConceptTensorFlowObjectDetectionDanielBlue extends LinearOpMode {
         robot.gyroDrive(0.50, 6, 0);
         robot.openClutch();
         robot.gyroStrafeSideway(1, 24, 0);
-        robot.outtake();
+        robot.autoOuttake();
         robot.gyroStrafeSideway(0.25, -50, 0);
     }
 

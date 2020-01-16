@@ -196,7 +196,9 @@ public class NaHRoboticsTeamBot {
         grabber.setPosition(0);
     }
 
-    public void rotateIn() { turnTable.setPosition(1); }
+    public void rotateIn() {
+        turnTable.setPosition(1);
+    }
 
     public void rotateOut() {
         turnTable.setPosition(0);
@@ -545,8 +547,7 @@ public class NaHRoboticsTeamBot {
     public void autoIntake() {
         // Start intake and move forward a little bit
         startIntake();
-        forward(0.80);
-        holdTime(2.00);
+        gyroDrive(1, 24, 0);
 
         // Pause intake for 0.5 seconds to prevent stone from wobbling
         stop();
@@ -559,15 +560,21 @@ public class NaHRoboticsTeamBot {
 
         stopIntake();
     }
-    public void outtake() {
-        gyroDrive(1, 24, 0);
-        intakeLeft.setPower(-0.5);
-        intakeRight.setPower(-0.5);
+
+    public void autoOuttake() {
+        gyroDrive(1, -12, 0);
+        revIntake();
+        holdTime(0.5);
     }
-    public void intake() {
-        gyroDrive(1, 6, 0);
-        intakeLeft.setPower(0.5);
-        intakeRight.setPower(0.5);
+
+    public void autoLiftUp() {
+        liftUp();
+        gyroHold(1, 0, 1);
+    }
+
+    public void autoLiftDown() {
+        liftDown();
+        gyroHold(1, 0, 1);
     }
 
     public void holdTime(double seconds) {

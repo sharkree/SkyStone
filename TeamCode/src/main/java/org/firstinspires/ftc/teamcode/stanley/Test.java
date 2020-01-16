@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.stanley;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -36,16 +36,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.AgitariTeamBot;
-import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
-
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -79,9 +77,9 @@ import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AutoFinalTest", group="Showcase Op Mode")
+@Autonomous(name="Test", group="Showcase Op Mode")
 //@Disabled
-public class AutoFinalTest extends LinearOpMode {
+public class Test extends LinearOpMode {
     /* Declare OpMode members. */
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -121,8 +119,7 @@ public class AutoFinalTest extends LinearOpMode {
          * The init() method of the hardware class does most of the work here
          */
         robot.init(this,hardwareMap);
-        robot.clutchLeft.setPosition(1);
-        robot.clutchRight.setPosition(0);
+        robot.openClutch();
         robot.turnTable.setPosition(1);
         // Send telemetry message to alert driver that we are calibrating;
         // telemetry.addData(">", "Calibrating Gyro");    //
@@ -140,14 +137,7 @@ public class AutoFinalTest extends LinearOpMode {
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-            /* telemetry.addData(">", "get angle");
-            telemetry.update();
-            Orientation angles = robot.imu.getAngularOrientation(
-                    AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            telemetry.addData(">", "ge tangle");
-            telemetry.update();
-            telemetry.addData(">", "Robot Heading = %d", angles.firstAngle);
-            telemetry.update(); */
+
             sleep(10);
             idle();
         }
@@ -156,59 +146,15 @@ public class AutoFinalTest extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
 
-        robot.wheelFrontRight.setPower(.7);
-        robot.wheelBackLeft.setPower(.7);
-        robot.wheelBackRight.setPower(-.7);
-        robot.wheelFrontLeft.setPower(-.7);
-        sleep(500);
 
-        robot.wheelFrontRight.setPower(.7);
-        robot.wheelBackLeft.setPower(.82);
-        robot.wheelBackRight.setPower(.7);
-        robot.wheelFrontLeft.setPower(.82);
-        sleep(2000);
-        robot.wheelFrontRight.setPower(0);
-        robot.wheelBackLeft.setPower(0);
-        robot.wheelBackRight.setPower(0);
-        robot.wheelFrontLeft.setPower(0);
-        sleep(100);
-        robot.clutchLeft.setPosition(0);
-        robot.clutchRight.setPosition(1);
+        robot.gyroStrafeSideway(.7,12,0);
+        robot.gyroDrive(1,-33,0);
+        robot.closeClutch();
+        sleep(1000);
+        robot.gyroDrive(1,36,0);
         sleep(500);
-        robot.wheelFrontRight.setPower(-.7);
-        robot.wheelBackLeft.setPower(.7);
-        robot.wheelBackRight.setPower(-.7);
-        robot.wheelFrontLeft.setPower(.7);
-        sleep(1000);
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        robot.gyroStrafeSideway(DRIVE_SPEED, 3.5 * ONE_FEET_UNIT , 0.0);
-        sleep(100);
-        robot.clutchLeft.setPosition(1);
-        robot.clutchRight.setPosition(0);
-        sleep(100);
-        robot.wheelFrontRight.setPower(-.7);
-        robot.wheelBackLeft.setPower(-.82);
-        robot.wheelBackRight.setPower(-.7);
-        robot.wheelFrontLeft.setPower(-.82);
-        sleep(3350);
-        robot.wheelFrontRight.setPower(0);
-        robot.wheelBackLeft.setPower(0);
-        robot.wheelBackRight.setPower(0);
-        robot.wheelFrontLeft.setPower(0);
-        /*
-        robot.wheelFrontRight.setPower(.1);
-        robot.wheelBackLeft.setPower(.1);
-        robot.wheelBackRight.setPower(.1);
-        robot.wheelFrontLeft.setPower(.1);
-        sleep(1000);
-        robot.wheelFrontRight.setPower(.5);
-        robot.wheelBackLeft.setPower(-.5);
-        robot.wheelBackRight.setPower(.5);
-        robot.wheelFrontLeft.setPower(-.5);
-        sleep(1500);
-        */
-
+        robot.openClutch();
+        robot.gyroStrafeSideway(.7,-43,0);
 
     }
 

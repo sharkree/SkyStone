@@ -27,9 +27,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -41,6 +42,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
 
 import java.util.List;
 
@@ -55,10 +57,10 @@ import java.util.List;
  * is explained below.
  */
 
-//This is based of of troll robot positioning
 //Courtesy of Daniel
 @Autonomous(name = "NaHRoboticsAutonomous", group = "Tournament")
-public class NaHRoboticsAutonomous extends LinearOpMode {
+@Disabled
+public class NaHRoboticsAutonomousExpirement extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -91,13 +93,6 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
      * Detection engine.
      */
     private TFObjectDetector tfod;
-
-    /**
-     * keep track of how far we strafe
-     * positive = right
-     * negative = left
-     */
-    private int sidewaysStrafeInches = 0;
 
     @Override
     public void runOpMode() {
@@ -165,12 +160,10 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                     if (targetCenter < 590) {
                         // Strafe right
                         robot.gyroStrafeSideway(0.7, 5, 0);
-                        sidewaysStrafeInches += 5;
                         continue;
                     } else if (targetCenter > 690) {
                         // Strafe left
                         robot.gyroStrafeSideway(0.7, -5, 0);
-                        sidewaysStrafeInches -= 5;
                         continue;
                     } else {
                         isTargetAtHorizontalCenter = true;
@@ -191,6 +184,17 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
             tfod.shutdown();
         }
 
+        robot.gyroDrive(0.5, -70, 0);
+        robot.gyroStrafeSideway(1, -108, 0);
+        robot.gyroDrive(0.5, 4, 0);
+        robot.closeClutch();
+        robot.gyroTurn(0.75, 90);
+        robot.gyroDrive(0.50, 6, 0);
+        robot.openClutch();
+        robot.gyroStrafeSideway(1, 24, 0);
+        robot.autoOuttake();
+        robot.gyroStrafeSideway(0.25, -50, 0);
+
         // Drive forward and intake
         if (isTargetAtHorizontalCenter && isTargetCloseEnough) {
             telemetry.addData("label", targetStone.getLabel());
@@ -200,11 +204,6 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                     targetStone.getRight(), targetStone.getBottom());
 
             robot.autoIntake();
-            robot.gyroDrive(1, -30, 0);
-            robot.gyroStrafeSideway(1, -42 - sidewaysStrafeInches, 0);
-            robot.autoOuttake();
-            robot.gyroDrive(1, 12, 0);
-            robot.gyroStrafeSideway(1, -10 + sidewaysStrafeInches, 0);
         }
     }
 
