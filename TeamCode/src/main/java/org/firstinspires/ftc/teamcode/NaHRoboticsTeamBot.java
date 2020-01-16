@@ -577,4 +577,8 @@ public class NaHRoboticsTeamBot {
             telemetry.update();
         }
     }
+
+    public void changeTurbo() {
+        
+    }
 }

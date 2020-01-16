@@ -73,7 +73,7 @@ public class BotCodeEthan {
     private HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
-    private double turbo;
+    private double turbo = 1;
 
     private LinearOpMode opMode;
     private Telemetry telemetry;
@@ -133,10 +133,11 @@ public class BotCodeEthan {
         double lx = gamepad.left_stick_x;
         double ly = gamepad.left_stick_y;
         double rx = gamepad.right_stick_x;
-        double wheelFrontRightPower = -0.5*lx - rx - ly;
-        double wheelBackRightPower = 0.5*lx - rx - ly;
-        double wheelFrontLeftPower = 0.5*lx + rx - ly;
-        double wheelBackLeftPower = -0.5*lx + rx - ly;
+
+        double wheelFrontRightPower = turbo * (-lx - rx - ly);
+        double wheelBackRightPower = turbo * (lx - rx - ly);
+        double wheelFrontLeftPower = turbo * (lx + rx - ly);
+        double wheelBackLeftPower = turbo * (-lx + rx - ly);
 
         double max = Math.max(Math.abs(wheelFrontRightPower), Math.max(Math.abs(wheelBackRightPower),
                 Math.max(Math.abs(wheelFrontLeftPower), Math.abs(wheelBackLeftPower))));
@@ -176,12 +177,20 @@ public class BotCodeEthan {
         intakeRight.setPower(0);
     }
 
+    public void changeTurbo(){
+        if(turbo == 1){
+            turbo = 0.3;
+        }else{
+            turbo = 1;
+        }
+    }
+
     public void liftUp() {
-        linearMotion.setPower(0.85);
+        linearMotion.setPower(1);
     }
 
     public void liftDown() {
-        linearMotion.setPower(-0.425);
+        linearMotion.setPower(-0.7);
     }
 
     public void stopLift() {
