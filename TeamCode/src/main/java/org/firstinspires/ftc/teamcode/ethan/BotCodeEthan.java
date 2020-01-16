@@ -179,7 +179,7 @@ public class BotCodeEthan {
 
     public void changeTurbo(){
         if(turbo == 1){
-            turbo = 0.3;
+            turbo = 0.4;
         }else{
             turbo = 1;
         }
