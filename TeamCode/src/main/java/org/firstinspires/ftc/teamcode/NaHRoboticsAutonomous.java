@@ -200,11 +200,11 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                     targetStone.getRight(), targetStone.getBottom());
 
             robot.autoIntake();
-            robot.gyroDrive(1, -30, 0);
-            robot.gyroStrafeSideway(1, -42 - sidewaysStrafeInches, 0);
+            robot.gyroDrive(1, -24, 0);
+            robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
             robot.autoOuttake();
-            robot.gyroDrive(1, 12, 0);
-            robot.gyroStrafeSideway(1, -10 + sidewaysStrafeInches, 0);
+            robot.gyroDrive(1, 10, 0);
+            robot.gyroStrafeSideway(1, -5 + sidewaysStrafeInches, 0);
         }
     }
 
