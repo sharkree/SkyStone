@@ -99,6 +99,8 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
      */
     private int sidewaysStrafeInches = 0;
 
+
+
     @Override
     public void runOpMode() {
         robot.init(this, hardwareMap);
@@ -162,12 +164,12 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
 
                 if (!isTargetAtHorizontalCenter) {
                     double targetCenter = (targetStone.getTop() + targetStone.getBottom()) / 2;
-                    if (targetCenter < 590) {
+                    if (targetCenter < 550) {
                         // Strafe right
                         robot.gyroStrafeSideway(0.7, 5, 0);
                         sidewaysStrafeInches += 5;
                         continue;
-                    } else if (targetCenter > 690) {
+                    } else if (targetCenter > 650) {
                         // Strafe left
                         robot.gyroStrafeSideway(0.7, -5, 0);
                         sidewaysStrafeInches -= 5;
@@ -200,11 +202,11 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                     targetStone.getRight(), targetStone.getBottom());
 
             robot.autoIntake();
-            robot.gyroDrive(1, -24, 0);
+            robot.gyroDrive(1, -22, 0);
             robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
             robot.autoOuttake();
-            robot.gyroDrive(1, 10, 0);
-            robot.gyroStrafeSideway(1, -5 + sidewaysStrafeInches, 0);
+            robot.gyroDrive(1, 20, 0);
+            robot.gyroStrafeSideway(1, 1 + sidewaysStrafeInches, 0);
         }
     }
 
