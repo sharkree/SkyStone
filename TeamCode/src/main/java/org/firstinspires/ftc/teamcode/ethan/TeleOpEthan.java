@@ -88,7 +88,7 @@ public class TeleOpEthan extends LinearOpMode {
             }
 
             //Changing Speed
-            if(gamepad2.right_bumper){
+            if(gamepad2.right_bumper  ){
                 bot.changeTurbo();
                 TimeUnit.MILLISECONDS.sleep(200);
             }
