@@ -93,12 +93,16 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
     private TFObjectDetector tfod;
 
     /**
-     * keep track of how far we strafe
+     * keep track of how far we strafe sideways
      * positive = right
      * negative = left
      */
     private int sidewaysStrafeInches = 0;
 
+    /**
+     * How far we went forward
+     */
+    private int forwardInches = 0;
 
 
     @Override
@@ -112,20 +116,6 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
             sleep(50);
             idle();
-        }
-
-        telemetry.addData(">", "Robot Ready.");    //
-        telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
-        telemetry.update();
-
-        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
-        while (!isStarted()) {
-            Orientation angles = robot.imu.getAngularOrientation(
-                    AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            telemetry.addData(">", "get angle");
-            telemetry.update();
-            telemetry.addData(">", "Robot Heading = %f", angles.firstAngle);
-            telemetry.update();
         }
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
@@ -147,6 +137,11 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         }
 
         /** Wait for the game to begin */
+        Orientation angles = robot.imu.getAngularOrientation(
+                AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        telemetry.addData(">", "Robot Ready.");    //
+        telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
+        telemetry.addData(">", "Robot Heading = %f", angles.firstAngle);
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
@@ -159,11 +154,14 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                 targetStone = findTarget();
                 if (targetStone == null) {
                     telemetry.addData(">", "Can't find a stone target");
+                    telemetry.update();
                     break;
                 }
 
                 if (!isTargetAtHorizontalCenter) {
                     double targetCenter = (targetStone.getTop() + targetStone.getBottom()) / 2;
+                    telemetry.addData("Target horizontal center: ", "%.02f", targetCenter);
+                    telemetry.update();
                     if (targetCenter < 550) {
                         // Strafe right
                         robot.gyroStrafeSideway(0.7, 5, 0);
@@ -171,8 +169,8 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                         continue;
                     } else if (targetCenter > 650) {
                         // Strafe left
-                        robot.gyroStrafeSideway(0.7, -5, 0);
-                        sidewaysStrafeInches -= 5;
+                        robot.gyroStrafeSideway(0.7, -3, 0);
+                        sidewaysStrafeInches -= 3;
                         continue;
                     } else {
                         isTargetAtHorizontalCenter = true;
@@ -180,8 +178,11 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                 }
 
                 double targetVerticalCenter = (targetStone.getLeft() + targetStone.getRight()) / 2;
+                telemetry.addData("Target vertical center: ", "%.02f", targetVerticalCenter);
+                telemetry.update();
                 if (targetVerticalCenter < 450) {
-                    robot.gyroDrive(0.7, 5, 0);
+                    robot.gyroDrive(0.7, 10, 0);
+                    forwardInches += 5;
                 } else {
                     isTargetCloseEnough = true;
                     break;
@@ -202,7 +203,8 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                     targetStone.getRight(), targetStone.getBottom());
 
             robot.autoIntake();
-            robot.gyroDrive(1, -28, 0);
+            int padding = forwardInches > 20 ? forwardInches -  20 : 0;
+            robot.gyroDrive(1, -28 - padding, 0);
             robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
             robot.autoOuttake();
             robot.gyroStrafeSideway(1, 14 + sidewaysStrafeInches, 0);
@@ -210,34 +212,62 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
     }
 
     private Recognition findTarget() {
-        while (opModeIsActive()) {
-            if (tfod != null) {
-                // getUpdatedRecognitions() will return null if no new information is available since
-                // the last time that call was made.
-                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
-                  telemetry.addData("# Object Detected", updatedRecognitions.size());
+        if (tfod == null) {
+            return null;
+        }
 
-                  // step through the list of recognitions and display boundary info.
-                  int i = 0;
-                  for (Recognition recognition : updatedRecognitions) {
-                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                            recognition.getLeft(), recognition.getTop());
-                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                            recognition.getRight(), recognition.getBottom());
+        // getUpdatedRecognitions() will return null if no new information is available since
+        // the last time that call was made.
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+        if (updatedRecognitions == null) {
+            return null;
+        }
 
-                    if (//"Stone".equals(recognition.getLabel()) ||
-                            "Skystone".equals(recognition.getLabel())) {
-                        return  recognition;
-                    }
-                  }
-                  telemetry.update();
+        Recognition targetSkystone = null;
+        double minSkystoneDistance = Double.MAX_VALUE;
+
+        Recognition targetStone = null;
+        double minStoneDistance = Double.MAX_VALUE;
+
+        telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+        // step through the list of recognitions and display boundary info.
+        int i = 0;
+        for (Recognition recognition : updatedRecognitions) {
+            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                    recognition.getLeft(), recognition.getTop());
+            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                    recognition.getRight(), recognition.getBottom());
+            double center = (recognition.getTop() + recognition.getBottom()) / 2;
+            double imageCenter = recognition.getImageHeight() / 2;
+            double distance = Math.abs(center - imageCenter) / 2;
+
+            if ("Skystone".equals(recognition.getLabel())) {
+                if (distance < minSkystoneDistance) {
+                    targetSkystone = recognition;
+                    minSkystoneDistance = distance;
+                }
+            } else if ("Stone".equals(recognition.getLabel())) {
+                if (distance < minStoneDistance) {
+                    targetStone = recognition;
+                    minStoneDistance = distance;
                 }
             }
         }
 
-        return null;
+        Recognition target = targetSkystone != null ? targetSkystone : targetStone;
+        if (target != null) {
+            telemetry.addData("Result", "Found target skystone/stone");
+            telemetry.addData("  left,top", "%.03f , %.03f",
+                    target.getLeft(), target.getTop());
+            telemetry.addData("  right,bottom", "%.03f , %.03f",
+                    target.getRight(), target.getBottom());
+        } else {
+            telemetry.addData("Result", "No target stone in sight");
+        }
+        telemetry.update();
+        return target;
     }
 
     /**
@@ -265,7 +295,7 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.55;
+        tfodParameters.minimumConfidence = 0.6;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }

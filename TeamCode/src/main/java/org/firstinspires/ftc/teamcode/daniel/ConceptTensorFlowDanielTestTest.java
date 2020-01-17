@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -52,7 +53,7 @@ import java.util.List;
  * is explained below.
  */
 @Autonomous(name = "Concept:TensorFlowDanielTestTest", group = "Concept")
-//@Disabled
+@Disabled
 public class ConceptTensorFlowDanielTestTest extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
