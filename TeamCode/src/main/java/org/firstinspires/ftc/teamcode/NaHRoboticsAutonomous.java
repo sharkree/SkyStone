@@ -147,6 +147,11 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         /** Wait for the game to begin */
         waitForStart();
 
+        // Drive one foot to improve tensor flow recognition rate
+        robot.gyroDrive(1, 12, 0);
+        // Keep robot straight
+        robot.gyroHold(0.7, 0, 0.5);
+
         int stepInInches = 6;
         Recognition targetStone = null;
         if (opModeIsActive()) {
@@ -188,13 +193,18 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         }
 
         // Drive forward and intake
-        telemetry.addData("label", targetStone.getLabel());
-        telemetry.addData("  left,top", "%.03f , %.03f",
-                targetStone.getLeft(), targetStone.getTop());
-        telemetry.addData("  right,bottom", "%.03f , %.03f",
-                targetStone.getRight(), targetStone.getBottom());
+        if (targetStone != null) {
+            telemetry.addData("label", targetStone.getLabel());
+            telemetry.addData("  left,top", "%.03f , %.03f",
+                    targetStone.getLeft(), targetStone.getTop());
+            telemetry.addData("  right,bottom", "%.03f , %.03f",
+                    targetStone.getRight(), targetStone.getBottom());
+        } else {
+            telemetry.addData("label", "Lost track of target stone");
+        }
+        telemetry.update();
 
-        robot.gyroDrive(1, 24, 0);
+        robot.gyroDrive(1, 12, 0);
         robot.autoIntake();
         robot.gyroDrive(1, -28, 0);
         robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
