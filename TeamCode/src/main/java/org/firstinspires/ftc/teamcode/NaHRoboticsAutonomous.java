@@ -199,7 +199,7 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         robot.gyroDrive(1, -28, 0);
         robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
         robot.autoOuttake();
-        robot.gyroStrafeSideway(1, 14 + sidewaysStrafeInches, 0);
+        robot.gyroStrafeSideway(1, 21, 0);
     }
 
     private Recognition findTarget() {
