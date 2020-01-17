@@ -109,15 +109,6 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
     public void runOpMode() {
         robot.init(this, hardwareMap);
 
-        telemetry.addData(">", "Calibrating Gyro");    //
-        telemetry.update();
-
-        // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
-            sleep(50);
-            idle();
-        }
-
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -136,7 +127,15 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
             tfod.activate();
         }
 
-        /** Wait for the game to begin */
+        telemetry.addData(">", "Calibrating Gyro");    //
+        telemetry.update();
+
+        // make sure the gyro is calibrated before continuing
+        while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
+            sleep(50);
+            idle();
+        }
+
         Orientation angles = robot.imu.getAngularOrientation(
                 AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         telemetry.addData(">", "Robot Ready.");    //
@@ -144,6 +143,8 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         telemetry.addData(">", "Robot Heading = %f", angles.firstAngle);
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
+
+        /** Wait for the game to begin */
         waitForStart();
 
         Recognition targetStone = null;
@@ -181,7 +182,7 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                 telemetry.addData("Target vertical center: ", "%.02f", targetVerticalCenter);
                 telemetry.update();
                 if (targetVerticalCenter < 450) {
-                    robot.gyroDrive(0.7, 10, 0);
+                    robot.gyroDrive(0.7, 5, 0);
                     forwardInches += 5;
                 } else {
                     isTargetCloseEnough = true;
