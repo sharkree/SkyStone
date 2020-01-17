@@ -202,11 +202,10 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                     targetStone.getRight(), targetStone.getBottom());
 
             robot.autoIntake();
-            robot.gyroDrive(1, -22, 0);
+            robot.gyroDrive(1, -28, 0);
             robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
             robot.autoOuttake();
-            robot.gyroDrive(1, 20, 0);
-            robot.gyroStrafeSideway(1, 1 + sidewaysStrafeInches, 0);
+            robot.gyroStrafeSideway(1, 14 + sidewaysStrafeInches, 0);
         }
     }
 
@@ -266,7 +265,7 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.65;
+        tfodParameters.minimumConfidence = 0.55;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
