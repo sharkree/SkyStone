@@ -54,19 +54,20 @@ import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
  */
 
 @TeleOp(name="NaHRoboticsTeleOpEthan", group="Showcase")
-@Disabled
+//@Disabled
 public class TeleOpEthan extends LinearOpMode {
-    public NaHRoboticsTeamBot bot;
+    public BotCodeEthan bot;
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private int nextOpenGrabber = 0;
     private int nextTurnTable = 0;
+    private int turbo_button = 0;
 
 
     @Override
     public void runOpMode()throws InterruptedException  {
-        bot = new NaHRoboticsTeamBot();
+        bot = new BotCodeEthan();
         bot.init(this, hardwareMap);
 
         telemetry.addData("Status", "Initialized");
@@ -79,11 +80,17 @@ public class TeleOpEthan extends LinearOpMode {
             bot.setPower(gamepad1);
 
             //Open and Close Clutch to grab foundation
-            if (gamepad1.right_bumper) {
+            if (gamepad1.right_trigger>=0.5) {
                 bot.openClutch();
             }
-            else if (gamepad1.left_bumper)   {
+            else if (gamepad1.left_trigger>=0.5)   {
                 bot.closeClutch();
+            }
+
+            //Changing Speed
+            if(gamepad2.right_bumper  ){
+                bot.changeTurbo();
+                TimeUnit.MILLISECONDS.sleep(200);
             }
 
             //Intake wheels
