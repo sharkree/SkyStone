@@ -556,7 +556,7 @@ public class NaHRoboticsTeamBot {
     public void autoIntake() {
         // Start intake and move forward a little bit
         startIntake();
-        gyroDrive(1, 30, 0);
+        gyroDrive(1, 24, 0);
 
         // Pause intake for 0.5 seconds to prevent stone from wobbling
         stop();

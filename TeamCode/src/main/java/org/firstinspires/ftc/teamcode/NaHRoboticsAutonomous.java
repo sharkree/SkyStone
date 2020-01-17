@@ -164,11 +164,13 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                 if (targetCenter < 550) {
                     // Strafe right
                     robot.gyroStrafeSideway(0.7, stepInInches, 0);
+                    robot.gyroHold(0.7, 0, 0.5);
                     sidewaysStrafeInches += stepInInches;
                     stepInInches--;
                 } else if (targetCenter > 650) {
                     // Strafe left
                     robot.gyroStrafeSideway(0.7, -stepInInches, 0);
+                    robot.gyroHold(0.7, 0, 0.5);
                     sidewaysStrafeInches -= stepInInches;
                     stepInInches--;
                 } else {
