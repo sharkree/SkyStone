@@ -147,9 +147,8 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         /** Wait for the game to begin */
         waitForStart();
 
+        int stepInInches = 6;
         Recognition targetStone = null;
-        boolean isTargetAtHorizontalCenter = false;
-        boolean isTargetCloseEnough = false;
         if (opModeIsActive()) {
             while(true) {
                 targetStone = findTarget();
@@ -159,34 +158,25 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
                     break;
                 }
 
-                if (!isTargetAtHorizontalCenter) {
-                    double targetCenter = (targetStone.getTop() + targetStone.getBottom()) / 2;
-                    telemetry.addData("Target horizontal center: ", "%.02f", targetCenter);
-                    telemetry.update();
-                    if (targetCenter < 550) {
-                        // Strafe right
-                        robot.gyroStrafeSideway(0.7, 5, 0);
-                        sidewaysStrafeInches += 5;
-                        continue;
-                    } else if (targetCenter > 650) {
-                        // Strafe left
-                        robot.gyroStrafeSideway(0.7, -3, 0);
-                        sidewaysStrafeInches -= 3;
-                        continue;
-                    } else {
-                        isTargetAtHorizontalCenter = true;
-                    }
+                double targetCenter = (targetStone.getTop() + targetStone.getBottom()) / 2;
+                telemetry.addData("Target horizontal center: ", "%.02f", targetCenter);
+                telemetry.update();
+                if (targetCenter < 550) {
+                    // Strafe right
+                    robot.gyroStrafeSideway(0.7, stepInInches, 0);
+                    sidewaysStrafeInches += stepInInches;
+                    stepInInches--;
+                } else if (targetCenter > 650) {
+                    // Strafe left
+                    robot.gyroStrafeSideway(0.7, -stepInInches, 0);
+                    sidewaysStrafeInches -= stepInInches;
+                    stepInInches--;
+                } else {
+                    break;
                 }
 
-                double targetVerticalCenter = (targetStone.getLeft() + targetStone.getRight()) / 2;
-                telemetry.addData("Target vertical center: ", "%.02f", targetVerticalCenter);
-                telemetry.update();
-                if (targetVerticalCenter < 450) {
-                    robot.gyroDrive(0.7, 5, 0);
-                    forwardInches += 5;
-                } else {
-                    isTargetCloseEnough = true;
-                    break;
+                if (stepInInches < 3) {
+                    stepInInches = 3;
                 }
             }
         }
@@ -196,20 +186,18 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         }
 
         // Drive forward and intake
-        if (isTargetAtHorizontalCenter && isTargetCloseEnough) {
-            telemetry.addData("label", targetStone.getLabel());
-            telemetry.addData("  left,top", "%.03f , %.03f",
-                    targetStone.getLeft(), targetStone.getTop());
-            telemetry.addData("  right,bottom", "%.03f , %.03f",
-                    targetStone.getRight(), targetStone.getBottom());
+        telemetry.addData("label", targetStone.getLabel());
+        telemetry.addData("  left,top", "%.03f , %.03f",
+                targetStone.getLeft(), targetStone.getTop());
+        telemetry.addData("  right,bottom", "%.03f , %.03f",
+                targetStone.getRight(), targetStone.getBottom());
 
-            robot.autoIntake();
-            int padding = forwardInches > 20 ? forwardInches -  20 : 0;
-            robot.gyroDrive(1, -28 - padding, 0);
-            robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
-            robot.autoOuttake();
-            robot.gyroStrafeSideway(1, 14 + sidewaysStrafeInches, 0);
-        }
+        robot.gyroDrive(1, 24, 0);
+        robot.autoIntake();
+        robot.gyroDrive(1, -28, 0);
+        robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
+        robot.autoOuttake();
+        robot.gyroStrafeSideway(1, 14 + sidewaysStrafeInches, 0);
     }
 
     private Recognition findTarget() {
