@@ -208,7 +208,7 @@ public abstract class NaHRoboticsAutonomousSuper extends LinearOpMode {
 
         robot.gyroDrive(1, 12, 0);
         robot.autoIntake();
-        int distanceyaxis = isBlue ? -28: -18;
+        int distanceyaxis = isBlue ? -28: -22;
         robot.gyroDrive(1, distanceyaxis, 0);
         int distance = isBlue ? -60 - sidewaysStrafeInches : 60 - sidewaysStrafeInches;
         robot.gyroStrafeSideway(1, distance, 0);
