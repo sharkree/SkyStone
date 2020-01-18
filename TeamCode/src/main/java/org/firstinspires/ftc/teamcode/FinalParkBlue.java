@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.stanley;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -77,9 +77,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="FinalBlue", group="Showcase Op Mode")
+@Autonomous(name="FinalParkBlue", group="Showcase Op Mode")
 //@Disabled
-public class FinalAutoFoundationBlue extends LinearOpMode {
+public class FinalParkBlue extends LinearOpMode {
     /* Declare OpMode members. */
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -147,14 +147,8 @@ public class FinalAutoFoundationBlue extends LinearOpMode {
         // Put a hold after each turn
 
 
-        robot.gyroStrafeSideway(.7,14,0);
-        robot.gyroDrive(1,-33,0);
-        robot.closeClutch();
-        sleep(1000);
-        robot.gyroDrive(1,36,0);
-        sleep(500);
-        robot.openClutch();
-        robot.gyroStrafeSideway(.7,-47,0);
+
+        robot.gyroStrafeSideway(.7,-43,0);
 
     }
 
