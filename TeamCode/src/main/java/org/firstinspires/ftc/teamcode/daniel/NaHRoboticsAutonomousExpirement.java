@@ -58,7 +58,7 @@ import java.util.List;
  */
 
 //Courtesy of Daniel
-@Autonomous(name = "NaHRoboticsAutonomous", group = "Tournament")
+@Autonomous(name = "NaHRoboticsAutonomousBlue", group = "Tournament")
 @Disabled
 public class NaHRoboticsAutonomousExpirement extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";

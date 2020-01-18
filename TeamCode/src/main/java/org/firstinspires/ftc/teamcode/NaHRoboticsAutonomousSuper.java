@@ -1,3 +1,18 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 /* Copyright (c) 2019 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -27,23 +42,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
-import java.util.List;
-
 /**
  * This 2019-2020 OpMode illustrates the basics of using the TensorFlow Object Detection API to
  * determine the position of the Skystone game elements.
@@ -57,14 +55,18 @@ import java.util.List;
 
 //This is based of of troll robot positioning
 //Courtesy of Daniel
-@Autonomous(name = "NaHRoboticsAutonomous", group = "Tournament")
-public class NaHRoboticsAutonomous extends LinearOpMode {
+
+public abstract class NaHRoboticsAutonomousSuper extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    private final boolean isBlue;
 
     /* Declare OpMode members. */
     NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use NaH Robotic's team bot
+    public NaHRoboticsAutonomousSuper(boolean isBlue) {
+        this.isBlue = isBlue;
+    }
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -206,10 +208,13 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
 
         robot.gyroDrive(1, 12, 0);
         robot.autoIntake();
-        robot.gyroDrive(1, -28, 0);
-        robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
+        int distanceyaxis = isBlue ? -28: -18;
+        robot.gyroDrive(1, distanceyaxis, 0);
+        int distance = isBlue ? -60 - sidewaysStrafeInches : 60 - sidewaysStrafeInches;
+        robot.gyroStrafeSideway(1, distance, 0);
         robot.autoOuttake();
-        robot.gyroStrafeSideway(1, 21, 0);
+        int distance2 = isBlue ? 21 : -21;
+        robot.gyroStrafeSideway(1, distance2, 0);
     }
 
     private Recognition findTarget() {
@@ -281,7 +286,7 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = CameraDirection.BACK;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -294,10 +299,11 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
      */
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minimumConfidence = 0.6;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 }
+
