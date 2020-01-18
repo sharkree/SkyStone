@@ -30,17 +30,9 @@
 package org.firstinspires.ftc.teamcode.daniel;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
-
-import java.util.List;
 
 /**
  * This 2019-2020 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -52,9 +44,9 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Concept:TensorFlowDanielTestTest", group = "Concept")
-@Disabled
-public class ConceptTensorFlowDanielTestTest extends LinearOpMode {
+@Autonomous(name = "Concept:TensorFlowDanielTestRed", group = "Concept")
+//@Disabled
+public class ConceptTensorFlowDanielTestRed extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -99,10 +91,7 @@ public class ConceptTensorFlowDanielTestTest extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-        robot.gyroStrafeSideway(1, 24, 0);
-        robot.gyroDrive(1, -48, 0);
-        robot.closeClutch();
-        robot.gyroDrive(1, 48, 0);
-        robot.gyroStrafeSideway(1, -32, 0);
+        robot.gyroDrive(1, 2, 0);
+        robot.gyroStrafeSideway(1, -24, 0);
     }
 }
