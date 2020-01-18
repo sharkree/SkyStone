@@ -147,14 +147,14 @@ public class FinalAutoFoundationBlue extends LinearOpMode {
         // Put a hold after each turn
 
 
-        robot.gyroStrafeSideway(.7,12,0);
+        robot.gyroStrafeSideway(.7,14,0);
         robot.gyroDrive(1,-33,0);
         robot.closeClutch();
         sleep(1000);
         robot.gyroDrive(1,36,0);
         sleep(500);
         robot.openClutch();
-        robot.gyroStrafeSideway(.7,-43,0);
+        robot.gyroStrafeSideway(.7,-47,0);
 
     }
 
