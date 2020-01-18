@@ -54,7 +54,7 @@ import org.firstinspires.ftc.teamcode.NaHRoboticsTeamBot;
  */
 
 @TeleOp(name="NaHRoboticsTeleOpEthan", group="Showcase")
-//@Disabled
+@Disabled
 public class TeleOpEthan extends LinearOpMode {
     public BotCodeEthan bot;
 

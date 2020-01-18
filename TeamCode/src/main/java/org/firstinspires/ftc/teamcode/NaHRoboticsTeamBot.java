@@ -571,7 +571,6 @@ public class NaHRoboticsTeamBot {
     }
 
     public void autoOuttake() {
-        gyroDrive(1, -12, 0);
         revIntake();
         holdTime(0.5);
     }

@@ -57,7 +57,7 @@ import java.util.List;
  * is explained below.
  */
 @Autonomous(name = "Concept:TensorFlowObjectDetectionDaniel", group = "Concept")
-//@Disabled
+@Disabled
 public class ConceptTensorFlowObjectDetectionDaniel extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";

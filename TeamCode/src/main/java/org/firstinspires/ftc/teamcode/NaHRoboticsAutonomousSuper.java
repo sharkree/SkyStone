@@ -1,3 +1,18 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 /* Copyright (c) 2019 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -27,23 +42,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
-import java.util.List;
-
 /**
  * This 2019-2020 OpMode illustrates the basics of using the TensorFlow Object Detection API to
  * determine the position of the Skystone game elements.
@@ -57,14 +55,18 @@ import java.util.List;
 
 //This is based of of troll robot positioning
 //Courtesy of Daniel
-@Autonomous(name = "NaHRoboticsAutonomous", group = "Tournament")
-public class NaHRoboticsAutonomous extends LinearOpMode {
+
+public abstract class NaHRoboticsAutonomousSuper extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    private final boolean isBlue;
 
     /* Declare OpMode members. */
     NaHRoboticsTeamBot robot   = new NaHRoboticsTeamBot();   // Use NaH Robotic's team bot
+    public NaHRoboticsAutonomousSuper(boolean isBlue) {
+        this.isBlue = isBlue;
+    }
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -93,38 +95,21 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
     private TFObjectDetector tfod;
 
     /**
-     * keep track of how far we strafe
+     * keep track of how far we strafe sideways
      * positive = right
      * negative = left
      */
     private int sidewaysStrafeInches = 0;
 
+    /**
+     * How far we went forward
+     */
+    private int forwardInches = 0;
+
+
     @Override
     public void runOpMode() {
         robot.init(this, hardwareMap);
-
-        telemetry.addData(">", "Calibrating Gyro");    //
-        telemetry.update();
-
-        // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
-            sleep(50);
-            idle();
-        }
-
-        telemetry.addData(">", "Robot Ready.");    //
-        telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
-        telemetry.update();
-
-        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
-        while (!isStarted()) {
-            Orientation angles = robot.imu.getAngularOrientation(
-                    AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            telemetry.addData(">", "get angle");
-            telemetry.update();
-            telemetry.addData(">", "Robot Heading = %f", angles.firstAngle);
-            telemetry.update();
-        }
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
@@ -144,45 +129,63 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
             tfod.activate();
         }
 
-        /** Wait for the game to begin */
+        telemetry.addData(">", "Calibrating Gyro");    //
+        telemetry.update();
+
+        // make sure the gyro is calibrated before continuing
+        while (!isStopRequested() && !robot.imu.isGyroCalibrated())  {
+            sleep(50);
+            idle();
+        }
+
+        Orientation angles = robot.imu.getAngularOrientation(
+                AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        telemetry.addData(">", "Robot Ready.");    //
+        telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
+        telemetry.addData(">", "Robot Heading = %f", angles.firstAngle);
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
+
+        /** Wait for the game to begin */
         waitForStart();
 
+        // Drive one foot to improve tensor flow recognition rate
+        robot.gyroDrive(1, 12, 0);
+        // Keep robot straight
+        robot.gyroHold(0.7, 0, 0.5);
+
+        int stepInInches = 6;
         Recognition targetStone = null;
-        boolean isTargetAtHorizontalCenter = false;
-        boolean isTargetCloseEnough = false;
         if (opModeIsActive()) {
             while(true) {
                 targetStone = findTarget();
                 if (targetStone == null) {
                     telemetry.addData(">", "Can't find a stone target");
+                    telemetry.update();
                     break;
                 }
 
-                if (!isTargetAtHorizontalCenter) {
-                    double targetCenter = (targetStone.getTop() + targetStone.getBottom()) / 2;
-                    if (targetCenter < 590) {
-                        // Strafe right
-                        robot.gyroStrafeSideway(0.7, 5, 0);
-                        sidewaysStrafeInches += 5;
-                        continue;
-                    } else if (targetCenter > 690) {
-                        // Strafe left
-                        robot.gyroStrafeSideway(0.7, -5, 0);
-                        sidewaysStrafeInches -= 5;
-                        continue;
-                    } else {
-                        isTargetAtHorizontalCenter = true;
-                    }
-                }
-
-                double targetVerticalCenter = (targetStone.getLeft() + targetStone.getRight()) / 2;
-                if (targetVerticalCenter < 450) {
-                    robot.gyroDrive(0.7, 5, 0);
+                double targetCenter = (targetStone.getTop() + targetStone.getBottom()) / 2;
+                telemetry.addData("Target horizontal center: ", "%.02f", targetCenter);
+                telemetry.update();
+                if (targetCenter < 550) {
+                    // Strafe right
+                    robot.gyroStrafeSideway(0.7, stepInInches, 0);
+                    robot.gyroHold(0.7, 0, 0.5);
+                    sidewaysStrafeInches += stepInInches;
+                    stepInInches--;
+                } else if (targetCenter > 650) {
+                    // Strafe left
+                    robot.gyroStrafeSideway(0.7, -stepInInches, 0);
+                    robot.gyroHold(0.7, 0, 0.5);
+                    sidewaysStrafeInches -= stepInInches;
+                    stepInInches--;
                 } else {
-                    isTargetCloseEnough = true;
                     break;
+                }
+
+                if (stepInInches < 3) {
+                    stepInInches = 3;
                 }
             }
         }
@@ -192,51 +195,85 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         }
 
         // Drive forward and intake
-        if (isTargetAtHorizontalCenter && isTargetCloseEnough) {
+        if (targetStone != null) {
             telemetry.addData("label", targetStone.getLabel());
             telemetry.addData("  left,top", "%.03f , %.03f",
                     targetStone.getLeft(), targetStone.getTop());
             telemetry.addData("  right,bottom", "%.03f , %.03f",
                     targetStone.getRight(), targetStone.getBottom());
-
-            robot.autoIntake();
-            robot.gyroDrive(1, -24, 0);
-            robot.gyroStrafeSideway(1, -60 - sidewaysStrafeInches, 0);
-            robot.autoOuttake();
-            robot.gyroDrive(1, 10, 0);
-            robot.gyroStrafeSideway(1, -5 + sidewaysStrafeInches, 0);
+        } else {
+            telemetry.addData("label", "Lost track of target stone");
         }
+        telemetry.update();
+
+        robot.gyroDrive(1, 12, 0);
+        robot.autoIntake();
+        int distanceyaxis = isBlue ? -28: -22;
+        robot.gyroDrive(1, distanceyaxis, 0);
+        int distance = isBlue ? -60 - sidewaysStrafeInches : 60 - sidewaysStrafeInches;
+        robot.gyroStrafeSideway(1, distance, 0);
+        robot.autoOuttake();
+        int distance2 = isBlue ? 21 : -21;
+        robot.gyroStrafeSideway(1, distance2, 0);
     }
 
     private Recognition findTarget() {
-        while (opModeIsActive()) {
-            if (tfod != null) {
-                // getUpdatedRecognitions() will return null if no new information is available since
-                // the last time that call was made.
-                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
-                  telemetry.addData("# Object Detected", updatedRecognitions.size());
+        if (tfod == null) {
+            return null;
+        }
 
-                  // step through the list of recognitions and display boundary info.
-                  int i = 0;
-                  for (Recognition recognition : updatedRecognitions) {
-                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                            recognition.getLeft(), recognition.getTop());
-                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                            recognition.getRight(), recognition.getBottom());
+        // getUpdatedRecognitions() will return null if no new information is available since
+        // the last time that call was made.
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+        if (updatedRecognitions == null) {
+            return null;
+        }
 
-                    if (//"Stone".equals(recognition.getLabel()) ||
-                            "Skystone".equals(recognition.getLabel())) {
-                        return  recognition;
-                    }
-                  }
-                  telemetry.update();
+        Recognition targetSkystone = null;
+        double minSkystoneDistance = Double.MAX_VALUE;
+
+        Recognition targetStone = null;
+        double minStoneDistance = Double.MAX_VALUE;
+
+        telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+        // step through the list of recognitions and display boundary info.
+        int i = 0;
+        for (Recognition recognition : updatedRecognitions) {
+            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                    recognition.getLeft(), recognition.getTop());
+            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                    recognition.getRight(), recognition.getBottom());
+            double center = (recognition.getTop() + recognition.getBottom()) / 2;
+            double imageCenter = recognition.getImageHeight() / 2;
+            double distance = Math.abs(center - imageCenter) / 2;
+
+            if ("Skystone".equals(recognition.getLabel())) {
+                if (distance < minSkystoneDistance) {
+                    targetSkystone = recognition;
+                    minSkystoneDistance = distance;
+                }
+            } else if ("Stone".equals(recognition.getLabel())) {
+                if (distance < minStoneDistance) {
+                    targetStone = recognition;
+                    minStoneDistance = distance;
                 }
             }
         }
 
-        return null;
+        Recognition target = targetSkystone != null ? targetSkystone : targetStone;
+        if (target != null) {
+            telemetry.addData("Result", "Found target skystone/stone");
+            telemetry.addData("  left,top", "%.03f , %.03f",
+                    target.getLeft(), target.getTop());
+            telemetry.addData("  right,bottom", "%.03f , %.03f",
+                    target.getRight(), target.getBottom());
+        } else {
+            telemetry.addData("Result", "No target stone in sight");
+        }
+        telemetry.update();
+        return target;
     }
 
     /**
@@ -249,7 +286,7 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = CameraDirection.BACK;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -262,10 +299,11 @@ public class NaHRoboticsAutonomous extends LinearOpMode {
      */
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.65;
+        tfodParameters.minimumConfidence = 0.6;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 }
+
